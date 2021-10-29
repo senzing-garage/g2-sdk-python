@@ -10,7 +10,7 @@ try: import sqlite3
 except: pass
 
 #--project classes
-import G2Exception
+from . import G2Exception
 
 #======================
 class G2Database:

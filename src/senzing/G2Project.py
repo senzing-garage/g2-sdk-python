@@ -8,9 +8,9 @@ import glob
 from operator import itemgetter
 
 #--project classes
-from G2Exception import G2UnsupportedFileTypeException
-from G2Exception import G2InvalidFileTypeContentsException
-from CompressedFile import openPossiblyCompressedFile
+from .G2Exception import G2UnsupportedFileTypeException
+from .G2Exception import G2InvalidFileTypeContentsException
+from .CompressedFile import openPossiblyCompressedFile
 
 #======================
 class G2Project:

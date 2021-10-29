@@ -11,8 +11,8 @@ try: import sqlite3
 except: pass
 
 #--project classes
-import G2Exception
-from G2ConfigModule import G2ConfigModule
+from . import G2Exception
+from .G2ConfigModule import G2ConfigModule
 
 #======================
 class G2ConfigTables:
