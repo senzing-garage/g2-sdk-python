@@ -11,8 +11,8 @@ try: import sqlite3
 except: pass
 
 #--project classes
-import G2Exception
-from G2ConfigModule import G2ConfigModule
+from . import G2Exception
+from .G2ConfigModule import G2ConfigModule
 
 #======================
 class G2ConfigTables:
@@ -25,7 +25,7 @@ class G2ConfigTables:
         self.g2iniPath = g2iniPath
         self.success = True
 
-		
+
     #----------------------------------------
     #-- g2 specific calls
     #----------------------------------------

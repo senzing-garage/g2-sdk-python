@@ -4,13 +4,13 @@ import sys
 import os
 import json
 import csv
-import glob 
+import glob
 from operator import itemgetter
 
 #--project classes
-from G2Exception import G2UnsupportedFileTypeException
-from G2Exception import G2InvalidFileTypeContentsException
-from CompressedFile import openPossiblyCompressedFile
+from .G2Exception import G2UnsupportedFileTypeException
+from .G2Exception import G2InvalidFileTypeContentsException
+from .CompressedFile import openPossiblyCompressedFile
 
 #======================
 class G2Project:
@@ -20,7 +20,7 @@ class G2Project:
     def __init__(self, attributeDict, projectFileName = None, projectFileUri = None):
         """ open and validate a g2 generic configuration and project file """
 
-        self.success = True 
+        self.success = True
         self.mappingCache = {}
 
         self.clearStatPack()
@@ -74,7 +74,7 @@ class G2Project:
                 tryColumn = attrName[attrName.find('_') + 1:]
                 if tryColumn in self.attributeDict:
                     configMapping = self.attributeDict[tryColumn]
-                else:  
+                else:
                    usageType = attrName[attrName.rfind('_') + 1:]
                    tryColumn = attrName[0:attrName.rfind('_')]
                    if tryColumn in self.attributeDict:
@@ -99,7 +99,7 @@ class G2Project:
                 attrMapping['FELEM_REQ'] = None
 
             self.mappingCache[attrName] = attrMapping
-                
+
         return attrMapping
 
     #---------------------------------------
@@ -136,7 +136,7 @@ class G2Project:
 
         #--parse the json
         for columnName in jsonDict:
-            if type(jsonDict[columnName]) == list: 
+            if type(jsonDict[columnName]) == list:
                 childRowNum = -1
                 for childRow in jsonDict[columnName]:
                     childRowNum += 1
@@ -187,7 +187,7 @@ class G2Project:
             #--validate and count the features
             featureCount = 0
             mappedAttributeList = sorted(mappedAttributeList, key=itemgetter('FEATURE_KEY', 'ATTR_ID'))
-            mappedAttributeListLength = len(mappedAttributeList) 
+            mappedAttributeListLength = len(mappedAttributeList)
             i = 0
             while i < mappedAttributeListLength:
                 if mappedAttributeList[i]['FEATURE_KEY']:
@@ -215,7 +215,7 @@ class G2Project:
                             self.featureStats[statCode] += 1
                         else:
                             self.featureStats[statCode] = 1
-                        
+
                         #--yse first name encountered as the entity description
                         if ftypeCode == 'NAME' and not entityName:
                             entityName = featureDesc
@@ -229,7 +229,7 @@ class G2Project:
                             valuesByClass[ftypeClass] += '\n' + featureDesc
                         else:
                             valuesByClass[ftypeClass] = featureDesc
-                        
+
                 else:
                     #--this is an unmapped attribute
                     if mappedAttributeList[i]['ATTR_CLASS'] == 'OTHER':
@@ -240,7 +240,7 @@ class G2Project:
                             self.unmappedStats[statCode] += 1
                         else:
                             self.unmappedStats[statCode] = 1
-                        
+
                         #--update values by class
                         attrClass = mappedAttributeList[i]['ATTR_CLASS']
                         attrDesc = mappedAttributeList[i]['ATTR_NAME'] +': ' + mappedAttributeList[i]['ATTR_VALUE']
@@ -266,7 +266,7 @@ class G2Project:
         jsonMappings = {}
         if type(msg) == dict:
             jsonDict = msg
-        else: 
+        else:
             try: jsonDict = json.loads(msg, encoding="utf-8")
             except:
                 jsonErrors.append('ERROR: could not parse as json')
@@ -297,7 +297,7 @@ class G2Project:
                 elif columnName not in jsonMappings:
                     jsonMappings[columnName] = self.lookupAttribute(columnName)
 
-        return jsonErrors, jsonDict, jsonMappings 
+        return jsonErrors, jsonDict, jsonMappings
 
     #---------------------------------------
     def clearStatPack(self):
@@ -306,7 +306,7 @@ class G2Project:
         self.featureStats = {}
         self.unmappedStats = {}
         return
-    
+
     #---------------------------------------
     def getStatPack(self):
 
@@ -319,10 +319,10 @@ class G2Project:
             featureStat['FEATURE'] = feature
             if '-' in feature:
                 featureSplit = feature.split('-')
-                featureStat['FTYPE_CODE'] = featureSplit[0] 
+                featureStat['FTYPE_CODE'] = featureSplit[0]
                 featureStat['UTYPE_CODE'] = featureSplit[1]
             else:
-                featureStat['FTYPE_CODE'] = feature 
+                featureStat['FTYPE_CODE'] = feature
                 featureStat['UTYPE_CODE'] = None
             featureStat['FEATURE_ORDER'] = self.featureDict[featureStat['FTYPE_CODE']]['FEATURE_ORDER']
             featureStat['COUNT'] = self.featureStats[feature]
@@ -332,7 +332,7 @@ class G2Project:
                 featureStat['PERCENT'] = round((float(featureStat['COUNT']) / self.recordCount) * 100,2)
             featureStats.append(featureStat)
         statPack['FEATURES'] = sorted(featureStats, key=itemgetter('FEATURE_ORDER', 'UTYPE_CODE'))
- 
+
         unmappedStats = []
         for attribute in self.unmappedStats:
             unmappedStat = {}
@@ -344,7 +344,7 @@ class G2Project:
                 unmappedStat['PERCENT'] = round((float(unmappedStat['COUNT']) / self.recordCount) * 100,2)
             unmappedStats.append(unmappedStat)
         statPack['UNMAPPED'] = sorted(unmappedStats, key=itemgetter('ATTRIBUTE'))
- 
+
         return statPack
 
     #---------------------------------------
@@ -389,7 +389,7 @@ class G2Project:
             #--ensure we have all we need
             if 'DATA_SOURCE' not in parmDict:
                 print('ERROR: must include "data_source=?" in the /? parameters to use the file specification!')
-                self.success = False 
+                self.success = False
             elif 'FILE_FORMAT' not in parmDict:
                 print('ERROR: file_format=? must be included in the /? parameters to use the file specification!')
                 self.success = False
@@ -418,8 +418,8 @@ class G2Project:
 
         else:
             print('ERROR: must include /?data_source=?,file_format=? to use the file specification!')
-            self.success = False 
-        
+            self.success = False
+
         return
 
     #----------------------------------------
@@ -449,7 +449,7 @@ class G2Project:
                 self.prepareSourceFiles()
         else:
             print('ERROR: project file ' + projectFileName + ' not found!')
-            self.success = False 
+            self.success = False
 
         return
 
@@ -459,7 +459,7 @@ class G2Project:
         try: self.projectSourceList = json.load(open(self.projectFileName), encoding="utf-8")
         except:
             print('ERROR: project file ' + self.projectFileName + ' could not be opened as a json file!')
-            self.success = False 
+            self.success = False
         else:
             sourceRow = 0
             for sourceDict in self.projectSourceList:
@@ -479,7 +479,7 @@ class G2Project:
         try: csvFile, csvReader = self.openCsv(self.projectFileName, self.projectFileFormat)
         except:
             print('ERROR: project file ' + self.projectFileName + ' could not be opened as a ' + self.projectFileFormat + ' file!')
-            self.success = False 
+            self.success = False
         else:
             csvRows = []
             csvHeaders = [x.strip().upper() for x in next(csvReader)]
@@ -526,9 +526,9 @@ class G2Project:
             #--validate and map the files for this source
             if self.success:
                 if 'ENTITY_TYPE' not in sourceDict:
-                    sourceDict['ENTITY_TYPE'] = sourceDict['DATA_SOURCE'] 
+                    sourceDict['ENTITY_TYPE'] = sourceDict['DATA_SOURCE']
                 else:
-                    sourceDict['ENTITY_TYPE'] = sourceDict['ENTITY_TYPE'].upper() 
+                    sourceDict['ENTITY_TYPE'] = sourceDict['ENTITY_TYPE'].upper()
 
                 #--currently file name cannot contain wildcards.  We should add support for this in the future
                 sourceDict['FILE_LIST'] = []
@@ -539,9 +539,9 @@ class G2Project:
                 #--adjustment if they gave us full path as file name
                 if os.path.exists(sourceDict['FILE_NAME']):
                     fileDict['FILE_PATH'] = sourceDict['FILE_NAME']
-                    sourceDict['FILE_NAME'] = os.path.basename(fileDict['FILE_PATH'])    
+                    sourceDict['FILE_NAME'] = os.path.basename(fileDict['FILE_PATH'])
                 else:  #--append the project file path
-                    fileDict['FILE_PATH'] = self.projectFilePath + os.path.sep + sourceDict['FILE_NAME'] 
+                    fileDict['FILE_PATH'] = self.projectFilePath + os.path.sep + sourceDict['FILE_NAME']
 
                 if not os.path.exists(fileDict['FILE_PATH']):
                     print('ERROR: ' + fileDict['FILE_PATH'] + ' does not exist!')
@@ -576,8 +576,8 @@ class G2Project:
                         else:
                             unmappedFields.append(mappedColumn)
 
-                    fileDict['MAPPED_FIELDS'] = mappedFields 
-                    fileDict['UNMAPPED_FIELDS'] = unmappedFields 
+                    fileDict['MAPPED_FIELDS'] = mappedFields
+                    fileDict['UNMAPPED_FIELDS'] = unmappedFields
 
                     #--ensure there is at least one feature mapped
                     if len(mappedFields) == 0:
@@ -595,7 +595,7 @@ class G2Project:
         try: jsonFile = openPossiblyCompressedFile(fileDict['FILE_PATH'], 'r')
         except:
             print('ERROR: ' + fileDict['FILE_PATH'] + ' could not be opened!')
-            dataLooksLikeJSON = False 
+            dataLooksLikeJSON = False
         else:
             #--test the first several lines to make sure it looks like JSON data
             rowNum = 0
@@ -621,7 +621,7 @@ class G2Project:
         try: umfFile = openPossiblyCompressedFile(fileDict['FILE_PATH'], 'r')
         except:
             print('ERROR: ' + fileDict['FILE_PATH'] + ' could not be opened!')
-            dataLooksLikeUMF = False 
+            dataLooksLikeUMF = False
         else:
             #--test the first several lines to make sure it looks like UMF data
             rowNum = 0
@@ -647,7 +647,7 @@ class G2Project:
         try: csvFile, csvReader = self.openCsv(fileDict['FILE_PATH'], fileDict['FILE_FORMAT'])
         except:
             print('ERROR: ' + fileDict['FILE_PATH'] + ' could not be opened as a ' + fileDict['FILE_FORMAT'] + ' file!')
-            dataLooksLikeCSV = False 
+            dataLooksLikeCSV = False
         else:
             csvHeaders = [x.strip().upper() for x in next(csvReader)]
             headerFieldCount = len(csvHeaders)
@@ -682,15 +682,15 @@ class G2Project:
         try: csvFile, csvReader = self.openCsv(fileDict['FILE_PATH'], fileDict['FILE_FORMAT'])
         except:
             print('ERROR: ' + fileDict['FILE_PATH'] + ' could not be opened as a ' + fileDict['FILE_FORMAT'] + ' file!')
-            self.success = False 
+            self.success = False
         else:
-            columnMappings = {}            
+            columnMappings = {}
             csvRows = []
             csvHeaders = [x.strip().upper() for x in next(csvReader)]
             for columnName in csvHeaders:
                 if len(columnName) == 0:
                     print('ERROR: file ' + fileDict['FILE_NAME'] + ' is missing a column header!')
-                    self.success = False 
+                    self.success = False
                 else:
                     if columnName not in columnMappings:
                         columnMappings[columnName] = self.lookupAttribute(columnName)
@@ -708,13 +708,13 @@ class G2Project:
         try: jsonFile = openPossiblyCompressedFile(fileDict['FILE_PATH'], 'r')
         except:
             print('ERROR: ' + fileDict['FILE_PATH'] + ' could not be opened!')
-            self.success = False 
+            self.success = False
         else:
 
-            #--test the first 5 lines as not all tags used on every row 
-            #--its ok if not, they will be added as used, 
-            #--but for performance catch as many as you can 
-            columnMappings = {}            
+            #--test the first 5 lines as not all tags used on every row
+            #--its ok if not, they will be added as used,
+            #--but for performance catch as many as you can
+            columnMappings = {}
             rowNum = 0
             for N in range(sampleSize):
                 jsonString = jsonFile.readline()
@@ -727,7 +727,7 @@ class G2Project:
                     for message in jsonErrors:
                         print(message + ' in row %d of file %s' % (rowNum, os.path.basename(fileDict['FILE_PATH'])))
                     if jsonErrors:
-                        self.success = False 
+                        self.success = False
                         break
                     else:
                         #self.mapJsonRecord(jsonDict, jsonMappings)  #--debug test
@@ -794,7 +794,7 @@ if __name__ == "__main__":
         (options, args) = optParser.parse_args()
         mappingFileName = options.configtFileName
         projectFileName = options.projectFileName
-  
+
     #--create an instance
     myProject = g2Mapper('self', mappingFileName, projectFileName)
     if myProject.success:

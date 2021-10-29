@@ -10,7 +10,7 @@ try: import sqlite3
 except: pass
 
 #--project classes
-import G2Exception
+from . import G2Exception
 
 #======================
 class G2Database:
@@ -45,12 +45,12 @@ class G2Database:
             print(err)
             return
         else:
-            #--attempt to set the schema (if there is one)import 
+            #--attempt to set the schema (if there is one)import
             if self.schema != None and len(self.schema) != 0:
                 if not self.SetSchema():
                     print(self)
                     print('ERROR: could not connect to schema')
-            
+
                     return
 
             #--handle utf-8 issues for sqlite3
@@ -177,7 +177,7 @@ class G2Database:
 
         return rowList
 
-    #---------------------------------------    
+    #---------------------------------------
     def truncateTable(self, tableName_):
         if self.dbType == 'SQLITE3':
             sql = 'DELETE FROM ' + tableName_
@@ -185,12 +185,12 @@ class G2Database:
             sql = 'truncate table ' + tableName_
             if self.dbType == 'DB2':
                 sql += ' immediate'
-        
+
         cursor = self.sqlExec(sql)
 
-        return cursor 
+        return cursor
 
-    #---------------------------------------    
+    #---------------------------------------
     def SetSchema(self):
         if self.dbType == 'SQLITE3':
             print('''WARNING: SQLITE3 doesn't support schema URI argument''')
@@ -207,13 +207,13 @@ class G2Database:
             print(err)
             return False
 
-        return True 
+        return True
 
     #--------------------
     #--utility functions
     #--------------------
 
-    #---------------------------------------    
+    #---------------------------------------
     def dburiParse(self, dbUri):
         ''' parse the database uri string '''
         #--pull off the table parameter if supplied
@@ -245,7 +245,7 @@ class G2Database:
         else: #--just dsn with trusted connection?
             justUidPwd = ':'
             justDsnSch = dbUriData
- 
+
         #--separate uid and password
         if ':' in justUidPwd:
             uid = justUidPwd.split(':')[0]
@@ -253,7 +253,7 @@ class G2Database:
         else: #--just uid with no password?
             uid = justUidPwd
             pwd = ''
- 
+
         #--separate dsn and port
         if justDsnSch[1:3] == ":\\":
             dsn = justDsnSch
@@ -264,7 +264,7 @@ class G2Database:
         else: #--just dsn with no port
             dsn = justDsnSch
             self.port = None
- 
+
         #--create the return dictionary
         self.dbType = dbtype
         self.dsn = dsn
@@ -325,7 +325,7 @@ if __name__ == "__main__":
         optParser.add_option('-d', '--dbUri', dest='dbUri', default='', help='a database uri such as: db2://user:pwd@dsn:schema')
         (options, args) = optParser.parse_args()
         dbUri = options.dbUri
- 
+
     #--create an instance
     testDbo = g2Database(dbUri)
     if testDbo.success:

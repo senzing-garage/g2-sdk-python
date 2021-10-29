@@ -7,7 +7,7 @@ tls_var = threading.local()
 
 from csv import reader as csvreader
 
-from G2Exception import TranslateG2ModuleException, G2ModuleNotInitialized, G2ModuleGenericException
+from .G2Exception import TranslateG2ModuleException, G2ModuleNotInitialized, G2ModuleGenericException
 
 def resize_return_buffer(buf_, size_):
   """  callback function that resizs return buffer when it is too small
@@ -250,7 +250,7 @@ class G2Module(object):
             c_void_p: handle for the export
         """
         g2ExportFlags = self.getExportFlagsForMaxMatchLevel(max_match_level)
-        g2ExportFlags = g2ExportFlags | 3 
+        g2ExportFlags = g2ExportFlags | 3
         if exportType == 'CSV':
             self._lib_handle.G2_exportCSVEntityReport.restype = c_void_p
             exportHandle = self._lib_handle.G2_exportCSVEntityReport(g2ExportFlags)
@@ -300,7 +300,7 @@ class G2Module(object):
                 csvRecord = dict(list(zip(csvHeaders, csvRecord)))
         else:
             csvRecord = None
-        return csvRecord 
+        return csvRecord
 
     def exportCSVEntityReport(self, max_match_level, g2ExportFlags):
         # type: (int, int) -> str
@@ -310,7 +310,7 @@ class G2Module(object):
         in CSV format.  The export-handle should be read using the "G2_fetchNext"
         function, and closed when work is complete. Each output row contains the
         exported entity data for a single resolved entity.
-   
+
         Args:
             max_match_level: The match-level to specify what kind of entity resolves
                          and relations we want to see.
@@ -351,7 +351,7 @@ class G2Module(object):
         in JSON format.  The export-handle should be read using the "G2_fetchNext"
         function, and closed when work is complete. Each output row contains the
         exported entity data for a single resolved entity.
-   
+
         Args:
             max_match_level: The match-level to specify what kind of entity resolves
                          and relations we want to see.
@@ -411,7 +411,7 @@ class G2Module(object):
         Return:
             int: 0 on success
         """
-   
+
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
         _loadId = self.prepareStringArgument(loadId)
         _recordId = self.prepareStringArgument(recordId)
