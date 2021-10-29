@@ -40,6 +40,16 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
     make package
     ```
 
+### Publish
+
+1. Publish to <https://test.pypi.org>.
+   Example:
+
+    ```console
+    cd ${GIT_REPOSITORY_DIR}
+    make test-package
+    ```
+
 ### Install
 
 1. Install using `pip`.
