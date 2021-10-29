@@ -82,6 +82,9 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 
     ```console
     ls ~/.local/lib/python3.8/site-packages
+    ```
+
+    ```console
     ls /usr/local/lib/python3.8/dist-packages
     ```
 
