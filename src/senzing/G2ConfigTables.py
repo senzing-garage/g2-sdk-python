@@ -25,7 +25,7 @@ class G2ConfigTables:
         self.g2iniPath = g2iniPath
         self.success = True
 
-
+		
     #----------------------------------------
     #-- g2 specific calls
     #----------------------------------------
