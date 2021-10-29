@@ -32,14 +32,41 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 1. Using the environment variables values just set, follow steps in [clone-repository](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/clone-repository.md) to install the Git repository.
 
 
-### XXX
+### Build python packages
 
 1. XXX
    Example:
 
     ```console
     cd ${GIT_REPOSITORY_DIR}
-    python3 -m build
+    make package
+    ```
+
+### Install
+
+1. xxx.
+   Example:
+
+    ```console
+    pip3 install --index-url https://test.pypi.org/simple/ --no-deps senzing
+    ```
+
+### Test
+
+1. xxx.
+   Example:
+
+    ```console
+    make test
+    ```
+
+### Uninstall
+
+1. xxx.
+   Example:
+
+    ```console
+    pip3 uninstall senzing
     ```
 
 ## References
