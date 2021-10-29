@@ -1,6 +1,5 @@
 # g2-sdk-python
 
-
 ## Develop
 
 The following instructions are used when modifying and building the Docker image.
@@ -31,10 +30,9 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 
 1. Using the environment variables values just set, follow steps in [clone-repository](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/clone-repository.md) to install the Git repository.
 
-
 ### Build python packages
 
-1. XXX
+1. Build pip package using `python3 -m build`.
    Example:
 
     ```console
@@ -44,7 +42,7 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 
 ### Install
 
-1. xxx.
+1. Install using `pip`.
    Example:
 
     ```console
@@ -53,7 +51,7 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 
 ### Test
 
-1. xxx.
+1. Run testcases found in `tests` directory.
    Example:
 
     ```console
@@ -62,11 +60,19 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 
 ### Uninstall
 
-1. xxx.
+1. Remove senzing.
    Example:
 
     ```console
     pip3 uninstall senzing
+    ```
+
+1. Verify.
+   Example:
+
+    ```console
+    ls ~/.local/lib/python3.8/site-packages
+    ls /usr/local/lib/python3.8/dist-packages
     ```
 
 ## References
