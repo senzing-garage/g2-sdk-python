@@ -80,16 +80,23 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
     pip3 uninstall senzing
     ```
 
-1. Verify.
+1. Verify deletion in user python repository.
    Example:
 
     ```console
     ls ~/.local/lib/python3.8/site-packages | grep senzing
     ```
 
+   Should return nothing.
+
+1. Verify deletion in system repository.
+   Example:
+
     ```console
     ls /usr/local/lib/python3.8/dist-packages | grep senzing
     ```
+
+   Should return nothing.
 
 ## References
 
