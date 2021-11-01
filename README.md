@@ -30,7 +30,7 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 
 1. Using the environment variables values just set, follow steps in [clone-repository](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/clone-repository.md) to install the Git repository.
 
-### Build python packages
+### Build python package
 
 1. Build pip package using `python3 -m build`.
    Example:
@@ -40,9 +40,16 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
     make package
     ```
 
+   Output will be in the `dist` directory.
 ### Publish
 
+:warning:  On [PyPi](https://pypi.org/), pip package versions are immmutable.
+They cannot be deleted nor updated.
+Since only one instance of a version can be published,
+be careful on what is published.
+
 1. Publish to <https://test.pypi.org>.
+   This is a test PyPi server.
    Example:
 
     ```console

@@ -25,7 +25,7 @@ package: clean
 # -----------------------------------------------------------------------------
 
 .PHONY: test-publish
-test-publish:
+test-publish: package
 	python3 -m twine upload --repository testpypi dist/*
 
 # -----------------------------------------------------------------------------
