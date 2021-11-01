@@ -1,5 +1,25 @@
 # g2-sdk-python
 
+## Synopsis
+
+Senzing Software Development Kit (SDK) for Python.
+Files are located in `src/senzing`.
+
+## Overview
+
+This repository contains the Senzing SDK for Python files in `src/senzing`.
+It also contains:
+
+- Tooling to create Python "wheel" packages
+- Test suites
+- Instructions for publishing to [PyPi](https://pypi.org/).
+
+### Contents
+
+1. [Develop](#develop)
+    1. [Prerequisites for development](#prerequisites-for-development)
+    1. FIXME:
+
 ## Develop
 
 The following instructions are used when modifying and building the Docker image.
@@ -42,7 +62,9 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 
    Output will be in the `dist` directory.
 
-### Install from file
+### Local test
+
+#### Install from file
 
 1. Install using `pip`.
    Example:
@@ -51,7 +73,7 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
     make file-install
     ```
 
-### Test local package
+#### Test local package
 
 1. Run testcases found in `tests` directory.
    Example:
@@ -60,7 +82,7 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
     make test
     ```
 
-### Uninstall local package
+#### Uninstall local package
 
 1. Remove senzing.
    Example:
