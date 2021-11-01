@@ -56,7 +56,10 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
    Example:
 
     ```console
-    pip3 install --index-url https://test.pypi.org/simple/ --no-deps senzing
+    pip3 install \
+      --index-url https://test.pypi.org/simple/ \
+      --no-deps \
+      senzing
     ```
 
 ### Test
