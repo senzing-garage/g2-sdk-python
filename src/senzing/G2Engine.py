@@ -21,7 +21,7 @@ class MyBuffer2(threading.local):
 
 from csv import reader as csvreader
 
-from G2Exception import TranslateG2ModuleException, G2ModuleNotInitialized, G2ModuleGenericException
+from .G2Exception import TranslateG2ModuleException, G2ModuleNotInitialized, G2ModuleGenericException
 
 def resize_return_buffer(buf_, size_):
   """  callback function that resizes return buffer when it is too small
@@ -102,7 +102,7 @@ class G2Engine(object):
     # flags for outputting entity feature data
     G2_ENTITY_INCLUDE_ALL_FEATURES = ( 1 << 10 )
     G2_ENTITY_INCLUDE_REPRESENTATIVE_FEATURES = ( 1 << 11 )
-	
+
     # flags for getting extra information about an entity
     G2_ENTITY_INCLUDE_ENTITY_NAME = ( 1 << 12 )
     G2_ENTITY_INCLUDE_RECORD_SUMMARY = ( 1 << 13 )
@@ -122,7 +122,7 @@ class G2Engine(object):
 
     # flags for finding entity path data
     G2_FIND_PATH_PREFER_EXCLUDE = ( 1 << 25 )
-	
+
     # flag for including search result information
     G2_SEARCH_INCLUDE_FEATURE_SCORES = ( 1 << 26 )
     G2_SEARCH_INCLUDE_STATS = ( 1 << 27 )
@@ -412,7 +412,7 @@ class G2Engine(object):
         This is used to export entity data from known entities.  This function
         returns an export-handle that can be read from to get the export data
         in the requested format.  The export-handle should be read using the "G2_fetchNext"
-        function, and closed when work is complete. 
+        function, and closed when work is complete.
         """
         self._lib_handle.G2_exportJSONEntityReport.restype = c_void_p
         self._lib_handle.G2_exportJSONEntityReport.argtypes = [c_int]
@@ -466,7 +466,7 @@ class G2Engine(object):
             else:
                 resultValue = self._lib_handle.G2_fetchNext(c_void_p(exportHandle),tls_var.buf,sizeof(tls_var.buf))
         return response
-		
+
     def closeExport(self, exportHandle):
         self._lib_handle.G2_closeExport.restype = None
         self._lib_handle.G2_closeExport.argtypes = [c_void_p]
@@ -478,7 +478,7 @@ class G2Engine(object):
         This is used to export entity data from known entities.  This function
         returns an export-handle that can be read from to get the export data
         in the requested format.  The export-handle should be read using the "G2_fetchNext"
-        function, and closed when work is complete. 
+        function, and closed when work is complete.
         """
         self._lib_handle.G2_exportJSONEntityReport_V3.restype = c_int
         self._lib_handle.G2_exportJSONEntityReport_V3.argtypes = [c_int,POINTER(c_void_p)]
@@ -542,7 +542,7 @@ class G2Engine(object):
             else:
                 resultValue = self._lib_handle.G2_fetchNext_V3(c_void_p(exportHandle),tls_var.buf,sizeof(tls_var.buf))
         return response
-		
+
     def closeExportV3(self, exportHandle):
         self._lib_handle.G2_closeExport_V3.restype = c_int
         self._lib_handle.G2_closeExport_V3.argtypes = [c_void_p]
@@ -596,7 +596,7 @@ class G2Engine(object):
                    for the observation.
             loadID: The observation load ID for the record, can be null and will default to dataSourceCode
         """
-   
+
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
         _loadId = self.prepareStringArgument(loadId)
         _recordId = self.prepareStringArgument(recordId)
@@ -620,7 +620,7 @@ class G2Engine(object):
                    for the observation.
             loadID: The observation load ID for the record, can be null and will default to dataSourceCode
         """
-   
+
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
         _jsonData = self.prepareStringArgument(jsonData)
         _loadId = self.prepareStringArgument(loadId)
@@ -648,7 +648,7 @@ class G2Engine(object):
             loadID: The observation load ID for the record, can be null and will default to dataSourceCode
             flags: reserved for future use
         """
-   
+
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
         _loadId = self.prepareStringArgument(loadId)
         _recordId = self.prepareStringArgument(recordId)
@@ -680,7 +680,7 @@ class G2Engine(object):
             loadID: The observation load ID for the record, can be null and will default to dataSourceCode
             flags: reserved for future use
         """
-   
+
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
         _jsonData = self.prepareStringArgument(jsonData)
         _loadId = self.prepareStringArgument(loadId)
@@ -817,7 +817,7 @@ class G2Engine(object):
             recordID: The ID for the record
             flags: Bitwise control flags
         """
-   
+
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
         _recordId = self.prepareStringArgument(recordId)
         ret_code = self._lib_handle.G2_reevaluateRecord(_dataSourceCode,_recordId,flags)
@@ -837,7 +837,7 @@ class G2Engine(object):
             response: json document with modified resolved entities
             flags: Bitwise control flags
         """
-   
+
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
         _recordId = self.prepareStringArgument(recordId)
         response[::]=b''
@@ -862,7 +862,7 @@ class G2Engine(object):
             entityID: The entity ID to reevaluate.
             flags: Bitwise control flags
         """
-   
+
         ret_code = self._lib_handle.G2_reevaluateEntity(entityID,flags)
 
         if ret_code == -1:
@@ -870,13 +870,13 @@ class G2Engine(object):
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
-    
+
     def reevaluateEntityWithInfo(self,entityID,response,flags=0):
         # type: (int,int,str) -> int
         """ Reevaluate the JSON record and return the modified resolved entities
         Args:
             entityID: The entity ID to reevaluate.
-            
+
             response: json document with modified resolved entities
             flags: Bitwise control flags
         """
@@ -1803,7 +1803,7 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
-    
+
     def exportConfig(self,response,configID):
         # type: (bytearray) -> int
         """ Retrieve the G2 engine configuration

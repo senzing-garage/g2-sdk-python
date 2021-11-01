@@ -1,1 +1,1 @@
-__all__ = ["CompressedFile", "DumpStack", "G2ConfigModule", "G2ConfigTables", "G2Database", "G2Exception", "G2Module", "G2Project"]
+__all__ = ["G2Config", "G2ConfigMgr", "G2Diagnostic", "G2Engine", "G2Exception", "G2Hasher", "G2IniParams", "G2Product"]
