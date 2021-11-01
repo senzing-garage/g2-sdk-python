@@ -47,10 +47,10 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 
     ```console
     cd ${GIT_REPOSITORY_DIR}
-    make test-package
+    make test-publish
     ```
 
-### Install
+### Install from test.pypi.org
 
 1. Install using `pip`.
    Example:
@@ -81,11 +81,11 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
    Example:
 
     ```console
-    ls ~/.local/lib/python3.8/site-packages
+    ls ~/.local/lib/python3.8/site-packages | grep senzing
     ```
 
     ```console
-    ls /usr/local/lib/python3.8/dist-packages
+    ls /usr/local/lib/python3.8/dist-packages | grep senzing
     ```
 
 ## References
