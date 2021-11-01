@@ -41,6 +41,34 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
     ```
 
    Output will be in the `dist` directory.
+
+### Install from file
+
+1. Install using `pip`.
+   Example:
+
+    ```console
+    make file-install
+    ```
+
+### Test local package
+
+1. Run testcases found in `tests` directory.
+   Example:
+
+    ```console
+    make test
+    ```
+
+### Uninstall local package
+
+1. Remove senzing.
+   Example:
+
+    ```console
+    pip3 uninstall senzing
+    ```
+
 ### Publish
 
 :warning:  On [PyPi](https://pypi.org/), pip package versions are immmutable.
@@ -80,18 +108,28 @@ be careful on what is published.
 
 ### Uninstall
 
-1. Remove senzing.
+1. Remove Senzing SDK for Python.
    Example:
 
     ```console
     pip3 uninstall senzing
     ```
 
+### Verify Uninstall
+
+
+1. Identify python version.
+   Example:
+
+    ```console
+    export SENZING_PYTHON_VERSION=3.8
+    ```
+
 1. Verify deletion in user python repository.
    Example:
 
     ```console
-    ls ~/.local/lib/python3.8/site-packages | grep senzing
+    ls ~/.local/lib/python${SENZING_PYTHON_VERSION}/site-packages | grep senzing
     ```
 
    Should return nothing.
@@ -100,7 +138,7 @@ be careful on what is published.
    Example:
 
     ```console
-    ls /usr/local/lib/python3.8/dist-packages | grep senzing
+    ls /usr/local/lib/python${SENZING_PYTHON_VERSION}/dist-packages | grep senzing
     ```
 
    Should return nothing.
