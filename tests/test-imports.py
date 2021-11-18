@@ -4,16 +4,19 @@
 # Test importing libraries.
 # -----------------------------------------------------------------------------
 
-
 # ----- Import all - implicitly -----------------------------------------------
 
 from senzing import *
+
+# xx = G2Module.G2Module()
 
 print("Test 1: Success")
 
 # ----- Import all - explicitly -----------------------------------------------
 
 from senzing import G2Exception, G2Module
+
+# xx = G2Module.G2Module("x", "y")
 
 print("Test 2: Success")
 
