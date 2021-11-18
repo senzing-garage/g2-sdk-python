@@ -14,7 +14,7 @@ print("Test 1: Success")
 
 # ----- Import all - explicitly -----------------------------------------------
 
-from senzing import G2Exception, G2Module
+from senzing import G2Audit, G2Config, G2Engine, G2Exception, G2Product
 
 # xx = G2Module.G2Module("x", "y")
 
