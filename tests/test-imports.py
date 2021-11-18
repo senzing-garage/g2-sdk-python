@@ -13,7 +13,7 @@ print("Test 1: Success")
 
 # ----- Import all - explicitly -----------------------------------------------
 
-from senzing import CompressedFile, DumpStack, G2ConfigModule, G2ConfigTables, G2Database, G2Exception, G2Module, G2Project
+from senzing import G2Exception, G2Module
 
 print("Test 2: Success")
 
