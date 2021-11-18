@@ -1,5 +1,25 @@
 # g2-sdk-python
 
+## Synopsis
+
+Senzing Software Development Kit (SDK) for Python.
+Files are located in `src/senzing`.
+
+## Overview
+
+This repository contains the Senzing SDK for Python files in `src/senzing`.
+It also contains:
+
+- Tooling to create Python "wheel" packages
+- Test suites
+- Instructions for publishing to [PyPi](https://pypi.org/).
+
+### Contents
+
+1. [Develop](#develop)
+    1. [Prerequisites for development](#prerequisites-for-development)
+    1. FIXME:
+
 ## Develop
 
 The following instructions are used when modifying and building the Docker image.
@@ -13,6 +33,14 @@ These are "one-time tasks" which may already have been completed.
     1. [git](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-git.md)
     1. [make](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-make.md)
     1. [pip](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-pip.md)
+
+1. Install python tools.
+   Example:
+
+    ```console
+    python3 -m pip install --upgrade build
+    python3 -m pip install --upgrade twine
+    ```
 
 ### Clone repository
 
@@ -40,23 +68,63 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
     make package
     ```
 
-### Publish
+   Output will be in the `dist` directory.
 
-1. Publish to <https://test.pypi.org>.
-   Example:
+### Local test
 
-    ```console
-    cd ${GIT_REPOSITORY_DIR}
-    make test-package
-    ```
-
-### Install
+#### Install from file
 
 1. Install using `pip`.
    Example:
 
     ```console
-    pip3 install --index-url https://test.pypi.org/simple/ --no-deps senzing
+    make file-install
+    ```
+
+#### Test local package
+
+1. Run testcases found in `tests` directory.
+   Example:
+
+    ```console
+    make test
+    ```
+
+#### Uninstall local package
+
+1. Remove senzing.
+   Example:
+
+    ```console
+    pip3 uninstall senzing
+    ```
+
+### Publish
+
+:warning:  On [PyPi](https://pypi.org/), pip package versions are immmutable.
+They cannot be deleted nor updated.
+Since only one instance of a version can be published,
+be careful on what is published.
+
+1. Publish to <https://test.pypi.org>.
+   This is a test PyPi server.
+   Example:
+
+    ```console
+    cd ${GIT_REPOSITORY_DIR}
+    make test-publish
+    ```
+
+### Install from test.pypi.org
+
+1. Install using `pip`.
+   Example:
+
+    ```console
+    pip3 install \
+      --index-url https://test.pypi.org/simple/ \
+      --no-deps \
+      senzing
     ```
 
 ### Test
@@ -70,23 +138,40 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 
 ### Uninstall
 
-1. Remove senzing.
+1. Remove Senzing SDK for Python.
    Example:
 
     ```console
     pip3 uninstall senzing
     ```
 
-1. Verify.
+### Verify Uninstall
+
+
+1. Identify python version.
    Example:
 
     ```console
-    ls ~/.local/lib/python3.8/site-packages
+    export SENZING_PYTHON_VERSION=3.8
     ```
 
+1. Verify deletion in user python repository.
+   Example:
+
     ```console
-    ls /usr/local/lib/python3.8/dist-packages
+    ls ~/.local/lib/python${SENZING_PYTHON_VERSION}/site-packages | grep senzing
     ```
+
+   Should return nothing.
+
+1. Verify deletion in system repository.
+   Example:
+
+    ```console
+    ls /usr/local/lib/python${SENZING_PYTHON_VERSION}/dist-packages | grep senzing
+    ```
+
+   Should return nothing.
 
 ## References
 

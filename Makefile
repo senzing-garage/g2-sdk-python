@@ -25,8 +25,20 @@ package: clean
 # -----------------------------------------------------------------------------
 
 .PHONY: test-publish
-test-publish:
+test-publish: package
 	python3 -m twine upload --repository testpypi dist/*
+
+# -----------------------------------------------------------------------------
+# install
+# -----------------------------------------------------------------------------
+
+.PHONY: file-install
+file-install: package
+	pip3 install --no-index --find-links dist/  senzing
+
+.PHONY: test-install
+test-install:
+	pip3 install --index-url https://test.pypi.org/simple/ --no-deps senzing
 
 # -----------------------------------------------------------------------------
 # test
