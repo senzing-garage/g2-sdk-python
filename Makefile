@@ -34,7 +34,11 @@ test-publish: package
 
 .PHONY: file-install
 file-install: package
-	pip3 install --no-index --find-links dist/  senzing
+	pip3 install \
+		--no-index \
+		--find-links dist/ \
+		--force-reinstall \
+		senzing
 
 .PHONY: test-install
 test-install:
