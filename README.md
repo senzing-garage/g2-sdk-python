@@ -3,11 +3,19 @@
 ## Synopsis
 
 Senzing Software Development Kit (SDK) for Python.
-Files are located in `src/senzing`.
+
+This SDK provide python access to the
+[senzingapi](https://senzing.com/senzing-api/)
+
+More information at
+[github.com/Senzing/g2-sdk-python](https://github.com/Senzing/g2-sdk-python)
 
 ## Overview
 
-This repository contains the Senzing SDK for Python files in `src/senzing`.
+The git repository  at
+[github.com/Senzing/g2-sdk-python](https://github.com/Senzing/g2-sdk-python)
+contains the Senzing SDK for Python files in `src/senzing`.
+
 It also contains:
 
 - Tooling to create Python "wheel" packages
@@ -16,9 +24,31 @@ It also contains:
 
 ### Contents
 
+1. [Install](#install)
 1. [Develop](#develop)
     1. [Prerequisites for development](#prerequisites-for-development)
-    1. FIXME:
+    1. [Clone repository](#clone-repository)
+    1. [Build python packages](#build-python-packages)
+    1. [Local test](#local-test)
+    1. [Publish](#publish)
+    1. [Install from test.pypi.org](#install-from-test.pypi.org)
+    1. [Test](#test)
+    1. [Uninstall](#uninstall)
+    1. [Verify Uninstal](#verify-uninstall)
+1. [References](#references)
+
+## Install
+
+1. Use the [pip install](https://pip.pypa.io/en/stable/cli/pip_install/)
+   command to install the Senzing SDK for Python.
+   Example:
+
+    ```console
+    pip install senzing
+    ```
+
+1. More information at
+   [github.com/Senzing/g2-sdk-python](https://github.com/Senzing/g2-sdk-python)
 
 ## Develop
 
