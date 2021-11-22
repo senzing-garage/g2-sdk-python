@@ -195,7 +195,7 @@ class G2Diagnostic(object):
     def getEntityListBySize(self,entitySize):
         # type: (str,str,int) -> str
         """ Generate a list of resolved entities of a particular size
-
+   
         Args:
             entitySize: The size of the resolved entity (observed entity count)
 
@@ -465,6 +465,6 @@ class G2Diagnostic(object):
         return self._lib_handle.G2Diagnostic_getLastExceptionCode(tls_var.buf, sizeof(tls_var.buf))
 
     def clearLastException(self):
-        self._lib_handle.G2Diagnostic_clearLastException()
+        self._lib_handle.G2Diagnostic_clearLastException()        
 
 

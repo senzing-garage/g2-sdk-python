@@ -243,7 +243,7 @@ class G2Audit(object):
         # type: (str,str,int) -> str
         """ Generate an Audit Report
         This is used to get audit entity data from known entities.
-
+   
         Args:
             fromDataSource: The data source to search for matches
             toDataSource: The data source to compare against
@@ -316,6 +316,6 @@ class G2Audit(object):
         return self._lib_handle.G2Audit_getLastExceptionCode(tls_var.buf, sizeof(tls_var.buf))
 
     def clearLastException(self):
-        self._lib_handle.G2Audit_clearLastException()
+        self._lib_handle.G2Audit_clearLastException()        
 
 
