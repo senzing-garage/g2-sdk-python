@@ -220,6 +220,6 @@ class G2Config(object):
         return self._lib_handle.G2Config_getLastExceptionCode(tls_var.buf, sizeof(tls_var.buf))
 
     def clearLastException(self):
-        self._lib_handle.G2Config_clearLastException()
+        self._lib_handle.G2Config_clearLastException()        
 
 

@@ -188,6 +188,6 @@ class G2Product(object):
         return self._lib_handle.G2Product_getLastExceptionCode(tls_var.buf, sizeof(tls_var.buf))
 
     def clearLastException(self):
-        self._lib_handle.G2Product_clearLastException()
+        self._lib_handle.G2Product_clearLastException()        
 
 
