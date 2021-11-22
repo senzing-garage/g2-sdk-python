@@ -10,6 +10,7 @@ from senzing import *
 
 # g2_audit = G2Audit.G2Audit()
 # g2_config = G2Config.G2Config()
+g2_diagnostic = G2Diagnostic.G2Diagnostic()
 # g2_engine = G2Engine.G2Engine()
 # g2_product = G2Product.G2Product()
 
@@ -17,10 +18,11 @@ print("Test 1: Success")
 
 # ----- Import all - explicitly -----------------------------------------------
 
-from senzing import G2Audit, G2Config, G2Engine, G2Exception, G2Product
+from senzing import G2Audit, G2Config, G2Diagnostic, G2Engine, G2Exception, G2Product
 
 # g2_audit = G2Audit.G2Audit()
 # g2_config = G2Config.G2Config()
+g2_diagnostic = G2Diagnostic.G2Diagnostic()
 # g2_engine = G2Engine.G2Engine()
 # g2_product = G2Product.G2Product()
 
