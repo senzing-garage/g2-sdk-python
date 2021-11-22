@@ -22,7 +22,7 @@ from senzing import G2Audit, G2Config, G2Diagnostic, G2Engine, G2Exception, G2Pr
 
 # g2_audit = G2Audit.G2Audit()
 # g2_config = G2Config.G2Config()
-g2_diagnostic = G2Diagnostic.G2Diagnostic()
+# g2_diagnostic = G2Diagnostic.G2Diagnostic()
 # g2_engine = G2Engine.G2Engine()
 # g2_product = G2Product.G2Product()
 
