@@ -8,7 +8,6 @@
 
 from senzing import *
 
-# g2_audit = G2Audit.G2Audit()
 # g2_config = G2Config.G2Config()
 # g2_config_mgr = G2ConfigMgr.G2ConfigMgr()
 # g2_diagnostic = G2Diagnostic.G2Diagnostic()
@@ -21,9 +20,8 @@ print("Test 1: Success")
 
 # ----- Import all - explicitly -----------------------------------------------
 
-from senzing import G2Audit, G2Config, G2ConfigMgr, G2Diagnostic, G2Engine, G2Exception, G2Hasher, G2IniParams, G2Product
+from senzing import G2Config, G2ConfigMgr, G2Diagnostic, G2Engine, G2Exception, G2Hasher, G2IniParams, G2Product
 
-# g2_audit = G2Audit.G2Audit()
 # g2_config = G2Config.G2Config()
 # g2_config_mgr = G2ConfigMgr.G2ConfigMgr()
 # g2_diagnostic = G2Diagnostic.G2Diagnostic()
