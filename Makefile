@@ -28,6 +28,10 @@ package: clean
 test-publish: package
 	python3 -m twine upload --repository testpypi dist/*
 
+.PHONY: publish
+publish: package
+    python3 -m twine upload dist/*	
+	
 # -----------------------------------------------------------------------------
 # install
 # -----------------------------------------------------------------------------
