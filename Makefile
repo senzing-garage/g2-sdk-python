@@ -28,9 +28,9 @@ package: clean
 test-publish: package
 	python3 -m twine upload --repository testpypi dist/*
 
-.PHONY: publish
-publish: package
-    python3 -m twine upload dist/*	
+.PHONY: publish-signed
+publish-signed: package
+    python3 -m twine upload --sign --identity "Senzing, Inc." dist/*	
 	
 # -----------------------------------------------------------------------------
 # install
