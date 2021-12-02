@@ -68,8 +68,16 @@ These are "one-time tasks" which may already have been completed.
    Example:
 
     ```console
-    python3 -m pip install --upgrade build
-    python3 -m pip install --upgrade twine
+    python3 -m pip install --upgrade pip setuptools wheel build twine
+    ```
+
+1. :pencil2: Make a `~/.pypirc` file.
+   Example:
+
+    ```console
+    [pypi]
+      username = __token__
+      password = pypi-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
     ```
 
 ### Clone repository
