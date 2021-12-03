@@ -96,7 +96,7 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 
 ### Install dependencies
 
-1. Install python tools.
+1. Install python tools via `Makefile`.
    Example:
 
     ```console
@@ -106,7 +106,7 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 
 ### Build python packages
 
-1. Build pip package using `python3 -m build`.
+1. Build pip package using `python3 -m build` via `Makefile`.
    Example:
 
     ```console
