@@ -120,7 +120,7 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
    Example:
 
     ```console
-    make file-install
+    make install-file
     ```
 
 #### Test local package
@@ -158,7 +158,7 @@ be careful on what is published.
 
     ```console
     cd ${GIT_REPOSITORY_DIR}
-    make test-publish
+    make publish-test
     ```
 
 #### Publish to pypi.org
