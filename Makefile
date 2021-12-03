@@ -79,7 +79,7 @@ test:
 
 .PHONY: uninstall
 uninstall:
-	pip3 uninstall senzing
+	pip3 uninstall -y senzing
 	
 # -----------------------------------------------------------------------------
 # Clean up targets
