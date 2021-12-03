@@ -68,7 +68,7 @@ These are "one-time tasks" which may already have been completed.
    Example:
 
     ```console
-    python3 -m pip install --upgrade pip setuptools wheel build twine
+    make install-dependencies
     ```
 
 1. :pencil2: Make a `~/.pypirc` file.

@@ -40,6 +40,16 @@ publish-signed: package
 install:
 	pip3 install senzing
 	
+.PHONY: install-dependencies
+install-dependencies:
+	python3 -m pip install \
+		--upgrade \
+			build \
+			pip \
+			setuptools \
+			twine \
+			wheel
+	
 .PHONY: install-file
 install-file: package
 	pip3 install \
