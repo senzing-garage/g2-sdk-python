@@ -24,25 +24,46 @@ package: clean
 # publish
 # -----------------------------------------------------------------------------
 
-.PHONY: test-publish
-test-publish: package
+.PHONY: publish-test
+publish-test: package
 	python3 -m twine upload --repository testpypi dist/*
 
+.PHONY: publish-signed
+publish-signed: package
+	python3 -m twine upload --sign --identity "Senzing, Inc." dist/*	
+	
 # -----------------------------------------------------------------------------
 # install
 # -----------------------------------------------------------------------------
 
-.PHONY: file-install
-file-install: package
+.PHONY: install
+install:
+	pip3 install senzing
+	
+.PHONY: install-dependencies
+install-dependencies:
+	python3 -m pip install \
+		--upgrade \
+			build \
+			pip \
+			setuptools \
+			twine \
+			wheel
+	
+.PHONY: install-file
+install-file: package
 	pip3 install \
 		--no-index \
 		--find-links dist/ \
 		--force-reinstall \
 		senzing
-
-.PHONY: test-install
-test-install:
-	pip3 install --index-url https://test.pypi.org/simple/ --no-deps senzing
+	
+.PHONY: install-test
+install-test:
+	pip3 install \
+		--index-url https://test.pypi.org/simple/ \
+		--no-deps \
+		senzing	
 
 # -----------------------------------------------------------------------------
 # test
@@ -52,6 +73,14 @@ test-install:
 test:
 	tests/test-imports.py
 
+# -----------------------------------------------------------------------------
+# uninstall
+# -----------------------------------------------------------------------------
+
+.PHONY: uninstall
+uninstall:
+	pip3 uninstall -y senzing
+	
 # -----------------------------------------------------------------------------
 # Clean up targets
 # -----------------------------------------------------------------------------

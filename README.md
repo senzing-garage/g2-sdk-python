@@ -28,10 +28,10 @@ It also contains:
 1. [Develop](#develop)
     1. [Prerequisites for development](#prerequisites-for-development)
     1. [Clone repository](#clone-repository)
+    1. [Install dependencies](#install-dependencies)
     1. [Build python packages](#build-python-packages)
     1. [Local test](#local-test)
     1. [Publish](#publish)
-    1. [Install from test.pypi.org](#install-from-test.pypi.org)
     1. [Test](#test)
     1. [Uninstall](#uninstall)
     1. [Verify Uninstal](#verify-uninstall)
@@ -40,7 +40,8 @@ It also contains:
 ## Install
 
 1. Use the [pip install](https://pip.pypa.io/en/stable/cli/pip_install/)
-   command to install the Senzing SDK for Python.
+   command to install the
+   [Senzing SDK for Python](https://pypi.org/project/senzing/).
    Example:
 
     ```console
@@ -64,12 +65,17 @@ These are "one-time tasks" which may already have been completed.
     1. [make](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-make.md)
     1. [pip](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-pip.md)
 
-1. Install python tools.
+1. :pencil2: Make a `~/.pypirc` file.
    Example:
 
     ```console
-    python3 -m pip install --upgrade build
-    python3 -m pip install --upgrade twine
+    [pypi]
+      username = __token__
+      password = pypi-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+    [testpypi]
+      username = __token__
+      password = pypi-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
     ```
 
 ### Clone repository
@@ -88,9 +94,19 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 
 1. Using the environment variables values just set, follow steps in [clone-repository](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/clone-repository.md) to install the Git repository.
 
+### Install dependencies
+
+1. Install python tools via `Makefile`.
+   Example:
+
+    ```console
+    cd ${GIT_REPOSITORY_DIR}
+    make install-dependencies
+    ```
+
 ### Build python packages
 
-1. Build pip package using `python3 -m build`.
+1. Build pip package using `python3 -m build` via `Makefile`.
    Example:
 
     ```console
@@ -104,11 +120,12 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 
 #### Install from file
 
-1. Install using `pip`.
+1. Install using `pip` via `Makefile`.
    Example:
 
     ```console
-    make file-install
+    cd ${GIT_REPOSITORY_DIR}
+    make install-file
     ```
 
 #### Test local package
@@ -117,6 +134,7 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
    Example:
 
     ```console
+    cd ${GIT_REPOSITORY_DIR}
     make test
     ```
 
@@ -126,15 +144,20 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
    Example:
 
     ```console
-    pip3 uninstall senzing
+    cd ${GIT_REPOSITORY_DIR}
+    make uninstall
     ```
 
 ### Publish
 
-:warning:  On [PyPi](https://pypi.org/), pip package versions are immmutable.
+:warning:  On [PyPi](https://pypi.org/) and
+[test.pypi](https://test.pypi.org/),
+pip package versions are immmutable.
 They cannot be deleted nor updated.
 Since only one instance of a version can be published,
 be careful on what is published.
+
+#### Publish to test.pypi.org
 
 1. Publish to <https://test.pypi.org>.
    This is a test PyPi server.
@@ -142,27 +165,50 @@ be careful on what is published.
 
     ```console
     cd ${GIT_REPOSITORY_DIR}
-    make test-publish
+    make publish-test
     ```
 
-### Install from test.pypi.org
+#### Publish to pypi.org
 
-1. Install using `pip`.
+1. Publish to <https://pypi.org>.
+   :warning: This requires that the workstation has `gpg` enabled with
+   the signing key for "Senzing, Inc."
    Example:
 
     ```console
-    pip3 install \
-      --index-url https://test.pypi.org/simple/ \
-      --no-deps \
-      senzing
+    cd ${GIT_REPOSITORY_DIR}
+    make publish-signed
     ```
 
 ### Test
+
+#### Install from test.pypi.org
+
+1. Install using `pip` via `Makefile`.
+   Example:
+
+    ```console
+    cd ${GIT_REPOSITORY_DIR}
+    make install-test
+    ```
+
+#### Install from pypi.org
+
+1. Install using `pip` via `Makefile`.
+   Example:
+
+    ```console
+    cd ${GIT_REPOSITORY_DIR}
+    make install
+    ```
+
+#### Unit tests
 
 1. Run testcases found in `tests` directory.
    Example:
 
     ```console
+    cd ${GIT_REPOSITORY_DIR}
     make test
     ```
 
@@ -172,13 +218,13 @@ be careful on what is published.
    Example:
 
     ```console
-    pip3 uninstall senzing
+    cd ${GIT_REPOSITORY_DIR}
+    make uninstall
     ```
 
 ### Verify Uninstall
 
-
-1. Identify python version.
+1. :pencil2: Identify python version.
    Example:
 
     ```console
