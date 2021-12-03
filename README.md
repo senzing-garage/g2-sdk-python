@@ -40,7 +40,8 @@ It also contains:
 ## Install
 
 1. Use the [pip install](https://pip.pypa.io/en/stable/cli/pip_install/)
-   command to install the Senzing SDK for Python.
+   command to install the
+   [Senzing SDK for Python](https://pypi.org/project/senzing/).
    Example:
 
     ```console
@@ -78,6 +79,10 @@ These are "one-time tasks" which may already have been completed.
     [pypi]
       username = __token__
       password = pypi-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+    [testpypi]
+      username = __token__
+      password = pypi-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
     ```
 
 ### Clone repository
@@ -144,6 +149,8 @@ They cannot be deleted nor updated.
 Since only one instance of a version can be published,
 be careful on what is published.
 
+#### Publish to test.pypi.org
+
 1. Publish to <https://test.pypi.org>.
    This is a test PyPi server.
    Example:
@@ -153,7 +160,20 @@ be careful on what is published.
     make test-publish
     ```
 
-### Install from test.pypi.org
+#### Publish to pypi.org
+
+1. Publish to <https://pypi.org>.
+   :warning: This requires that the workstation has the signing key for "Senzing, Inc."
+   Example:
+
+    ```console
+    cd ${GIT_REPOSITORY_DIR}
+    make publish-signed
+    ```
+
+### Test
+
+#### Install from test.pypi.org
 
 1. Install using `pip`.
    Example:
@@ -165,7 +185,16 @@ be careful on what is published.
       senzing
     ```
 
-### Test
+#### Install from pypi.org
+
+1. Install using `pip`.
+   Example:
+
+    ```console
+    pip3 install senzing
+    ```
+
+#### Unit tests
 
 1. Run testcases found in `tests` directory.
    Example:
@@ -184,7 +213,6 @@ be careful on what is published.
     ```
 
 ### Verify Uninstall
-
 
 1. Identify python version.
    Example:
