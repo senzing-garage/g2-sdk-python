@@ -31,7 +31,6 @@ It also contains:
     1. [Build python packages](#build-python-packages)
     1. [Local test](#local-test)
     1. [Publish](#publish)
-    1. [Install from test.pypi.org](#install-from-test.pypi.org)
     1. [Test](#test)
     1. [Uninstall](#uninstall)
     1. [Verify Uninstal](#verify-uninstall)
@@ -117,7 +116,7 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 
 #### Install from file
 
-1. Install using `pip`.
+1. Install using `pip` via `Makefile`.
    Example:
 
     ```console
@@ -144,7 +143,9 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 
 ### Publish
 
-:warning:  On [PyPi](https://pypi.org/), pip package versions are immmutable.
+:warning:  On [PyPi](https://pypi.org/) and
+[test.pypi](https://test.pypi.org/),
+pip package versions are immmutable.
 They cannot be deleted nor updated.
 Since only one instance of a version can be published,
 be careful on what is published.
@@ -163,7 +164,8 @@ be careful on what is published.
 #### Publish to pypi.org
 
 1. Publish to <https://pypi.org>.
-   :warning: This requires that the workstation has the signing key for "Senzing, Inc."
+   :warning: This requires that the workstation has `gpg` enabled with
+   the signing key for "Senzing, Inc."
    Example:
 
     ```console
