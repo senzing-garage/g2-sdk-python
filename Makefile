@@ -50,7 +50,10 @@ install-file: package
 	
 .PHONY: install-test
 install-test:
-	pip3 install --index-url https://test.pypi.org/simple/ --no-deps senzing	
+	pip3 install \
+		--index-url https://test.pypi.org/simple/ \
+		--no-deps \
+		senzing	
 
 # -----------------------------------------------------------------------------
 # test

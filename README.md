@@ -138,7 +138,7 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
    Example:
 
     ```console
-    pip3 uninstall senzing
+    make uninstall
     ```
 
 ### Publish
@@ -177,23 +177,20 @@ be careful on what is published.
 
 #### Install from test.pypi.org
 
-1. Install using `pip`.
+1. Install using `pip` via `Makefile`.
    Example:
 
     ```console
-    pip3 install \
-      --index-url https://test.pypi.org/simple/ \
-      --no-deps \
-      senzing
+    make install-test
     ```
 
 #### Install from pypi.org
 
-1. Install using `pip`.
+1. Install using `pip` via `Makefile`.
    Example:
 
     ```console
-    pip3 install senzing
+    make install
     ```
 
 #### Unit tests
@@ -211,7 +208,7 @@ be careful on what is published.
    Example:
 
     ```console
-    pip3 uninstall senzing
+    make uninstall
     ```
 
 ### Verify Uninstall
