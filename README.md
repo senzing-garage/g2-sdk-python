@@ -224,7 +224,7 @@ be careful on what is published.
 
 ### Verify Uninstall
 
-1. Identify python version.
+1. :pencil2: Identify python version.
    Example:
 
     ```console
