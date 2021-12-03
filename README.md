@@ -28,6 +28,7 @@ It also contains:
 1. [Develop](#develop)
     1. [Prerequisites for development](#prerequisites-for-development)
     1. [Clone repository](#clone-repository)
+    1. [Install dependencies](#install-dependencies)
     1. [Build python packages](#build-python-packages)
     1. [Local test](#local-test)
     1. [Publish](#publish)
@@ -64,13 +65,6 @@ These are "one-time tasks" which may already have been completed.
     1. [make](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-make.md)
     1. [pip](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-pip.md)
 
-1. Install python tools.
-   Example:
-
-    ```console
-    make install-dependencies
-    ```
-
 1. :pencil2: Make a `~/.pypirc` file.
    Example:
 
@@ -100,6 +94,16 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
 
 1. Using the environment variables values just set, follow steps in [clone-repository](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/clone-repository.md) to install the Git repository.
 
+### Install dependencies
+
+1. Install python tools.
+   Example:
+
+    ```console
+    cd ${GIT_REPOSITORY_DIR}
+    make install-dependencies
+    ```
+
 ### Build python packages
 
 1. Build pip package using `python3 -m build`.
@@ -120,6 +124,7 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
    Example:
 
     ```console
+    cd ${GIT_REPOSITORY_DIR}
     make install-file
     ```
 
@@ -129,6 +134,7 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
    Example:
 
     ```console
+    cd ${GIT_REPOSITORY_DIR}
     make test
     ```
 
@@ -138,6 +144,7 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
    Example:
 
     ```console
+    cd ${GIT_REPOSITORY_DIR}
     make uninstall
     ```
 
@@ -181,6 +188,7 @@ be careful on what is published.
    Example:
 
     ```console
+    cd ${GIT_REPOSITORY_DIR}
     make install-test
     ```
 
@@ -190,6 +198,7 @@ be careful on what is published.
    Example:
 
     ```console
+    cd ${GIT_REPOSITORY_DIR}
     make install
     ```
 
@@ -199,6 +208,7 @@ be careful on what is published.
    Example:
 
     ```console
+    cd ${GIT_REPOSITORY_DIR}
     make test
     ```
 
@@ -208,6 +218,7 @@ be careful on what is published.
    Example:
 
     ```console
+    cd ${GIT_REPOSITORY_DIR}
     make uninstall
     ```
 
