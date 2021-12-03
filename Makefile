@@ -30,7 +30,7 @@ test-publish: package
 
 .PHONY: publish-signed
 publish-signed: package
-    python3 -m twine upload --sign --identity "Senzing, Inc." dist/*	
+	python3 -m twine upload --sign --identity "Senzing, Inc." dist/*	
 	
 # -----------------------------------------------------------------------------
 # install
