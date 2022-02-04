@@ -21,10 +21,10 @@ class G2IniParams:
         iniParser.read(iniFileName)
 
         paramDict = {}
-        for groupName in iniParser.sections():  
+        for groupName in iniParser.sections():
             normalizedGroupName = groupName.upper()
             paramDict[normalizedGroupName] = {}
-            for varName in iniParser[groupName]:  
+            for varName in iniParser[groupName]:
                 normalizedVarName = varName.upper()
                 paramDict[normalizedGroupName][normalizedVarName] = iniParser[groupName][varName]
 
@@ -39,10 +39,10 @@ class G2IniParams:
         iniParser.read(iniFileName)
 
         paramDict = {}
-        for groupName in iniParser.sections():  
+        for groupName in iniParser.sections():
             normalizedGroupName = groupName.upper()
             paramDict[normalizedGroupName] = {}
-            for varName in iniParser[groupName]:  
+            for varName in iniParser[groupName]:
                 normalizedVarName = varName.upper()
                 paramDict[normalizedGroupName][normalizedVarName] = iniParser[groupName][varName]
 
@@ -62,10 +62,10 @@ class G2IniParams:
         iniParser.read(iniFileName)
 
         paramDict = {}
-        for groupName in iniParser.sections():  
+        for groupName in iniParser.sections():
             normalizedGroupName = groupName.upper()
             paramDict[normalizedGroupName] = {}
-            for varName in iniParser[groupName]:  
+            for varName in iniParser[groupName]:
                 normalizedVarName = varName.upper()
                 paramDict[normalizedGroupName][normalizedVarName] = iniParser[groupName][varName]
 
