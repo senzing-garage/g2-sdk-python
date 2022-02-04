@@ -11,7 +11,7 @@ class MyBuffer(threading.local):
 
 tls_var = MyBuffer()
 
-from .G2Exception import TranslateG2ModuleException, G2ModuleNotInitialized, G2ModuleGenericException
+from G2Exception import TranslateG2ModuleException, G2ModuleNotInitialized, G2ModuleGenericException
 
 def resize_return_buffer(buf_, size_):
   """  callback function that resizes return buffer when it is too small
