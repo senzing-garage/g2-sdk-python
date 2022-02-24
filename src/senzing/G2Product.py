@@ -5,7 +5,7 @@ import os
 import functools
 import warnings
 
-__all__ = [G2Product]
+__all__ = ['G2Product']
 
 class MyBuffer(threading.local):
   def __init__(self):

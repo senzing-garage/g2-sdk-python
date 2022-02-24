@@ -7,7 +7,7 @@ import json
 import os
 from shutil import copyfile
 
-__all__ = [G2IniParams]
+__all__ = ['G2IniParams']
 
 #--project classes
 
