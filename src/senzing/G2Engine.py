@@ -523,8 +523,8 @@ class G2Engine(object):
         """ Internal processing function """
 
         #handle null string
-        if stringToPrepare == None:
-            return None
+        if stringToPrepare is None:
+            return b''
         #if string is unicode, transcode to utf-8 str
         if type(stringToPrepare) == str:
             return stringToPrepare.encode('utf-8')
@@ -542,8 +542,8 @@ class G2Engine(object):
         """ This converts many types of values to an integer """
 
         #handle null string
-        if valueToPrepare == None:
-            return None
+        if valueToPrepare is None:
+            return 0
         #if string is unicode, transcode to utf-8 str
         if type(valueToPrepare) == str:
             return int(valueToPrepare.encode('utf-8'))
@@ -570,7 +570,8 @@ class G2Engine(object):
         _loadId = self.prepareStringArgument(loadId)
         _recordId = self.prepareStringArgument(recordId)
         _jsonData = self.prepareStringArgument(jsonData)
-        self._lib_handle.G2_addRecord.argtypes = [c_char_p, c_char_p, c_char_p]
+        self._lib_handle.G2_addRecord.restype = c_int
+        self._lib_handle.G2_addRecord.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p]
         ret_code = self._lib_handle.G2_addRecord(_dataSourceCode,_recordId,_jsonData,_loadId)
 
         if ret_code == -1:

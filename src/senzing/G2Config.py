@@ -120,8 +120,8 @@ class G2Config(object):
         """ Internal processing function """
 
         #handle null string
-        if stringToPrepare == None:
-            return None
+        if stringToPrepare is None:
+            return b''
         #if string is unicode, transcode to utf-8 str
         if type(stringToPrepare) == str:
             return stringToPrepare.encode('utf-8')

@@ -170,8 +170,8 @@ class G2Diagnostic(object):
         """ Internal processing function """
 
         #handle null string
-        if stringToPrepare == None:
-            return None
+        if stringToPrepare is None:
+            return b''
         #if string is unicode, transcode to utf-8 str
         if type(stringToPrepare) == str:
             return stringToPrepare.encode('utf-8')
@@ -189,8 +189,8 @@ class G2Diagnostic(object):
         """ This converts many types of values to an integer """
 
         #handle null string
-        if valueToPrepare == None:
-            return None
+        if valueToPrepare is None:
+            return 0
         #if string is unicode, transcode to utf-8 str
         if type(valueToPrepare) == str:
             return int(valueToPrepare.encode('utf-8'))
