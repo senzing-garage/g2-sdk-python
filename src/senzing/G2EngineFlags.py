@@ -1,6 +1,6 @@
 from enum import IntFlag
 
-__all__ = ['G2EngineFlags', 'G2_EXPORT_INCLUDE_RESOLVED']
+__all__ = ['G2EngineFlags']
 
 class G2EngineFlags(IntFlag):
 
