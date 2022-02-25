@@ -9,16 +9,20 @@
 
 from . import G2Config, G2ConfigMgr, G2Diagnostic, G2Engine, G2Exception, G2Hasher, G2IniParams, G2Product
 
-__all__ = [
-    G2Config.__all__ +
-    G2ConfigMgr.__all__ +
-    G2Diagnostic.__all__ +
-    G2Engine.__all__ +
-    G2Exception.__all__ +
-    G2Hasher.__all__ +
-    G2IniParams.__all__ +
+import_lists = [
+    G2Config.__all__,
+    G2ConfigMgr.__all__,
+    G2Diagnostic.__all__,
+    G2Engine.__all__,
+    G2Exception.__all__,
+    G2Hasher.__all__,
+    G2IniParams.__all__,
     G2Product.__all__
 ]
+
+__all__ = []
+for import_list in import_lists:
+    __all__.extend(import_list)
 
 # Step 2: Overwrite the "name" that did point to the file in step #1 to now point to the class.
 # Each of the submodules must have the having an __all__ variable defined for the "*" to work.
