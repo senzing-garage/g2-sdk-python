@@ -89,6 +89,34 @@ class TestEnumMethods(unittest.TestCase):
 
         self.assertEqual(result, G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_ALL)
 
+    def test_flag_add_values(self):
+        '''Test that the "addition" works.'''
+
+        # Create a list of strings that are names of enum members that add up to 7.
+
+        strings = {
+            "G2_EXPORT_INCLUDE_RESOLVED",
+            "G2_EXPORT_INCLUDE_POSSIBLY_SAME",
+            "G2_EXPORT_INCLUDE_POSSIBLY_RELATED"
+        }
+
+        # Bitwise "or" list of strings.
+
+        result = 0
+        for string in strings:
+            result = result | G2EngineFlags[string]
+
+        self.assertEqual(result, 7)
+
+
+    def test_print_enums(self):
+        '''Test that the "addition" works.'''
+
+        print()
+        for g2_engine_flag in G2EngineFlags:
+            print("name: {0} value: {1}". format(g2_engine_flag.name, g2_engine_flag.value))
+
+
 
 if __name__ == '__main__':
     unittest.main()
