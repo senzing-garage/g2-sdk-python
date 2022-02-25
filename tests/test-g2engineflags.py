@@ -108,14 +108,12 @@ class TestEnumMethods(unittest.TestCase):
 
         self.assertEqual(result, 7)
 
-
     def test_print_enums(self):
         '''Test that the "addition" works.'''
 
         print()
         for g2_engine_flag in G2EngineFlags:
             print("name: {0} value: {1}". format(g2_engine_flag.name, g2_engine_flag.value))
-
 
 
 if __name__ == '__main__':
