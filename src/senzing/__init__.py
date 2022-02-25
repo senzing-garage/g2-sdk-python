@@ -12,8 +12,7 @@ from .G2Product import *
 
 # Aggregate all of the submodules into the single package.
 
-__all__ = (
-    G2Config.__all__ +
+__all__ = [G2Config.__all__ +
     G2ConfigMgr._all__ +
     G2Diagnostic.__all__ +
     G2Engine.__all__ +
@@ -21,4 +20,4 @@ __all__ = (
     G2Hasher.__all__ +
     G2IniParams.__all__ +
     G2Product.__all__
-    )
+    ]
