@@ -76,7 +76,6 @@ def resize_return_buffer3(buf_, size_):
 
 SENZING_PRODUCT_ID = "5027"  # See https://github.com/Senzing/knowledge-base/blob/master/lists/senzing-product-ids.md
 
-
 def deprecated(instance):
     def the_decorator(func):
         @functools.wraps(func)
