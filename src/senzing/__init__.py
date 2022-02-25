@@ -1,5 +1,3 @@
-# Each of the submodules must have the having an __all__ variable defined for the "*" to work.
-
 # Tricky code:
 # Because the filenames are the same as class names in many instances,
 # the __all__ list needs to be constructed from the files before the
@@ -23,6 +21,7 @@ __all__ = [
 ]
 
 # Step 2: Overwrite the "name" that did point to the file in step #1 to now point to the class.
+# Each of the submodules must have the having an __all__ variable defined for the "*" to work.
 
 from .G2Config import *
 from .G2ConfigMgr import *
