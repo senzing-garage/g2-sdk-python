@@ -8,13 +8,16 @@
 
 from senzing import *
 
-# g2_config = G2Config.G2Config()
-# g2_config_mgr = G2ConfigMgr.G2ConfigMgr()
-# g2_diagnostic = G2Diagnostic.G2Diagnostic()
-# g2_engine = G2Engine.G2Engine()
-g2_hasher = G2Hasher.G2Hasher()
-g2_ini_params = G2IniParams.G2IniParams()
-# g2_product = G2Product.G2Product()
+# g2_config = G2Config()
+# g2_config_mgr = G2ConfigMgr()
+# g2_diagnostic = G2Diagnostic()
+# g2_engine = G2Engine()
+g2_hasher = G2Hasher()
+g2_ini_params = G2IniParams()
+# g2_product = G2Product()
+
+an_exception_class = G2InvalidFileTypeContentsException
+an_exception_object = G2InvalidFileTypeContentsException()
 
 print("Test 1: Success")
 
@@ -22,13 +25,13 @@ print("Test 1: Success")
 
 from senzing import G2Config, G2ConfigMgr, G2Diagnostic, G2Engine, G2Exception, G2Hasher, G2IniParams, G2Product
 
-# g2_config = G2Config.G2Config()
-# g2_config_mgr = G2ConfigMgr.G2ConfigMgr()
-# g2_diagnostic = G2Diagnostic.G2Diagnostic()
-# g2_engine = G2Engine.G2Engine()
-g2_hasher = G2Hasher.G2Hasher()
-g2_ini_params = G2IniParams.G2IniParams()
-# g2_product = G2Product.G2Product()
+# g2_config = G2Config()
+# g2_config_mgr = G2ConfigMgr()
+# g2_diagnostic = G2Diagnostic()
+# g2_engine = G2Engine()
+g2_hasher = G2Hasher()
+g2_ini_params = G2IniParams()
+# g2_product = G2Product()
 
 print("Test 2: Success")
 
