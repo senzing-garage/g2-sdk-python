@@ -89,6 +89,94 @@ class TestEnumMethods(unittest.TestCase):
 
         self.assertEqual(result, G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_ALL)
 
+    def test_or_by_list(self):
+        '''Test that the "addition" works.'''
+
+        # Create a list of strings that are names of enum members.
+
+        strings = [
+            "G2_SEARCH_INCLUDE_ALL_ENTITIES",
+            "G2_ENTITY_INCLUDE_REPRESENTATIVE_FEATURES",
+            "G2_ENTITY_INCLUDE_ENTITY_NAME",
+            "G2_ENTITY_INCLUDE_RECORD_SUMMARY",
+            "G2_SEARCH_INCLUDE_FEATURE_SCORES"
+        ]
+
+        # Bitwise "or" list of strings.
+
+        result = G2EngineFlags.combine_flags(strings)
+
+        # Perform tests.
+
+        self.assertEqual(result, G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_ALL)
+
+    def test_or_by_dict(self):
+        '''Test that the "addition" works.'''
+
+        # Create a list of strings that are names of enum members.
+
+        strings = {
+            "G2_SEARCH_INCLUDE_ALL_ENTITIES",
+            "G2_ENTITY_INCLUDE_REPRESENTATIVE_FEATURES",
+            "G2_ENTITY_INCLUDE_ENTITY_NAME",
+            "G2_ENTITY_INCLUDE_RECORD_SUMMARY",
+            "G2_SEARCH_INCLUDE_FEATURE_SCORES"
+        }
+
+        # Bitwise "or" list of strings.
+
+        result = G2EngineFlags.combine_flags(strings)
+
+        # Perform tests.
+
+        self.assertEqual(result, G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_ALL)
+
+    def test_or_by_set(self):
+        '''Test that the "addition" works.'''
+
+        # Create a list of strings that are names of enum members.
+
+        strings = (
+            "G2_SEARCH_INCLUDE_ALL_ENTITIES",
+            "G2_ENTITY_INCLUDE_REPRESENTATIVE_FEATURES",
+            "G2_ENTITY_INCLUDE_ENTITY_NAME",
+            "G2_ENTITY_INCLUDE_RECORD_SUMMARY",
+            "G2_SEARCH_INCLUDE_FEATURE_SCORES"
+        )
+
+        # Bitwise "or" list of strings.
+
+        result = G2EngineFlags.combine_flags(strings)
+
+        # Perform tests.
+
+        self.assertEqual(result, G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_ALL)
+
+    def test_or_by_list_alias(self):
+        '''Test that the "addition" works.'''
+
+        # Create a list of strings that are names of enum members.
+
+        strings = (
+            "G2_SEARCH_INCLUDE_ALL_ENTITIES",
+            "G2_ENTITY_INCLUDE_REPRESENTATIVE_FEATURES",
+            "G2_ENTITY_INCLUDE_ENTITY_NAME",
+            "G2_ENTITY_INCLUDE_RECORD_SUMMARY",
+            "G2_SEARCH_INCLUDE_FEATURE_SCORES"
+        )
+
+        # Dynamically add a method to the G2EngineFlags.
+
+        setattr(G2EngineFlags, 'computeApiFlags', G2EngineFlags.combine_flags)
+
+        # Bitwise "or" list of strings.
+
+        result = G2EngineFlags.computeApiFlags(strings)
+
+        # Perform tests.
+
+        self.assertEqual(result, G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_ALL)
+
     def test_flag_add_values(self):
         '''Test that the "addition" works.'''
 
