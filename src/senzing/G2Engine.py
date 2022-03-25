@@ -815,6 +815,9 @@ class G2Engine(object):
         response += tls_var.buf.value
 
     def searchByAttributesV2(self, jsonData, flags, response):
+        self.searchByAttributes(jsonData, flags, response)
+
+    def searchByAttributesV2(self, jsonData, flags, response):
         # type: (str,bytearray) -> int
         """ Find records matching the provided attributes
         Args:
