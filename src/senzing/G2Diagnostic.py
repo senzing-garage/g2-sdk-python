@@ -4,49 +4,53 @@ import json
 import os
 import functools
 import warnings
-
-__all__ = ['G2Diagnostic']
-
-class MyBuffer(threading.local):
-  def __init__(self):
-    self.buf = create_string_buffer(65535)
-    self.bufSize = sizeof(self.buf)
-    #print("Created new Buffer {}".format(self.buf))
-
-tls_var = MyBuffer()
-
 from csv import reader as csvreader
 
 from .G2Exception import TranslateG2ModuleException, G2ModuleNotInitialized, G2ModuleGenericException
 
-def resize_return_buffer(buf_, size_):
-  """  callback function that resizes return buffer when it is too small
-  Args:
-  size_: size the return buffer needs to be
-  """
-  try:
-    if not tls_var.buf:
-      #print("New RESIZE_RETURN_BUF {}:{}".format(buf_,size_))
-      tls_var.buf = create_string_buffer(size_)
-      tls_var.bufSize = size_
-    elif (tls_var.bufSize < size_):
-      #print("RESIZE_RETURN_BUF {}:{}/{}".format(buf_,size_,tls_var.bufSize))
-      foo = tls_var.buf
-      tls_var.buf = create_string_buffer(size_)
-      tls_var.bufSize = size_
-      memmove(tls_var.buf, foo, sizeof(foo))
-  except AttributeError:
-      #print("AttributeError RESIZE_RETURN_BUF {}:{}".format(buf_,size_))
-      tls_var.buf = create_string_buffer(size_)
-      #print("Created new Buffer {}".format(tls_var.buf))
-      tls_var.bufSize = size_
-  return addressof(tls_var.buf)
-
-
+__all__ = ['G2Diagnostic']
 SENZING_PRODUCT_ID = "5027"  # See https://github.com/Senzing/knowledge-base/blob/master/lists/senzing-product-ids.md
 
+
+class MyBuffer(threading.local):
+
+    def __init__(self):
+        self.buf = create_string_buffer(65535)
+        self.bufSize = sizeof(self.buf)
+        # print("Created new Buffer {}".format(self.buf))
+
+
+tls_var = MyBuffer()
+
+
+def resize_return_buffer(buf_, size_):
+    """  callback function that resizes return buffer when it is too small
+    Args:
+    size_: size the return buffer needs to be
+    """
+    try:
+        if not tls_var.buf:
+            # print("New RESIZE_RETURN_BUF {}:{}".format(buf_,size_))
+            tls_var.buf = create_string_buffer(size_)
+            tls_var.bufSize = size_
+        elif (tls_var.bufSize < size_):
+            # print("RESIZE_RETURN_BUF {}:{}/{}".format(buf_,size_,tls_var.bufSize))
+            foo = tls_var.buf
+            tls_var.buf = create_string_buffer(size_)
+            tls_var.bufSize = size_
+            memmove(tls_var.buf, foo, sizeof(foo))
+    except AttributeError:
+        # print("AttributeError RESIZE_RETURN_BUF {}:{}".format(buf_,size_))
+        tls_var.buf = create_string_buffer(size_)
+        # print("Created new Buffer {}".format(tls_var.buf))
+        tls_var.bufSize = size_
+    return addressof(tls_var.buf)
+
+
 def deprecated(instance):
+
     def the_decorator(func):
+
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             warnings.simplefilter('always', DeprecationWarning)  # turn off filter
@@ -56,9 +60,10 @@ def deprecated(instance):
                 stacklevel=2)
             warnings.simplefilter('default', DeprecationWarning)  # reset filter
             return func(*args, **kwargs)
-        return wrapper
-    return the_decorator
 
+        return wrapper
+
+    return the_decorator
 
 
 class G2Diagnostic(object):
@@ -74,7 +79,7 @@ class G2Diagnostic(object):
 
     @deprecated(1201)
     def initV2(self, module_name_, ini_params_, debug_=False):
-        self.init(module_name_,ini_params_,debug_)
+        self.init(module_name_, ini_params_, debug_)
 
     def init(self, module_name_, ini_params_, debug_=False):
 
@@ -86,9 +91,7 @@ class G2Diagnostic(object):
             print("Initializing G2 diagnostic module")
 
         self._lib_handle.G2Diagnostic_init.argtypes = [c_char_p, c_char_p, c_int]
-        ret_code = self._lib_handle.G2Diagnostic_init(self._module_name,
-                                 self._ini_params,
-                                 self._debug)
+        ret_code = self._lib_handle.G2Diagnostic_init(self._module_name, self._ini_params, self._debug)
 
         if self._debug:
             print("Initialization Status: " + str(ret_code))
@@ -99,10 +102,9 @@ class G2Diagnostic(object):
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-
     @deprecated(1202)
     def initWithConfigIDV2(self, engine_name_, ini_params_, initConfigID_, debug_):
-        self.initWithConfigID(engine_name_,ini_params_,initConfigID_,debug_)
+        self.initWithConfigID(engine_name_, ini_params_, initConfigID_, debug_)
 
     def initWithConfigID(self, engine_name_, ini_params_, initConfigID_, debug_):
 
@@ -114,12 +116,8 @@ class G2Diagnostic(object):
         if self._debug:
             print("Initializing G2 diagnostic module")
 
-        self._lib_handle.G2Diagnostic_initWithConfigID.argtypes = [ c_char_p, c_char_p, c_longlong, c_int ]
-        ret_code = self._lib_handle.G2Diagnostic_initWithConfigID(self._engine_name,
-                                 self._ini_params,
-                                 configIDValue,
-                                 self._debug)
-
+        self._lib_handle.G2Diagnostic_initWithConfigID.argtypes = [c_char_p, c_char_p, c_longlong, c_int]
+        ret_code = self._lib_handle.G2Diagnostic_initWithConfigID(self._engine_name, self._ini_params, configIDValue, self._debug)
         if self._debug:
             print("Initialization Status: " + str(ret_code))
 
@@ -137,7 +135,7 @@ class G2Diagnostic(object):
 
         configIDValue = int(self.prepareStringArgument(initConfigID))
 
-        self._lib_handle.G2Diagnostic_reinit.argtypes = [ c_longlong ]
+        self._lib_handle.G2Diagnostic_reinit.argtypes = [c_longlong]
         ret_code = self._lib_handle.G2Diagnostic_reinit(configIDValue)
 
         if ret_code == -1:
@@ -152,36 +150,35 @@ class G2Diagnostic(object):
         """
 
         try:
-          if os.name == 'nt':
-            self._lib_handle = cdll.LoadLibrary("G2.dll")
-          else:
-            self._lib_handle = cdll.LoadLibrary("libG2.so")
+            if os.name == 'nt':
+                self._lib_handle = cdll.LoadLibrary("G2.dll")
+            else:
+                self._lib_handle = cdll.LoadLibrary("libG2.so")
         except OSError as ex:
-          print("ERROR: Unable to load G2.  Did you remember to setup your environment by sourcing the setupEnv file?")
-          print("ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart")
-          print("ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements")
-          raise G2ModuleGenericException("Failed to load the G2 library")
+            print("ERROR: Unable to load G2.  Did you remember to setup your environment by sourcing the setupEnv file?")
+            print("ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart")
+            print("ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements")
+            raise G2ModuleGenericException("Failed to load the G2 library")
 
         self._resize_func_def = CFUNCTYPE(c_char_p, c_char_p, c_size_t)
         self._resize_func = self._resize_func_def(resize_return_buffer)
-
 
     def prepareStringArgument(self, stringToPrepare):
         # type: (str) -> str
         """ Internal processing function """
 
-        #handle null string
+        # handle null string
         if stringToPrepare is None:
             return b''
-        #if string is unicode, transcode to utf-8 str
+        # if string is unicode, transcode to utf-8 str
         if type(stringToPrepare) == str:
             return stringToPrepare.encode('utf-8')
-        #if input is bytearray, assumt utf-8 and convert to str
+        # if input is bytearray, assumt utf-8 and convert to str
         elif type(stringToPrepare) == bytearray:
             return stringToPrepare.decode().encode('utf-8')
         elif type(stringToPrepare) == bytes:
             return str(stringToPrepare).encode('utf-8')
-        #input is already a str
+        # input is already a str
         return stringToPrepare
 
     def prepareIntArgument(self, valueToPrepare):
@@ -189,18 +186,18 @@ class G2Diagnostic(object):
         """ Internal processing function """
         """ This converts many types of values to an integer """
 
-        #handle null string
+        # handle null string
         if valueToPrepare is None:
             return 0
-        #if string is unicode, transcode to utf-8 str
+        # if string is unicode, transcode to utf-8 str
         if type(valueToPrepare) == str:
             return int(valueToPrepare.encode('utf-8'))
-        #if input is bytearray, assumt utf-8 and convert to str
+        # if input is bytearray, assumt utf-8 and convert to str
         elif type(valueToPrepare) == bytearray:
             return int(valueToPrepare)
         elif type(valueToPrepare) == bytes:
             return int(valueToPrepare)
-        #input is already an int
+        # input is already an int
         return valueToPrepare
 
     def prepareBooleanArgument(self, booleanToPrepare):
@@ -209,7 +206,7 @@ class G2Diagnostic(object):
             booleanValue = 1
         return booleanToPrepare
 
-    def getEntityDetails(self,entityID,includeInternalFeatures,response):
+    def getEntityDetails(self, entityID, includeInternalFeatures, response):
         # type: (int) -> str
         """ Get the details for the resolved entity
         Args:
@@ -217,15 +214,11 @@ class G2Diagnostic(object):
             includeInternalFeatures: boolean value indicating whether to include internal features
         """
 
-        _includeInternalFeatures = self.prepareBooleanArgument(includeInternalFeatures);
+        _includeInternalFeatures = self.prepareBooleanArgument(includeInternalFeatures)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2Diagnostic_getEntityDetails.argtypes = [c_longlong, c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getEntityDetails(entityID, _includeInternalFeatures,
-                                                                 pointer(responseBuf),
-                                                                 pointer(responseSize),
-                                                                 self._resize_func)
-
+        ret_code = self._lib_handle.G2Diagnostic_getEntityDetails(entityID, _includeInternalFeatures, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
@@ -234,7 +227,7 @@ class G2Diagnostic(object):
 
         response += tls_var.buf.value
 
-    def getRelationshipDetails(self,relationshipID,includeInternalFeatures,response):
+    def getRelationshipDetails(self, relationshipID, includeInternalFeatures, response):
         # type: (int) -> str
         """ Get the details for the resolved entity relationship
         Args:
@@ -242,15 +235,11 @@ class G2Diagnostic(object):
             includeInternalFeatures: boolean value indicating whether to include internal features
         """
 
-        _includeInternalFeatures = self.prepareBooleanArgument(includeInternalFeatures);
+        _includeInternalFeatures = self.prepareBooleanArgument(includeInternalFeatures)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2Diagnostic_getRelationshipDetails.argtypes = [c_longlong, c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getRelationshipDetails(relationshipID, _includeInternalFeatures,
-                                                                 pointer(responseBuf),
-                                                                 pointer(responseSize),
-                                                                 self._resize_func)
-
+        ret_code = self._lib_handle.G2Diagnostic_getRelationshipDetails(relationshipID, _includeInternalFeatures, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
@@ -259,7 +248,7 @@ class G2Diagnostic(object):
 
         response += tls_var.buf.value
 
-    def getEntityResume(self,entityID,response):
+    def getEntityResume(self, entityID, response):
         # type: (int) -> str
         """ Get the related records for the resolved entity
         Args:
@@ -269,11 +258,7 @@ class G2Diagnostic(object):
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2Diagnostic_getEntityResume.argtypes = [c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getEntityResume(entityID,
-                                                                 pointer(responseBuf),
-                                                                 pointer(responseSize),
-                                                                 self._resize_func)
-
+        ret_code = self._lib_handle.G2Diagnostic_getEntityResume(entityID, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
@@ -282,17 +267,16 @@ class G2Diagnostic(object):
 
         response += tls_var.buf.value
 
-
-    def getEntityListBySize(self,entitySize):
+    def getEntityListBySize(self, entitySize):
         """ Generate a list of resolved entities of a particular size
 
         Args:
             entitySize: The size of the resolved entity (observed entity count)
         """
         self._lib_handle.G2Diagnostic_getEntityListBySize.restype = c_int
-        self._lib_handle.G2Diagnostic_getEntityListBySize.argtypes = [c_ulonglong,POINTER(c_void_p)]
+        self._lib_handle.G2Diagnostic_getEntityListBySize.argtypes = [c_ulonglong, POINTER(c_void_p)]
         sizedEntityHandle = c_void_p(0)
-        ret_code = self._lib_handle.G2Diagnostic_getEntityListBySize(entitySize,byref(sizedEntityHandle))
+        ret_code = self._lib_handle.G2Diagnostic_getEntityListBySize(entitySize, byref(sizedEntityHandle))
 
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
@@ -302,11 +286,11 @@ class G2Diagnostic(object):
 
         return sizedEntityHandle.value
 
-    def fetchNextEntityBySize(self, sizedEntityHandle,response):
-        response[::]=b''
+    def fetchNextEntityBySize(self, sizedEntityHandle, response):
+        response[::] = b''
         self._lib_handle.G2Diagnostic_fetchNextEntityBySize.restype = c_int
         self._lib_handle.G2Diagnostic_fetchNextEntityBySize.argtypes = [c_void_p, c_char_p, c_size_t]
-        resultValue = self._lib_handle.G2Diagnostic_fetchNextEntityBySize(c_void_p(sizedEntityHandle),tls_var.buf,sizeof(tls_var.buf))
+        resultValue = self._lib_handle.G2Diagnostic_fetchNextEntityBySize(c_void_p(sizedEntityHandle), tls_var.buf, sizeof(tls_var.buf))
         while resultValue != 0:
 
             if resultValue == -1:
@@ -319,7 +303,7 @@ class G2Diagnostic(object):
             if (response.decode())[-1] == '\n':
                 break
             else:
-                resultValue = self._lib_handle.G2Diagnostic_fetchNextEntityBySize(c_void_p(sizedEntityHandle),tls_var.buf,sizeof(tls_var.buf))
+                resultValue = self._lib_handle.G2Diagnostic_fetchNextEntityBySize(c_void_p(sizedEntityHandle), tls_var.buf, sizeof(tls_var.buf))
         return response
 
     def closeEntityListBySize(self, sizedEntityHandle):
@@ -327,18 +311,15 @@ class G2Diagnostic(object):
         self._lib_handle.G2Diagnostic_closeEntityListBySize.argtypes = [c_void_p]
         self._lib_handle.G2Diagnostic_closeEntityListBySize(c_void_p(sizedEntityHandle))
 
-
-    def checkDBPerf(self,secondsToRun,response):
+    def checkDBPerf(self, secondsToRun, response):
         # type: () -> object,int
         """ Retrieve JSON of DB performance test
         """
 
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2Diagnostic_checkDBPerf.argtypes = [c_int,POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_checkDBPerf(secondsToRun,pointer(responseBuf),
-                                             pointer(responseSize),
-                                             self._resize_func)
+        self._lib_handle.G2Diagnostic_checkDBPerf.argtypes = [c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        ret_code = self._lib_handle.G2Diagnostic_checkDBPerf(secondsToRun, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
@@ -348,7 +329,7 @@ class G2Diagnostic(object):
 
         response += tls_var.buf.value
 
-    def getDBInfo(self,response):
+    def getDBInfo(self, response):
         # type: () -> object,int
         """ Retrieve JSON of DB information
         """
@@ -356,10 +337,7 @@ class G2Diagnostic(object):
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2Diagnostic_getDBInfo.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getDBInfo(pointer(responseBuf),
-                                             pointer(responseSize),
-                                             self._resize_func)
-
+        ret_code = self._lib_handle.G2Diagnostic_getDBInfo(pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
@@ -368,7 +346,7 @@ class G2Diagnostic(object):
 
         response += tls_var.buf.value
 
-    def getDataSourceCounts(self,response):
+    def getDataSourceCounts(self, response):
         # type: () -> object
         """ Retrieve record counts by data source and entity type.
         """
@@ -376,10 +354,7 @@ class G2Diagnostic(object):
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2Diagnostic_getDataSourceCounts.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getDataSourceCounts(pointer(responseBuf),
-                                             pointer(responseSize),
-                                             self._resize_func)
-
+        ret_code = self._lib_handle.G2Diagnostic_getDataSourceCounts(pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
@@ -388,23 +363,18 @@ class G2Diagnostic(object):
 
         response += tls_var.buf.value
 
-    def getMappingStatistics(self,includeInternalFeatures,response):
+    def getMappingStatistics(self, includeInternalFeatures, response):
         # type: () -> object
         """ Retrieve data source mapping statistics.
         Args:
             includeInternalFeatures: boolean value indicating whether to include derived features
         """
 
-        _includeInternalFeatures = self.prepareBooleanArgument(includeInternalFeatures);
+        _includeInternalFeatures = self.prepareBooleanArgument(includeInternalFeatures)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2Diagnostic_getMappingStatistics.argtypes = [c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getMappingStatistics(
-                                             _includeInternalFeatures,
-                                             pointer(responseBuf),
-                                             pointer(responseSize),
-                                             self._resize_func)
-
+        ret_code = self._lib_handle.G2Diagnostic_getMappingStatistics(_includeInternalFeatures, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
@@ -413,7 +383,7 @@ class G2Diagnostic(object):
 
         response += tls_var.buf.value
 
-    def getGenericFeatures(self,featureType,maximumEstimatedCount,response):
+    def getGenericFeatures(self, featureType, maximumEstimatedCount, response):
         # type: () -> object
         """ Retrieve generic features.
         Args:
@@ -424,14 +394,8 @@ class G2Diagnostic(object):
         _featureType = self.prepareStringArgument(featureType)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2Diagnostic_getGenericFeatures.argtypes = [ c_char_p, c_size_t, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getGenericFeatures(
-                                             _featureType,
-                                             maximumEstimatedCount,
-                                             pointer(responseBuf),
-                                             pointer(responseSize),
-                                             self._resize_func)
-
+        self._lib_handle.G2Diagnostic_getGenericFeatures.argtypes = [c_char_p, c_size_t, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        ret_code = self._lib_handle.G2Diagnostic_getGenericFeatures(_featureType, maximumEstimatedCount, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
@@ -440,7 +404,7 @@ class G2Diagnostic(object):
 
         response += tls_var.buf.value
 
-    def getEntitySizeBreakdown(self,minimumEntitySize,includeInternalFeatures,response):
+    def getEntitySizeBreakdown(self, minimumEntitySize, includeInternalFeatures, response):
         # type: () -> object
         """ Retrieve data source mapping statistics.
         Args:
@@ -448,17 +412,11 @@ class G2Diagnostic(object):
             includeInternalFeatures: boolean value indicating whether to include derived features
         """
 
-        _includeInternalFeatures = self.prepareBooleanArgument(includeInternalFeatures);
+        _includeInternalFeatures = self.prepareBooleanArgument(includeInternalFeatures)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2Diagnostic_getEntitySizeBreakdown.argtypes = [c_size_t, c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getEntitySizeBreakdown(
-                                             minimumEntitySize,
-                                             _includeInternalFeatures,
-                                             pointer(responseBuf),
-                                             pointer(responseSize),
-                                             self._resize_func)
-
+        ret_code = self._lib_handle.G2Diagnostic_getEntitySizeBreakdown(minimumEntitySize, _includeInternalFeatures, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
@@ -467,8 +425,7 @@ class G2Diagnostic(object):
 
         response += tls_var.buf.value
 
-
-    def getFeature(self,libFeatID,response):
+    def getFeature(self, libFeatID, response):
         # type: () -> object
         """ Retrieve feature information.
         Args:
@@ -493,8 +450,7 @@ class G2Diagnostic(object):
 
         response += tls_var.buf.value
 
-
-    def getResolutionStatistics(self,response):
+    def getResolutionStatistics(self, response):
         # type: () -> object
         """ Retrieve resolution statistics.
         """
@@ -502,9 +458,7 @@ class G2Diagnostic(object):
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2Diagnostic_getResolutionStatistics.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getResolutionStatistics(pointer(responseBuf),
-                                             pointer(responseSize),
-                                             self._resize_func)
+        ret_code = self._lib_handle.G2Diagnostic_getResolutionStatistics(pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
@@ -587,7 +541,7 @@ class G2Diagnostic(object):
 
         self._lib_handle.G2Diagnostic_getLastException.restype = c_int
         self._lib_handle.G2Diagnostic_getLastException.argtypes = [c_char_p, c_size_t]
-        self._lib_handle.G2Diagnostic_getLastException(tls_var.buf,sizeof(tls_var.buf))
+        self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
         resultString = tls_var.buf.value.decode('utf-8')
         return resultString
 
@@ -600,7 +554,7 @@ class G2Diagnostic(object):
         exception_code = self._lib_handle.G2Diagnostic_getLastExceptionCode()
         return exception_code
 
-    def findEntitiesByFeatureIDs(self,features,response):
+    def findEntitiesByFeatureIDs(self, features, response):
         # type: () -> object
         """ Retrieve entities based on supplied features.
         Args:
@@ -612,10 +566,7 @@ class G2Diagnostic(object):
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2Diagnostic_findEntitiesByFeatureIDs.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_findEntitiesByFeatureIDs(_features, pointer(responseBuf),
-                                             pointer(responseSize),
-                                             self._resize_func)
-
+        ret_code = self._lib_handle.G2Diagnostic_findEntitiesByFeatureIDs(_features, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
