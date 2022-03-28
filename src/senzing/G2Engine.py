@@ -814,10 +814,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1004)
     def searchByAttributesV2(self, jsonData, flags, response):
         self.searchByAttributes(jsonData, flags, response)
 
-    def searchByAttributesV2(self, jsonData, flags, response):
+    def searchByAttributes(self, jsonData, flags, response):
         # type: (str,bytearray) -> int
         """ Find records matching the provided attributes
         Args:
@@ -865,7 +866,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1005)
     def findPathByEntityIDV2(self, startEntityID, endEntityID, maxDegree, flags, response):
+        self.findPathByEntityID(startEntityID, endEntityID, maxDegree, flags, response)
+
+    def findPathByEntityID(self, startEntityID, endEntityID, maxDegree, flags, response):
         # type: (int) -> str
         """ Find a path between two entities in the system.
         Args:
@@ -916,7 +921,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1006)
     def findNetworkByEntityIDV2(self, entityList, maxDegree, buildOutDegree, maxEntities, flags, response):
+        self.findNetworkByEntityID(entityList, maxDegree, buildOutDegree, maxEntities, flags, response)
+
+    def findNetworkByEntityID(self, entityList, maxDegree, buildOutDegree, maxEntities, flags, response):
         # type: (int) -> str
         """ Find a network between entities in the system.
         Args:
@@ -974,7 +983,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1007)
     def findPathByRecordIDV2(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, flags, response):
+        self.findPathByRecordID(startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, flags, response)
+
+    def findPathByRecordID(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, flags, response):
         # type: (str,str) -> str
         """ Find a path between two records in the system.
         Args:
@@ -1031,7 +1044,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1008)
     def findNetworkByRecordIDV2(self, recordList, maxDegree, buildOutDegree, maxEntities, flags, response):
+        self.findNetworkByRecordID(recordList, maxDegree, buildOutDegree, maxEntities, flags, response)
+
+    def findNetworkByRecordID(self, recordList, maxDegree, buildOutDegree, maxEntities, flags, response):
         # type: (str,str) -> str
         """ Find a network between entities in the system.
         Args:
@@ -1077,7 +1094,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1009)
     def whyEntityByRecordIDV2(self, dataSourceCode, recordID, flags, response):
+        self.whyEntityByRecordID(dataSourceCode, recordID, flags, response)
+
+    def whyEntityByRecordID(self, dataSourceCode, recordID, flags, response):
 
         response[::] = b''
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
@@ -1113,7 +1134,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1010)
     def whyEntityByEntityIDV2(self, entityID, flags, response):
+        self.whyEntityByEntityID(entityID, flags, response)
+
+    def whyEntityByEntityID(self, entityID, flags, response):
 
         response[::] = b''
         responseBuf = c_char_p(addressof(tls_var.buf))
@@ -1145,7 +1170,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1011)
     def howEntityByEntityIDV2(self, entityID, flags, response):
+        self.howEntityByEntityID(entityID, flags, response)
+
+    def howEntityByEntityID(self, entityID, flags, response):
 
         response[::] = b''
         responseBuf = c_char_p(addressof(tls_var.buf))
@@ -1179,7 +1208,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1012)
     def getVirtualEntityByRecordIDV2(self, recordList, flags, response):
+        self.getVirtualEntityByRecordID(recordList, flags, response)
+
+    def getVirtualEntityByRecordID(self, recordList, flags, response):
 
         response[::] = b''
         _recordList = self.prepareStringArgument(recordList)
@@ -1214,7 +1247,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1013)
     def whyEntitiesV2(self, entityID1, entityID2, flags, response):
+        self.whyEntities(entityID1, entityID2, flags, response)
+
+    def whyEntities(self, entityID1, entityID2, flags, response):
 
         response[::] = b''
         responseBuf = c_char_p(addressof(tls_var.buf))
@@ -1252,7 +1289,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1014)
     def whyRecordsV2(self, dataSourceCode1, recordID1, dataSourceCode2, recordID2, flags, response):
+        self.whyRecords(dataSourceCode1, recordID1, dataSourceCode2, recordID2, flags, response)
+
+    def whyRecords(self, dataSourceCode1, recordID1, dataSourceCode2, recordID2, flags, response):
 
         response[::] = b''
         _dataSourceCode1 = self.prepareStringArgument(dataSourceCode1)
@@ -1273,7 +1314,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1015)
     def findPathExcludingByEntityIDV2(self, startEntityID, endEntityID, maxDegree, excludedEntities, flags, response):
+        self.findPathExcludingByEntityID(startEntityID, endEntityID, maxDegree, excludedEntities, flags, response)
+
+    def findPathExcludingByEntityID(self, startEntityID, endEntityID, maxDegree, excludedEntities, flags, response):
         # type: (int) -> str
         """ Find a path between two entities in the system.
         Args:
@@ -1327,7 +1372,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1016)
     def findPathIncludingSourceByEntityIDV2(self, startEntityID, endEntityID, maxDegree, excludedEntities, requiredDsrcs, flags, response):
+        self.findPathIncludingSourceByEntityID(startEntityID, endEntityID, maxDegree, excludedEntities, requiredDsrcs, flags, response)
+
+    def findPathIncludingSourceByEntityID(self, startEntityID, endEntityID, maxDegree, excludedEntities, requiredDsrcs, flags, response):
         # type: (int) -> str
         """ Find a path between two entities in the system.
         Args:
@@ -1385,7 +1434,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1017)
     def findPathExcludingByRecordIDV2(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, flags, response):
+        self.findPathExcludingByRecordID(startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, flags, response)
+
+    def findPathExcludingByRecordID(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, flags, response):
         # type: (str,str) -> str
         """ Find a path between two records in the system.
         Args:
@@ -1452,7 +1505,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1018)
     def findPathIncludingSourceByRecordIDV2(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, requiredDsrcs, flags, response):
+        self.findPathIncludingSourceByRecordID(startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, requiredDsrcs, flags, response)
+
+    def findPathIncludingSourceByRecordID(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, requiredDsrcs, flags, response):
         # type: (str,str) -> str
         """ Find a path between two records in the system.
         Args:
@@ -1546,7 +1603,11 @@ class G2Engine(object):
         # Add the bytes to the response bytearray from calling function
         response += tls_var.buf.value
 
+    @deprecated(1019)
     def getEntityByEntityIDV2(self, entityID, flags, response):
+        self.getEntityByEntityID(entityID, flags, response)
+
+    def getEntityByEntityID(self, entityID, flags, response):
         # type: (int,bytearray) -> int
         """ Find the entity with the given ID
         Args:
@@ -1597,7 +1658,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1020)
     def getEntityByRecordIDV2(self, dsrcCode, recordId, flags, response):
+        self.getEntityByRecordID(dsrcCode, recordId, flags, response)
+
+    def getEntityByRecordID(self, dsrcCode, recordId, flags, response):
         # type: (str,str,bytearray) -> int
         """ Get the entity containing the specified record
         Args:
@@ -1788,7 +1853,11 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
+    @deprecated(1021)
     def getRecordV2(self, dsrcCode, recordId, flags, response):
+        self.getRecord(dsrcCode, recordId, flags, response)
+
+    def getRecord(self, dsrcCode, recordId, flags, response):
         # type: (str,str,bytearray) -> int
         """ Get the specified record
         Args:
