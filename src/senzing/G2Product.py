@@ -64,6 +64,10 @@ def deprecated(instance):
 
     return the_decorator
 
+# -----------------------------------------------------------------------------
+# G2Hasher class
+# -----------------------------------------------------------------------------
+
 
 class G2Product(object):
     """G2 product module access library
@@ -76,11 +80,56 @@ class G2Product(object):
         _ini_file_name: name and location of .ini file
     """
 
+    def __init__(self, *args, **kwargs):
+        # type: () -> None
+        """ Class initialization
+        """
+
+        try:
+            if os.name == 'nt':
+                self._lib_handle = cdll.LoadLibrary("G2.dll")
+            else:
+                self._lib_handle = cdll.LoadLibrary("libG2.so")
+        except OSError as ex:
+            print("ERROR: Unable to load G2.  Did you remember to setup your environment by sourcing the setupEnv file?")
+            print("ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart")
+            print("ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements")
+            raise G2ModuleGenericException("Failed to load the G2 library")
+
+        self._resize_func_def = CFUNCTYPE(c_char_p, c_char_p, c_size_t)
+        self._resize_func = self._resize_func_def(resize_return_buffer)
+
+# -----------------------------------------------------------------------------
+# Internal helper methods
+# -----------------------------------------------------------------------------
+
+    def prepareStringArgument(self, stringToPrepare):
+        # type: (str) -> str
+        """ Internal processing function """
+
+        # handle null string
+        if stringToPrepare is None:
+            return b''
+        # if string is unicode, transcode to utf-8 str
+        if type(stringToPrepare) == str:
+            return stringToPrepare.encode('utf-8')
+        # if input is bytearray, assumt utf-8 and convert to str
+        elif type(stringToPrepare) == bytearray:
+            return stringToPrepare.decode().encode('utf-8')
+        elif type(stringToPrepare) == bytes:
+            return str(stringToPrepare).encode('utf-8')
+        # input is already a str
+        return stringToPrepare
+
+# -----------------------------------------------------------------------------
+# Public API
+# -----------------------------------------------------------------------------
+
     @deprecated(1101)
     def initV2(self, module_name_, ini_params_, debug_=False):
         self.init(module_name_, ini_params_, debug_)
 
-    def init(self, module_name_, ini_params_, debug_=False):
+    def init(self, module_name_, ini_params_, debug_=False, *args, **kwargs):
 
         self._module_name = self.prepareStringArgument(module_name_)
         self._ini_params = self.prepareStringArgument(ini_params_)
@@ -101,44 +150,7 @@ class G2Product(object):
             self._lib_handle.G2Product_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def __init__(self):
-        # type: () -> None
-        """ Class initialization
-        """
-
-        try:
-            if os.name == 'nt':
-                self._lib_handle = cdll.LoadLibrary("G2.dll")
-            else:
-                self._lib_handle = cdll.LoadLibrary("libG2.so")
-        except OSError as ex:
-            print("ERROR: Unable to load G2.  Did you remember to setup your environment by sourcing the setupEnv file?")
-            print("ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart")
-            print("ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements")
-            raise G2ModuleGenericException("Failed to load the G2 library")
-
-        self._resize_func_def = CFUNCTYPE(c_char_p, c_char_p, c_size_t)
-        self._resize_func = self._resize_func_def(resize_return_buffer)
-
-    def prepareStringArgument(self, stringToPrepare):
-        # type: (str) -> str
-        """ Internal processing function """
-
-        # handle null string
-        if stringToPrepare is None:
-            return b''
-        # if string is unicode, transcode to utf-8 str
-        if type(stringToPrepare) == str:
-            return stringToPrepare.encode('utf-8')
-        # if input is bytearray, assumt utf-8 and convert to str
-        elif type(stringToPrepare) == bytearray:
-            return stringToPrepare.decode().encode('utf-8')
-        elif type(stringToPrepare) == bytes:
-            return str(stringToPrepare).encode('utf-8')
-        # input is already a str
-        return stringToPrepare
-
-    def license(self):
+    def license(self, *args, **kwargs):
         # type: () -> object
         """ Retrieve the G2 license details
 
@@ -152,7 +164,7 @@ class G2Product(object):
         ret = self._lib_handle.G2Product_license()
         return str(ret.decode('utf-8'))
 
-    def validateLicenseFile(self, licenseFilePath):
+    def validateLicenseFile(self, licenseFilePath, *args, **kwargs):
         # type: (int) -> str
         """ Validates a license file.
         Args:
@@ -177,7 +189,7 @@ class G2Product(object):
 
         return ret_code
 
-    def validateLicenseStringBase64(self, licenseString):
+    def validateLicenseStringBase64(self, licenseString, *args, **kwargs):
         # type: (int) -> str
         """ Validates a license string.
         Args:
@@ -201,7 +213,7 @@ class G2Product(object):
 
         return ret_code
 
-    def version(self):
+    def version(self, *args, **kwargs):
         # type: () -> object
         """ Retrieve the G2 version details
 
@@ -215,7 +227,7 @@ class G2Product(object):
         ret = self._lib_handle.G2Product_version()
         return str(ret.decode('utf-8'))
 
-    def destroy(self):
+    def destroy(self, *args, **kwargs):
         """ Uninitializes the engine
         This should be done once per process after init(...) is called.
         After it is called the engine will no longer function.
@@ -226,7 +238,7 @@ class G2Product(object):
 
         self._lib_handle.G2Product_destroy()
 
-    def clearLastException(self):
+    def clearLastException(self, *args, **kwargs):
         """ Clears the last exception
 
         """
@@ -235,7 +247,7 @@ class G2Product(object):
         self._lib_handle.G2Product_clearLastException.argtypes = []
         self._lib_handle.G2Product_clearLastException()
 
-    def getLastException(self):
+    def getLastException(self, *args, **kwargs):
         """ Gets the last exception
         """
 
@@ -245,7 +257,7 @@ class G2Product(object):
         resultString = tls_var.buf.value.decode('utf-8')
         return resultString
 
-    def getLastExceptionCode(self):
+    def getLastExceptionCode(self, *args, **kwargs):
         """ Gets the last exception code
         """
 
