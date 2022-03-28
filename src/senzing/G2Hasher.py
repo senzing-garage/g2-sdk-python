@@ -64,6 +64,10 @@ def deprecated(instance):
 
     return the_decorator
 
+# -----------------------------------------------------------------------------
+# G2Hasher class
+# -----------------------------------------------------------------------------
+
 
 class G2Hasher(object):
     """G2 hasher access library
@@ -76,11 +80,50 @@ class G2Hasher(object):
         _ini_file_name: name and location of .ini file
     """
 
+    def __init__(self):
+        try:
+            if os.name == 'nt':
+                self._lib_handle = cdll.LoadLibrary("G2Hasher.dll")
+            else:
+                self._lib_handle = cdll.LoadLibrary("libG2Hasher.so")
+            self._hasherSupported = True
+        except OSError:
+            self._hasherSupported = False
+
+        self._resize_func_def = CFUNCTYPE(c_char_p, c_char_p, c_size_t)
+        self._resize_func = self._resize_func_def(resize_return_buffer)
+
+# -----------------------------------------------------------------------------
+# Internal helper methods
+# -----------------------------------------------------------------------------
+
+    def prepareStringArgument(self, stringToPrepare):
+        # type: (str) -> str
+        """ Internal processing function """
+
+        # handle null string
+        if stringToPrepare is None:
+            return b''
+        # if string is unicode, transcode to utf-8 str
+        if type(stringToPrepare) == str:
+            return stringToPrepare.encode('utf-8')
+        # if input is bytearray, assumt utf-8 and convert to str
+        elif type(stringToPrepare) == bytearray:
+            return stringToPrepare.decode().encode('utf-8')
+        elif type(stringToPrepare) == bytes:
+            return str(stringToPrepare).encode('utf-8')
+        # input is already a str
+        return stringToPrepare
+
+# -----------------------------------------------------------------------------
+# Public API
+# -----------------------------------------------------------------------------
+
     @deprecated(1501)
     def initV2(self, hasher_name_, ini_params_, debug_=False):
         self.init(hasher_name_, ini_params_, debug_)
 
-    def init(self, hasher_name_, ini_params_, debug_=False):
+    def init(self, hasher_name_, ini_params_, debug_=False, *args, **kwargs):
 
         if not self._hasherSupported:
             return
@@ -107,7 +150,7 @@ class G2Hasher(object):
     def initWithConfigV2(self, hasher_name_, ini_params_, config_, debug_):
         self.initWithConfig(hasher_name_, ini_params_, config_, debug_)
 
-    def initWithConfig(self, hasher_name_, ini_params_, config_, debug_):
+    def initWithConfig(self, hasher_name_, ini_params_, config_, debug_, *args, **kwargs):
 
         if not self._hasherSupported:
             return
@@ -132,41 +175,10 @@ class G2Hasher(object):
             self._lib_handle.G2Hasher_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def __init__(self):
-        try:
-            if os.name == 'nt':
-                self._lib_handle = cdll.LoadLibrary("G2Hasher.dll")
-            else:
-                self._lib_handle = cdll.LoadLibrary("libG2Hasher.so")
-            self._hasherSupported = True
-        except OSError:
-            self._hasherSupported = False
-
-        self._resize_func_def = CFUNCTYPE(c_char_p, c_char_p, c_size_t)
-        self._resize_func = self._resize_func_def(resize_return_buffer)
-
-    def prepareStringArgument(self, stringToPrepare):
-        # type: (str) -> str
-        """ Internal processing function """
-
-        # handle null string
-        if stringToPrepare is None:
-            return b''
-        # if string is unicode, transcode to utf-8 str
-        if type(stringToPrepare) == str:
-            return stringToPrepare.encode('utf-8')
-        # if input is bytearray, assumt utf-8 and convert to str
-        elif type(stringToPrepare) == bytearray:
-            return stringToPrepare.decode().encode('utf-8')
-        elif type(stringToPrepare) == bytes:
-            return str(stringToPrepare).encode('utf-8')
-        # input is already a str
-        return stringToPrepare
-
-    def reportHasherNotIncluded(self):
+    def reportHasherNotIncluded(self, *args, **kwargs):
         raise G2ModuleGenericException("Hashing functions not available")
 
-    def clearLastException(self):
+    def clearLastException(self, *args, **kwargs):
         """ Clears the last exception
 
         Return:
@@ -177,7 +189,7 @@ class G2Hasher(object):
         self._lib_handle.G2Hasher_clearLastException.argtypes = []
         self._lib_handle.G2Hasher_clearLastException()
 
-    def getLastException(self):
+    def getLastException(self, *args, **kwargs):
         """ Gets the last exception
         """
 
@@ -187,7 +199,7 @@ class G2Hasher(object):
         resultString = tls_var.buf.value.decode('utf-8')
         return resultString
 
-    def getLastExceptionCode(self):
+    def getLastExceptionCode(self, *args, **kwargs):
         """ Gets the last exception code
         """
 
@@ -196,7 +208,7 @@ class G2Hasher(object):
         exception_code = self._lib_handle.G2Hasher_getLastExceptionCode()
         return exception_code
 
-    def exportTokenLibrary(self, response):
+    def exportTokenLibrary(self, response, *args, **kwargs):
         '''  gets the token library from G2Hasher '''
         if not self._hasherSupported:
             self.reportHasherNotIncluded()
@@ -212,7 +224,7 @@ class G2Hasher(object):
 
         response += responseBuf.value
 
-    def process(self, record, response):
+    def process(self, record, response, *args, **kwargs):
         '''  process a G2Hasher record '''
         if not self._hasherSupported:
             self.reportHasherNotIncluded()
@@ -229,7 +241,7 @@ class G2Hasher(object):
 
         response += responseBuf.value
 
-    def destroy(self):
+    def destroy(self, *args, **kwargs):
         """ shuts down G2Module
         """
         if self._hasherSupported:
