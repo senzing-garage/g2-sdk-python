@@ -13,7 +13,7 @@ SENZING_PRODUCT_ID = "5027"  # See https://github.com/Senzing/knowledge-base/blo
 
 class MyBuffer(threading.local):
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self.buf = create_string_buffer(65535)
         self.bufSize = sizeof(self.buf)
         # print("Created new Buffer {}".format(self.buf))
@@ -64,6 +64,10 @@ def deprecated(instance):
 
     return the_decorator
 
+# -----------------------------------------------------------------------------
+# G2Config class
+# -----------------------------------------------------------------------------
+
 
 class G2Config(object):
     """G2 config module access library
@@ -76,11 +80,56 @@ class G2Config(object):
         _ini_file_name: name and location of .ini file
     """
 
+    def __init__(self, *args, **kwargs):
+        # type: () -> None
+        """ G2Config class initialization
+        """
+
+        try:
+            if os.name == 'nt':
+                self._lib_handle = cdll.LoadLibrary("G2.dll")
+            else:
+                self._lib_handle = cdll.LoadLibrary("libG2.so")
+        except OSError as ex:
+            print("ERROR: Unable to load G2.  Did you remember to setup your environment by sourcing the setupEnv file?")
+            print("ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart")
+            print("ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements")
+            raise G2ModuleGenericException("Failed to load the G2 library")
+
+        self._resize_func_def = CFUNCTYPE(c_char_p, c_char_p, c_size_t)
+        self._resize_func = self._resize_func_def(resize_return_buffer)
+
+# -----------------------------------------------------------------------------
+# Internal helper methods
+# -----------------------------------------------------------------------------
+
+    def prepareStringArgument(self, stringToPrepare):
+        # type: (str) -> str
+        """ Internal processing function """
+
+        # handle null string
+        if stringToPrepare is None:
+            return b''
+        # if string is unicode, transcode to utf-8 str
+        if type(stringToPrepare) == str:
+            return stringToPrepare.encode('utf-8')
+        # if input is bytearray, assumt utf-8 and convert to str
+        elif type(stringToPrepare) == bytearray:
+            return stringToPrepare.decode().encode('utf-8')
+        elif type(stringToPrepare) == bytes:
+            return str(stringToPrepare).encode('utf-8')
+        # input is already a str
+        return stringToPrepare
+
+# -----------------------------------------------------------------------------
+# Public API
+# -----------------------------------------------------------------------------
+
     @deprecated(1301)
     def initV2(self, module_name_, ini_params_, debug_=False):
         self.init(module_name_, ini_params_, debug_)
 
-    def init(self, module_name_, ini_params_, debug_=False):
+    def init(self, module_name_, ini_params_, debug_=False, *args, **kwargs):
 
         self._module_name = self.prepareStringArgument(module_name_)
         self._ini_params = self.prepareStringArgument(ini_params_)
@@ -101,44 +150,7 @@ class G2Config(object):
             self._lib_handle.G2Config_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def __init__(self):
-        # type: () -> None
-        """ G2Config class initialization
-        """
-
-        try:
-            if os.name == 'nt':
-                self._lib_handle = cdll.LoadLibrary("G2.dll")
-            else:
-                self._lib_handle = cdll.LoadLibrary("libG2.so")
-        except OSError as ex:
-            print("ERROR: Unable to load G2.  Did you remember to setup your environment by sourcing the setupEnv file?")
-            print("ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart")
-            print("ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements")
-            raise G2ModuleGenericException("Failed to load the G2 library")
-
-        self._resize_func_def = CFUNCTYPE(c_char_p, c_char_p, c_size_t)
-        self._resize_func = self._resize_func_def(resize_return_buffer)
-
-    def prepareStringArgument(self, stringToPrepare):
-        # type: (str) -> str
-        """ Internal processing function """
-
-        # handle null string
-        if stringToPrepare is None:
-            return b''
-        # if string is unicode, transcode to utf-8 str
-        if type(stringToPrepare) == str:
-            return stringToPrepare.encode('utf-8')
-        # if input is bytearray, assumt utf-8 and convert to str
-        elif type(stringToPrepare) == bytearray:
-            return stringToPrepare.decode().encode('utf-8')
-        elif type(stringToPrepare) == bytes:
-            return str(stringToPrepare).encode('utf-8')
-        # input is already a str
-        return stringToPrepare
-
-    def clearLastException(self):
+    def clearLastException(self, *args, **kwargs):
         """ Clears the last exception
         """
 
@@ -146,7 +158,7 @@ class G2Config(object):
         self._lib_handle.G2Config_clearLastException.argtypes = []
         self._lib_handle.G2Config_clearLastException()
 
-    def getLastException(self):
+    def getLastException(self, *args, **kwargs):
         """ Gets the last exception
         """
 
@@ -156,7 +168,7 @@ class G2Config(object):
         resultString = tls_var.buf.value.decode('utf-8')
         return resultString
 
-    def getLastExceptionCode(self):
+    def getLastExceptionCode(self, *args, **kwargs):
         """ Gets the last exception code
         """
 
@@ -165,7 +177,7 @@ class G2Config(object):
         exception_code = self._lib_handle.G2Config_getLastExceptionCode()
         return exception_code
 
-    def create(self):
+    def create(self, *args, **kwargs):
         """ Creates a new config handle from the stored template
         """
         self._lib_handle.G2Config_create.restype = c_int
@@ -181,7 +193,7 @@ class G2Config(object):
 
         return configHandle.value
 
-    def load(self, jsonConfig):
+    def load(self, jsonConfig, *args, **kwargs):
         """ Creates a new config handle from a json config string
         """
         _jsonConfig = self.prepareStringArgument(jsonConfig)
@@ -198,14 +210,14 @@ class G2Config(object):
 
         return configHandle.value
 
-    def close(self, configHandle):
+    def close(self, configHandle, *args, **kwargs):
         """ Closes a config handle
         """
         self._lib_handle.G2Config_close.restype = c_int
         self._lib_handle.G2Config_close.argtypes = [c_void_p]
         self._lib_handle.G2Config_close(c_void_p(configHandle))
 
-    def save(self, configHandle, response):
+    def save(self, configHandle, response, *args, **kwargs):
         """ Saves a config handle
         """
         responseBuf = c_char_p(addressof(tls_var.buf))
@@ -221,7 +233,7 @@ class G2Config(object):
 
         response += responseBuf.value
 
-    def listDataSources(self, configHandle, response):
+    def listDataSources(self, configHandle, response, *args, **kwargs):
         """ lists a set of data sources
         """
         responseBuf = c_char_p(addressof(tls_var.buf))
@@ -237,7 +249,7 @@ class G2Config(object):
 
         response += responseBuf.value
 
-    def addDataSource(self, configHandle, inputJson, response):
+    def addDataSource(self, configHandle, inputJson, response, *args, **kwargs):
         """ Adds a data source
         """
         _inputJson = self.prepareStringArgument(inputJson)
@@ -253,7 +265,7 @@ class G2Config(object):
 
         response += responseBuf.value
 
-    def deleteDataSource(self, configHandle, inputJson):
+    def deleteDataSource(self, configHandle, inputJson, *args, **kwargs):
         """ Deletes a data source
         """
         _inputJson = self.prepareStringArgument(inputJson)
@@ -266,7 +278,7 @@ class G2Config(object):
             self._lib_handle.G2Config_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def destroy(self):
+    def destroy(self, *args, **kwargs):
         """ Uninitializes the engine
         This should be done once per process after init(...) is called.
         After it is called the engine will no longer function.
