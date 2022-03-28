@@ -80,7 +80,7 @@ class G2Hasher(object):
         _ini_file_name: name and location of .ini file
     """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         try:
             if os.name == 'nt':
                 self._lib_handle = cdll.LoadLibrary("G2Hasher.dll")
