@@ -146,6 +146,7 @@ class G2Diagnostic(object):
             return str(stringToPrepare).encode('utf-8')
         # input is already a str
         return stringToPrepare
+
 # -----------------------------------------------------------------------------
 # Public API
 # -----------------------------------------------------------------------------
