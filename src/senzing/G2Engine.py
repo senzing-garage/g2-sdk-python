@@ -8,7 +8,7 @@ import warnings
 from csv import reader as csvreader
 
 from .G2Exception import TranslateG2ModuleException, G2ModuleNotInitialized, G2ModuleGenericException
-from .G2EngineFlags import G2_ENTITY_DEFAULT_FLAGS, G2_FIND_PATH_DEFAULT_FLAGS, G2_HOW_ENTITY_DEFAULT_FLAGS, G2_RECORD_DEFAULT_FLAGS, G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS, G2_WHY_ENTITY_DEFAULT_FLAGS
+from .G2EngineFlags import G2EngineFlags
 
 __all__ = ['G2Engine']
 SENZING_PRODUCT_ID = "5027"  # See https://github.com/Senzing/knowledge-base/blob/master/lists/senzing-product-ids.md
@@ -809,7 +809,7 @@ class G2Engine(object):
     def searchByAttributesV2(self, jsonData, flags, response):
         self.searchByAttributes(jsonData, response, flags)
 
-    def searchByAttributes(self, jsonData, response, flags=G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS, *args, **kwargs):
+    def searchByAttributes(self, jsonData, response, flags=G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS, *args, **kwargs):
         # type: (str,bytearray) -> int
         """ Find records matching the provided attributes
         Args:
@@ -836,7 +836,7 @@ class G2Engine(object):
     def findPathByEntityIDV2(self, startEntityID, endEntityID, maxDegree, flags, response):
         self.findPathByEntityID(startEntityID, endEntityID, maxDegree, response, flags)
 
-    def findPathByEntityID(self, startEntityID, endEntityID, maxDegree, response, flags=G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findPathByEntityID(self, startEntityID, endEntityID, maxDegree, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
         # type: (int) -> str
         """ Find a path between two entities in the system.
         Args:
@@ -865,7 +865,7 @@ class G2Engine(object):
     def findNetworkByEntityIDV2(self, entityList, maxDegree, buildOutDegree, maxEntities, flags, response):
         self.findNetworkByEntityID(entityList, maxDegree, buildOutDegree, maxEntities, response, flags)
 
-    def findNetworkByEntityID(self, entityList, maxDegree, buildOutDegree, maxEntities, response, flags=G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findNetworkByEntityID(self, entityList, maxDegree, buildOutDegree, maxEntities, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
         # type: (int) -> str
         """ Find a network between entities in the system.
         Args:
@@ -896,7 +896,7 @@ class G2Engine(object):
     def findPathByRecordIDV2(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, flags, response):
         self.findPathByRecordID(startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, response, flags)
 
-    def findPathByRecordID(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, response, flags=G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findPathByRecordID(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
         # type: (str,str) -> str
         """ Find a path between two records in the system.
         Args:
@@ -931,7 +931,7 @@ class G2Engine(object):
     def findNetworkByRecordIDV2(self, recordList, maxDegree, buildOutDegree, maxEntities, flags, response):
         self.findNetworkByRecordID(recordList, maxDegree, buildOutDegree, maxEntities, response, flags)
 
-    def findNetworkByRecordID(self, recordList, maxDegree, buildOutDegree, maxEntities, response, flags=G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findNetworkByRecordID(self, recordList, maxDegree, buildOutDegree, maxEntities, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
         # type: (str,str) -> str
         """ Find a network between entities in the system.
         Args:
@@ -962,7 +962,7 @@ class G2Engine(object):
     def whyEntityByRecordIDV2(self, dataSourceCode, recordID, flags, response):
         self.whyEntityByRecordID(dataSourceCode, recordID, response, flags)
 
-    def whyEntityByRecordID(self, dataSourceCode, recordID, response, flags=G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def whyEntityByRecordID(self, dataSourceCode, recordID, response, flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
 
         response[::] = b''
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
@@ -985,7 +985,7 @@ class G2Engine(object):
     def whyEntityByEntityIDV2(self, entityID, flags, response):
         self.whyEntityByEntityID(entityID, response, flags)
 
-    def whyEntityByEntityID(self, entityID, response, flags=G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def whyEntityByEntityID(self, entityID, response, flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
 
         response[::] = b''
         responseBuf = c_char_p(addressof(tls_var.buf))
@@ -1005,7 +1005,7 @@ class G2Engine(object):
     def howEntityByEntityIDV2(self, entityID, flags, response):
         self.howEntityByEntityID(entityID, response, flags)
 
-    def howEntityByEntityID(self, entityID, response, flags=G2_HOW_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def howEntityByEntityID(self, entityID, response, flags=G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
 
         response[::] = b''
         responseBuf = c_char_p(addressof(tls_var.buf))
@@ -1025,7 +1025,7 @@ class G2Engine(object):
     def getVirtualEntityByRecordIDV2(self, recordList, flags, response):
         self.getVirtualEntityByRecordID(recordList, response, flags)
 
-    def getVirtualEntityByRecordID(self, recordList, response, flags=G2_HOW_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def getVirtualEntityByRecordID(self, recordList, response, flags=G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
 
         response[::] = b''
         _recordList = self.prepareStringArgument(recordList)
@@ -1047,7 +1047,7 @@ class G2Engine(object):
     def whyEntitiesV2(self, entityID1, entityID2, flags, response):
         self.whyEntities(entityID1, entityID2, response, flags)
 
-    def whyEntities(self, entityID1, entityID2, response, flags=G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def whyEntities(self, entityID1, entityID2, response, flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
 
         response[::] = b''
         responseBuf = c_char_p(addressof(tls_var.buf))
@@ -1068,7 +1068,7 @@ class G2Engine(object):
     def whyRecordsV2(self, dataSourceCode1, recordID1, dataSourceCode2, recordID2, flags, response):
         self.whyRecords(dataSourceCode1, recordID1, dataSourceCode2, recordID2, response, flags)
 
-    def whyRecords(self, dataSourceCode1, recordID1, dataSourceCode2, recordID2, response, flags=G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def whyRecords(self, dataSourceCode1, recordID1, dataSourceCode2, recordID2, response, flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
 
         response[::] = b''
         _dataSourceCode1 = self.prepareStringArgument(dataSourceCode1)
@@ -1093,7 +1093,7 @@ class G2Engine(object):
     def findPathExcludingByEntityIDV2(self, startEntityID, endEntityID, maxDegree, excludedEntities, flags, response):
         self.findPathExcludingByEntityID(startEntityID, endEntityID, maxDegree, excludedEntities, response, flags)
 
-    def findPathExcludingByEntityID(self, startEntityID, endEntityID, maxDegree, excludedEntities, response, flags=G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findPathExcludingByEntityID(self, startEntityID, endEntityID, maxDegree, excludedEntities, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
         # type: (int) -> str
         """ Find a path between two entities in the system.
         Args:
@@ -1125,7 +1125,7 @@ class G2Engine(object):
     def findPathIncludingSourceByEntityIDV2(self, startEntityID, endEntityID, maxDegree, excludedEntities, requiredDsrcs, flags, response):
         self.findPathIncludingSourceByEntityID(startEntityID, endEntityID, maxDegree, excludedEntities, requiredDsrcs, response, flags)
 
-    def findPathIncludingSourceByEntityID(self, startEntityID, endEntityID, maxDegree, excludedEntities, requiredDsrcs, response, flags=G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findPathIncludingSourceByEntityID(self, startEntityID, endEntityID, maxDegree, excludedEntities, requiredDsrcs, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
         # type: (int) -> str
         """ Find a path between two entities in the system.
         Args:
@@ -1159,7 +1159,7 @@ class G2Engine(object):
     def findPathExcludingByRecordIDV2(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, flags, response):
         self.findPathExcludingByRecordID(startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, response, flags)
 
-    def findPathExcludingByRecordID(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, response, flags=G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findPathExcludingByRecordID(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
         # type: (str,str) -> str
         """ Find a path between two records in the system.
         Args:
@@ -1197,7 +1197,7 @@ class G2Engine(object):
     def findPathIncludingSourceByRecordIDV2(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, requiredDsrcs, flags, response):
         self.findPathIncludingSourceByRecordID(startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, requiredDsrcs, response, flags)
 
-    def findPathIncludingSourceByRecordID(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, requiredDsrcs, response, flags=G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findPathIncludingSourceByRecordID(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, requiredDsrcs, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
         # type: (str,str) -> str
         """ Find a path between two records in the system.
         Args:
@@ -1237,7 +1237,7 @@ class G2Engine(object):
     def getEntityByEntityIDV2(self, entityID, flags, response):
         self.getEntityByEntityID(entityID, response, flags)
 
-    def getEntityByEntityID(self, entityID, response, flags=G2_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def getEntityByEntityID(self, entityID, response, flags=G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
         # type: (int,bytearray) -> int
         """ Find the entity with the given ID
         Args:
@@ -1267,7 +1267,7 @@ class G2Engine(object):
     def getEntityByRecordIDV2(self, dsrcCode, recordId, flags, response):
         self.getEntityByRecordID(dsrcCode, recordId, response, flags)
 
-    def getEntityByRecordID(self, dsrcCode, recordId, response, flags=G2_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def getEntityByRecordID(self, dsrcCode, recordId, response, flags=G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
         # type: (str,str,bytearray) -> int
         """ Get the entity containing the specified record
         Args:
@@ -1438,7 +1438,7 @@ class G2Engine(object):
     def getRecordV2(self, dsrcCode, recordId, flags, response):
         self.getRecord(dsrcCode, recordId, response, flags)
 
-    def getRecord(self, dsrcCode, recordId, response, flags=G2_RECORD_DEFAULT_FLAGS, *args, **kwargs):
+    def getRecord(self, dsrcCode, recordId, response, flags=G2EngineFlags.G2_RECORD_DEFAULT_FLAGS, *args, **kwargs):
         # type: (str,str,bytearray) -> int
         """ Get the specified record
         Args:
