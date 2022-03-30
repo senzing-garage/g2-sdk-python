@@ -1,11 +1,5 @@
 __all__ = [
-    'G2DBException',
-    'G2DBMNotStarted',
-    'G2DBNotFound',
-    'G2DBUniqueConstraintViolation',
-    'G2DBUnknownException',
     'G2Exception',
-    'G2InvalidFileTypeContentsException',
     'G2ModuleEmptyMessage',
     'G2ModuleException',
     'G2ModuleGenericException',
@@ -14,11 +8,7 @@ __all__ = [
     'G2ModuleMySQLNoSchema',
     'G2ModuleNotInitialized',
     'G2ModuleResolveMissingResEnt',
-    'G2TableNoExist',
-    'G2UnsupportedDatabaseType',
-    'G2UnsupportedFileTypeException',
     'TranslateG2ModuleException',
-    'UnconfiguredDataSourceException'
     ]
 
 
@@ -27,67 +17,6 @@ class G2Exception(Exception):
 
     def __init__(self, *args, **kwargs):
         Exception.__init__(self, *args, **kwargs)
-
-
-class G2UnsupportedFileTypeException(G2Exception):
-
-    def __init__(self, *args, **kwargs):
-        G2Exception.__init__(self, *args, **kwargs)
-
-
-class G2InvalidFileTypeContentsException(G2Exception):
-
-    def __init__(self, *args, **kwargs):
-        G2Exception.__init__(self, *args, **kwargs)
-
-
-class G2DBException(G2Exception):
-    '''Base exception for G2 DB related python code'''
-
-    def __init__(self, *args, **kwargs):
-        G2Exception.__init__(self, *args, **kwargs)
-
-
-class UnconfiguredDataSourceException(G2Exception):
-
-    def __init__(self, DataSourceName):
-        G2Exception.__init__(self, ("Datasource %s not configured. See https://senzing.zendesk.com/hc/en-us/articles/360010784333 on how to configure datasources in the config file." % DataSourceName))
-
-
-class G2DBUnknownException(G2DBException):
-
-    def __init__(self, *args, **kwargs):
-        G2DBException.__init__(self, *args, **kwargs)
-
-
-class G2UnsupportedDatabaseType(G2DBException):
-
-    def __init__(self, *args, **kwargs):
-        G2DBException.__init__(self, *args, **kwargs)
-
-
-class G2TableNoExist(G2DBException):
-
-    def __init__(self, *args, **kwargs):
-        G2DBException.__init__(self, *args, **kwargs)
-
-
-class G2DBMNotStarted(G2DBException):
-
-    def __init__(self, *args, **kwargs):
-        G2DBException.__init__(self, *args, **kwargs)
-
-
-class G2DBNotFound(G2DBException):
-
-    def __init__(self, *args, **kwargs):
-        G2DBException.__init__(self, *args, **kwargs)
-
-
-class G2DBUniqueConstraintViolation(G2DBException):
-
-    def __init__(self, *args, **kwargs):
-        G2DBException.__init__(self, *args, **kwargs)
 
 
 class G2ModuleException(G2Exception):
