@@ -9,7 +9,7 @@ __all__ = [
     'G2ModuleNotInitialized',
     'G2ModuleResolveMissingResEnt',
     'TranslateG2ModuleException',
-    ]
+]
 
 
 class G2Exception(Exception):
