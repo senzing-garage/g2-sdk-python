@@ -1,6 +1,12 @@
 __all__ = [
     'G2BadInputException',
+    'G2ConfigurationException',
     'G2Exception',
+    'G2IncompleteRecordException',
+    'G2MalformedJsonException',
+    'G2MessageBufferException',
+    'G2MissingConfigurationException',
+    'G2MissingDataSourceException',
     'G2ModuleEmptyMessage',
     'G2ModuleException',
     'G2ModuleGenericException',
@@ -9,9 +15,11 @@ __all__ = [
     'G2ModuleMySQLNoSchema',
     'G2ModuleNotInitialized',
     'G2ModuleResolveMissingResEnt',
+    'G2RepositoryPurgedException',
     'G2RetryableException',
+    'G2UnacceptableJsonKeyValueException',
     'G2UnrecoverableException',
-    'TranslateG2ModuleException'
+    'TranslateG2ModuleException',
 ]
 
 # -----------------------------------------------------------------------------
@@ -84,6 +92,11 @@ class G2MissingDataSourceException(G2BadInputException):
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
 
+class G2UnacceptableJsonKeyValueException(G2BadInputException):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(self, *args, **kwargs)
+
 # -----------------------------------------------------------------------------
 # Detail exceptions for G2RetryableException
 # - Processing did not complete.
@@ -93,6 +106,16 @@ class G2MissingDataSourceException(G2BadInputException):
 # -----------------------------------------------------------------------------
 
 class G2MessageBufferException(G2RetryableException):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(self, *args, **kwargs)
+
+class G2ConfigurationException(G2RetryableException):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(self, *args, **kwargs)
+
+class G2RepositoryPurgedException(G2RetryableException):
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
@@ -164,15 +187,30 @@ class G2ModuleResolveMissingResEnt(G2ModuleException):
 exceptions_map = {
     "0002E": G2ModuleInvalidXML,
     "0007E": G2ModuleEmptyMessage,
+    "0023E": G2UnacceptableJsonKeyValueException,
+    "0024E": G2UnacceptableJsonKeyValueException,
+    "0025E": G2UnacceptableJsonKeyValueException,
+    "0026E": G2UnacceptableJsonKeyValueException,
+    "0027E": G2UnacceptableJsonKeyValueException,
+    "0032E": G2UnacceptableJsonKeyValueException,
+    "0034E": G2ConfigurationException,
+    "0035E": G2ConfigurationException,
+    "0036E": G2ConfigurationException,
+    "0051E": G2UnacceptableJsonKeyValueException,
+    "0054E": G2RepositoryPurgedException,
+    "0061E": G2ConfigurationException,
+    "0062E": G2ConfigurationException,
+    "0064E": G2ConfigurationException,
     "2134E": G2ModuleResolveMissingResEnt,
     "7213E": G2ModuleMySQLNoSchema,
     "9000E": G2ModuleLicenseException,
-
+    "30020": G2UnacceptableJsonKeyValueException,
+    "30110E": G2MessageBufferException,
+    "30111E": G2MessageBufferException,
+    "30112E": G2MessageBufferException,
     "30121E": G2MalformedJsonException,
     "30122E": G2MalformedJsonException,
-
-    "30110E": G2MessageBufferException,
-    "30112E": G2MessageBufferException,
+    "30123E": G2MalformedJsonException,
 
 
 }
