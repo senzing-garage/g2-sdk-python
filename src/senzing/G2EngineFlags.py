@@ -6,7 +6,7 @@ __all__ = ['G2EngineFlags']
 class G2EngineFlags(IntFlag):
 
     @classmethod
-    def combine_flags(cls, list_of_strings):
+    def combine_flags(cls, list_of_strings, *args, **kwargs):
         ''' OR together all strings in list_of_strings '''
 
         result = 0

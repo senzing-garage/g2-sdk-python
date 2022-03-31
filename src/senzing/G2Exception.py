@@ -9,7 +9,7 @@ __all__ = [
     'G2ModuleNotInitialized',
     'G2ModuleResolveMissingResEnt',
     'TranslateG2ModuleException',
-    ]
+]
 
 
 class G2Exception(Exception):
@@ -70,7 +70,7 @@ class G2ModuleLicenseException(G2ModuleException):
         G2ModuleException.__init__(self, *args, **kwargs)
 
 
-def TranslateG2ModuleException(ex):
+def TranslateG2ModuleException(ex, *args, **kwargs):
     exInfo = ex.decode().split('|', 1)
     if exInfo[0] == '7213E':
         return G2ModuleMySQLNoSchema(ex)
