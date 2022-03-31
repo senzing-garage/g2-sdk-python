@@ -16,8 +16,8 @@ g2_hasher = G2Hasher()
 g2_ini_params = G2IniParams()
 # g2_product = G2Product()
 
-an_exception_class = G2InvalidFileTypeContentsException
-an_exception_object = G2InvalidFileTypeContentsException()
+an_exception_class = G2ModuleException
+an_exception_object = G2ModuleException()
 
 print("Test 1: Success")
 
@@ -37,8 +37,8 @@ print("Test 2: Success")
 
 # ----- Import from G2Exception -----------------------------------------------
 
-from senzing.G2Exception import G2InvalidFileTypeContentsException
-from senzing.G2Exception import G2InvalidFileTypeContentsException as bob
+from senzing.G2Exception import G2ModuleException
+from senzing.G2Exception import G2ModuleException as bob
 import senzing.G2Exception
 
 print("Test 3: Success")

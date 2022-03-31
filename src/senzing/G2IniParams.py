@@ -1,21 +1,27 @@
 #! /usr/bin/env python3
 
-# --python imports
+import json
+import os
+from shutil import copyfile
 try:
     import configparser
 except:
     import ConfigParser as configparser
-import json
-import os
-from shutil import copyfile
 
 __all__ = ['G2IniParams']
+
+# -----------------------------------------------------------------------------
+# G2IniParams class
+# -----------------------------------------------------------------------------
 
 
 class G2IniParams:
 
-    # ----------------------------------------
-    def getJsonINIParams(self, iniFileName):
+# -----------------------------------------------------------------------------
+# Public API
+# -----------------------------------------------------------------------------
+
+    def getJsonINIParams(self, iniFileName, *args, **kwargs):
         ''' Creates a JSON INI parameter string from an INI file. '''
 
         iniParser = configparser.ConfigParser(empty_lines_in_values=False)
@@ -32,8 +38,7 @@ class G2IniParams:
         jsonIniString = json.dumps(paramDict)
         return jsonIniString
 
-    # ----------------------------------------
-    def getINIParam(self, iniFileName, requestedGroupName, requestedParamName):
+    def getINIParam(self, iniFileName, requestedGroupName, requestedParamName, *args, **kwargs):
         ''' Gets an INI parameter string from an INI file. '''
 
         iniParser = configparser.ConfigParser(empty_lines_in_values=False)
@@ -55,8 +60,7 @@ class G2IniParams:
                 paramValue = paramDict[normalizedRequestedGroupName][normalizedRequestedParamName]
         return paramValue
 
-    # ----------------------------------------
-    def hasINIParam(self, iniFileName, requestedGroupName, requestedParamName):
+    def hasINIParam(self, iniFileName, requestedGroupName, requestedParamName, *args, **kwargs):
         ''' Determines whether an INI parameter exists in an INI file. '''
 
         iniParser = configparser.ConfigParser(empty_lines_in_values=False)
@@ -78,8 +82,7 @@ class G2IniParams:
                 hasParam = True
         return hasParam
 
-    # ----------------------------------------
-    def removeINIParam(self, iniFileName, requestedGroupName, requestedParamName, commentString):
+    def removeINIParam(self, iniFileName, requestedGroupName, requestedParamName, commentString, *args, **kwargs):
         ''' Removes an INI parameter from a file, by commenting it out. '''
 
         normalizedRequestedGroupName = requestedGroupName.upper()

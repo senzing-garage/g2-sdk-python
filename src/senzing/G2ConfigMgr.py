@@ -65,6 +65,10 @@ def deprecated(instance):
 
     return the_decorator
 
+# -----------------------------------------------------------------------------
+# G2ConfigMgr class
+# -----------------------------------------------------------------------------
+
 
 class G2ConfigMgr(object):
     """G2 config-manager module access library
@@ -77,11 +81,75 @@ class G2ConfigMgr(object):
         _ini_params: a JSON string containing INI parameters
     """
 
+    def __init__(self, *args, **kwargs):
+        # type: () -> None
+        """ Class initialization
+        """
+
+        try:
+            if os.name == 'nt':
+                self._lib_handle = cdll.LoadLibrary("G2.dll")
+            else:
+                self._lib_handle = cdll.LoadLibrary("libG2.so")
+        except OSError as ex:
+            print("ERROR: Unable to load G2.  Did you remember to setup your environment by sourcing the setupEnv file?")
+            print("ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart")
+            print("ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements")
+            raise G2ModuleGenericException("Failed to load the G2 library")
+
+        self._resize_func_def = CFUNCTYPE(c_char_p, c_char_p, c_size_t)
+        self._resize_func = self._resize_func_def(resize_return_buffer)
+
+# -----------------------------------------------------------------------------
+# Internal helper methods
+# -----------------------------------------------------------------------------
+
+    def prepareIntArgument(self, valueToPrepare):
+        # type: (str) -> int
+        """ Internal processing function """
+        """ This converts many types of values to an integer """
+
+        # handle null string
+        if valueToPrepare is None:
+            return 0
+        # if string is unicode, transcode to utf-8 str
+        if type(valueToPrepare) == str:
+            return int(valueToPrepare.encode('utf-8'))
+        # if input is bytearray, assumt utf-8 and convert to str
+        elif type(valueToPrepare) == bytearray:
+            return int(valueToPrepare)
+        elif type(valueToPrepare) == bytes:
+            return int(valueToPrepare)
+        # input is already an int
+        return valueToPrepare
+
+    def prepareStringArgument(self, stringToPrepare):
+        # type: (str) -> str
+        """ Internal processing function """
+
+        # handle null string
+        if stringToPrepare is None:
+            return b''
+        # if string is unicode, transcode to utf-8 str
+        if type(stringToPrepare) == str:
+            return stringToPrepare.encode('utf-8')
+        # if input is bytearray, assumt utf-8 and convert to str
+        elif type(stringToPrepare) == bytearray:
+            return stringToPrepare.decode().encode('utf-8')
+        elif type(stringToPrepare) == bytes:
+            return str(stringToPrepare).encode('utf-8')
+        # input is already a str
+        return stringToPrepare
+
+# -----------------------------------------------------------------------------
+# Public API
+# -----------------------------------------------------------------------------
+
     @deprecated(1401)
     def initV2(self, module_name_, ini_params_, debug_=False):
         self.init(module_name_, ini_params_, debug_)
 
-    def init(self, module_name_, ini_params_, debug_=False):
+    def init(self, module_name_, ini_params_, debug_=False, *args, **kwargs):
         """  Initializes the G2 config manager
         This should only be called once per process.
         Args:
@@ -107,63 +175,7 @@ class G2ConfigMgr(object):
             self._lib_handle.G2ConfigMgr_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def __init__(self):
-        # type: () -> None
-        """ Class initialization
-        """
-
-        try:
-            if os.name == 'nt':
-                self._lib_handle = cdll.LoadLibrary("G2.dll")
-            else:
-                self._lib_handle = cdll.LoadLibrary("libG2.so")
-        except OSError as ex:
-            print("ERROR: Unable to load G2.  Did you remember to setup your environment by sourcing the setupEnv file?")
-            print("ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart")
-            print("ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements")
-            raise G2ModuleGenericException("Failed to load the G2 library")
-
-        self._resize_func_def = CFUNCTYPE(c_char_p, c_char_p, c_size_t)
-        self._resize_func = self._resize_func_def(resize_return_buffer)
-
-    def prepareStringArgument(self, stringToPrepare):
-        # type: (str) -> str
-        """ Internal processing function """
-
-        # handle null string
-        if stringToPrepare is None:
-            return b''
-        # if string is unicode, transcode to utf-8 str
-        if type(stringToPrepare) == str:
-            return stringToPrepare.encode('utf-8')
-        # if input is bytearray, assumt utf-8 and convert to str
-        elif type(stringToPrepare) == bytearray:
-            return stringToPrepare.decode().encode('utf-8')
-        elif type(stringToPrepare) == bytes:
-            return str(stringToPrepare).encode('utf-8')
-        # input is already a str
-        return stringToPrepare
-
-    def prepareIntArgument(self, valueToPrepare):
-        # type: (str) -> int
-        """ Internal processing function """
-        """ This converts many types of values to an integer """
-
-        # handle null string
-        if valueToPrepare is None:
-            return 0
-        # if string is unicode, transcode to utf-8 str
-        if type(valueToPrepare) == str:
-            return int(valueToPrepare.encode('utf-8'))
-        # if input is bytearray, assumt utf-8 and convert to str
-        elif type(valueToPrepare) == bytearray:
-            return int(valueToPrepare)
-        elif type(valueToPrepare) == bytes:
-            return int(valueToPrepare)
-        # input is already an int
-        return valueToPrepare
-
-    def addConfig(self, configStr, configComments, configID):
+    def addConfig(self, configStr, configComments, configID, *args, **kwargs):
         """ registers a new configuration document in the datastore
         """
         _configStr = self.prepareStringArgument(configStr)
@@ -182,7 +194,7 @@ class G2ConfigMgr(object):
 
         configID += (str(cID.value).encode())
 
-    def getConfig(self, configID, response):
+    def getConfig(self, configID, response, *args, **kwargs):
         """ retrieves the registered configuration document from the datastore
         """
         configID_ = self.prepareIntArgument(configID)
@@ -202,7 +214,7 @@ class G2ConfigMgr(object):
         # Add the bytes to the response bytearray from calling function
         response += tls_var.buf.value
 
-    def getConfigList(self, response):
+    def getConfigList(self, response, *args, **kwargs):
         """ retrieves a list of known configurations from the datastore
         """
         response[::] = b''
@@ -221,7 +233,7 @@ class G2ConfigMgr(object):
         # Add the bytes to the response bytearray from calling function
         response += tls_var.buf.value
 
-    def setDefaultConfigID(self, configID):
+    def setDefaultConfigID(self, configID, *args, **kwargs):
         """ sets the default config identifier in the datastore
         """
         configID_ = self.prepareIntArgument(configID)
@@ -235,7 +247,7 @@ class G2ConfigMgr(object):
             self._lib_handle.G2ConfigMgr_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def replaceDefaultConfigID(self, oldConfigID, newConfigID):
+    def replaceDefaultConfigID(self, oldConfigID, newConfigID, *args, **kwargs):
         """ sets the default config identifier in the datastore
         """
         oldConfigID_ = self.prepareIntArgument(oldConfigID)
@@ -250,7 +262,7 @@ class G2ConfigMgr(object):
             self._lib_handle.G2ConfigMgr_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def getDefaultConfigID(self, configID):
+    def getDefaultConfigID(self, configID, *args, **kwargs):
         """ gets the default config identifier from the datastore
         """
         configID[::] = b''
@@ -268,7 +280,7 @@ class G2ConfigMgr(object):
         if cID.value:
             configID += (str(cID.value).encode())
 
-    def clearLastException(self):
+    def clearLastException(self, *args, **kwargs):
         """ Clears the last exception
         """
 
@@ -276,7 +288,7 @@ class G2ConfigMgr(object):
         self._lib_handle.G2ConfigMgr_clearLastException.argtypes = []
         self._lib_handle.G2ConfigMgr_clearLastException()
 
-    def getLastException(self):
+    def getLastException(self, *args, **kwargs):
         """ Gets the last exception
         """
 
@@ -286,7 +298,7 @@ class G2ConfigMgr(object):
         resultString = tls_var.buf.value.decode('utf-8')
         return resultString
 
-    def getLastExceptionCode(self):
+    def getLastExceptionCode(self, *args, **kwargs):
         """ Gets the last exception code
         """
 
@@ -295,7 +307,7 @@ class G2ConfigMgr(object):
         exception_code = self._lib_handle.G2ConfigMgr_getLastExceptionCode()
         return exception_code
 
-    def destroy(self):
+    def destroy(self, *args, **kwargs):
         """ Uninitializes the engine
         This should be done once per process after init(...) is called.
         After it is called the engine will no longer function.
