@@ -12,7 +12,6 @@ __all__ = [
     'G2ModuleGenericException',
     'G2ModuleInvalidXML',
     'G2ModuleLicenseException',
-    'G2ModuleMySQLNoSchema',
     'G2ModuleNotInitialized',
     'G2ModuleResolveMissingResEnt',
     'G2RepositoryPurgedException',
@@ -159,12 +158,6 @@ class G2ModuleInvalidXML(G2ModuleException):
 
 
 class G2ModuleLicenseException(G2ModuleException):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
-
-
-class G2ModuleMySQLNoSchema(G2ModuleException):
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
