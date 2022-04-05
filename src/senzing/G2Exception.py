@@ -92,6 +92,7 @@ class G2MissingDataSourceException(G2BadInputException):
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
 
+
 class G2UnacceptableJsonKeyValueException(G2BadInputException):
 
     def __init__(self, *args, **kwargs):
@@ -105,15 +106,18 @@ class G2UnacceptableJsonKeyValueException(G2BadInputException):
 # - Processing may continue.
 # -----------------------------------------------------------------------------
 
+
 class G2MessageBufferException(G2RetryableException):
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
 
+
 class G2ConfigurationException(G2RetryableException):
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
+
 
 class G2RepositoryPurgedException(G2RetryableException):
 
@@ -211,8 +215,6 @@ exceptions_map = {
     "30121E": G2MalformedJsonException,
     "30122E": G2MalformedJsonException,
     "30123E": G2MalformedJsonException,
-
-
 }
 
 
