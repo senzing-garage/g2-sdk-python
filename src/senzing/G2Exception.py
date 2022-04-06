@@ -211,6 +211,12 @@ exceptions_map = {
 
 
 def TranslateG2ModuleException(exception_message):
-    senzing_error_code = exception_message.split('|', 1)[0].strip()
+
+    if isinstance(exception_message, bytearray):
+        exception_message_string = exception_message.decode()
+    else:
+        exception_message_string = exception_message
+
+    senzing_error_code = exception_message_string.split('|', 1)[0].strip()
     senzing_error_class = exceptions_map.get(senzing_error_code, G2Exception)
-    return senzing_error_class(exception_message)
+    return senzing_error_class(exception_message_string)
