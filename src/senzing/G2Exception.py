@@ -199,7 +199,6 @@ exceptions_map = {
     "0062E": G2ConfigurationException,
     "0064E": G2ConfigurationException,
     "2134E": G2ModuleResolveMissingResEnt,
-    "7213E": G2ModuleMySQLNoSchema,
     "9000E": G2ModuleLicenseException,
     "30020": G2UnacceptableJsonKeyValueException,
     "30110E": G2MessageBufferException,
