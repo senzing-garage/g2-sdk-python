@@ -715,7 +715,7 @@ class G2Engine(object):
         # Add the bytes to the response bytearray from calling function
         response += tls_var.buf.value
 
-    def reevaluateRecord(self, dataSourceCode, recordId, flags, *args, **kwargs):
+    def reevaluateRecord(self, dataSourceCode, recordId, flags=0, *args, **kwargs):
         # type: (str,str,int) -> int
         """ Reevaluate the JSON record
         Args:
@@ -1294,7 +1294,7 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
-    def findInterestingEntitiesByEntityID(self, entityID, flags, response, *args, **kwargs):
+    def findInterestingEntitiesByEntityID(self, entityID, response, flags=0, *args, **kwargs):
         # type: (int,bytearray) -> int
         """ Find interesting entities close to the entity with the given ID
         Args:
@@ -1319,7 +1319,7 @@ class G2Engine(object):
         # Add the bytes to the response bytearray from calling function
         response += tls_var.buf.value
 
-    def findInterestingEntitiesByRecordID(self, dsrcCode, recordId, flags, response, *args, **kwargs):
+    def findInterestingEntitiesByRecordID(self, dsrcCode, recordId, response, flags=0, *args, **kwargs):
         # type: (str,str,bytearray) -> int
         """ Find interesting entities close to the entity with the specified record
         Args:
@@ -1368,7 +1368,7 @@ class G2Engine(object):
 
         response += responseBuf.value
 
-    def processRedoRecord(self, response, *args, **kwargs):
+    def processRedoRecord(self, response, flags=0, *args, **kwargs):
         # type: (bytearray) -> int
         """ Process the next Redo record
         Args:
