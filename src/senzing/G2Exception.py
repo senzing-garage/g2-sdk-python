@@ -212,7 +212,11 @@ exceptions_map = {
 
 def TranslateG2ModuleException(exception_message):
 
-    if isinstance(exception_message, bytearray):
+    if exception_message is None:
+        exception_message_string = ''
+    elif isinstance(exception_message, bytearray):
+        exception_message_string = exception_message.decode()
+    elif isinstance(exception_message, bytes):
         exception_message_string = exception_message.decode()
     else:
         exception_message_string = exception_message
