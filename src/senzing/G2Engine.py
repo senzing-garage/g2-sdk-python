@@ -418,7 +418,7 @@ class G2Engine(object):
 
         response += responseBuf.value
 
-    def exportJSONEntityReport(self, exportFlags, *args, **kwargs):
+    def exportJSONEntityReport(self, flags=G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS, *args, **kwargs):
         """ Generate a JSON export
         This is used to export entity data from known entities.  This function
         returns an export-handle that can be read from to get the export data
@@ -428,7 +428,7 @@ class G2Engine(object):
         self._lib_handle.G2_exportJSONEntityReport.restype = c_int
         self._lib_handle.G2_exportJSONEntityReport.argtypes = [c_longlong, POINTER(c_void_p)]
         exportHandle = c_void_p(0)
-        ret_code = self._lib_handle.G2_exportJSONEntityReport(exportFlags, byref(exportHandle))
+        ret_code = self._lib_handle.G2_exportJSONEntityReport(flags, byref(exportHandle))
 
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
@@ -438,7 +438,7 @@ class G2Engine(object):
 
         return exportHandle.value
 
-    def exportCSVEntityReport(self, headersForCSV, exportFlags, *args, **kwargs):
+    def exportCSVEntityReport(self, headersForCSV, flags=G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS, *args, **kwargs):
         """ Generate a CSV export
         This is used to export entity data from known entities.  This function
         returns an export-handle that can be read from to get the export data
@@ -451,7 +451,7 @@ class G2Engine(object):
         self._lib_handle.G2_exportCSVEntityReport.restype = c_int
         self._lib_handle.G2_exportCSVEntityReport.argtypes = [c_char_p, c_longlong, POINTER(c_void_p)]
         exportHandle = c_void_p(0)
-        ret_code = self._lib_handle.G2_exportCSVEntityReport(_headersForCSV, exportFlags, byref(exportHandle))
+        ret_code = self._lib_handle.G2_exportCSVEntityReport(_headersForCSV, flags, byref(exportHandle))
 
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
@@ -493,7 +493,7 @@ class G2Engine(object):
         self._lib_handle.G2_closeExport.argtypes = [c_void_p]
         self._lib_handle.G2_closeExport(c_void_p(exportHandle))
 
-    def addRecord(self, dataSourceCode, recordId, jsonData, loadId=None, *args, **kwargs):
+    def addRecord(self, dataSourceCode, recordId, jsonData, load_id=None, *args, **kwargs):
         # type: (str,str,str,str) -> int
         """ Loads the JSON record
         Args:
@@ -501,16 +501,16 @@ class G2Engine(object):
             recordID: The ID for the record
             jsonData: A JSON document containing the attribute information
                    for the observation.
-            loadID: The observation load ID for the record, can be null and will default to dataSourceCode
+            load_id: The observation load ID for the record, can be null and will default to dataSourceCode
         """
 
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
-        _loadId = self.prepareStringArgument(loadId)
+        _load_id = self.prepareStringArgument(load_id)
         _recordId = self.prepareStringArgument(recordId)
         _jsonData = self.prepareStringArgument(jsonData)
         self._lib_handle.G2_addRecord.restype = c_int
         self._lib_handle.G2_addRecord.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p]
-        ret_code = self._lib_handle.G2_addRecord(_dataSourceCode, _recordId, _jsonData, _loadId)
+        ret_code = self._lib_handle.G2_addRecord(_dataSourceCode, _recordId, _jsonData, _load_id)
 
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
@@ -518,7 +518,7 @@ class G2Engine(object):
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def addRecordWithReturnedRecordID(self, dataSourceCode, recordID, jsonData, loadId=None, *args, **kwargs):
+    def addRecordWithReturnedRecordID(self, dataSourceCode, recordID, jsonData, load_id=None, *args, **kwargs):
         # type: (str,str,str,str) -> int
         """ Loads the JSON record
         Args:
@@ -526,15 +526,15 @@ class G2Engine(object):
             recordID: A memory buffer for returning the recordID
             jsonData: A JSON document containing the attribute information
                    for the observation.
-            loadID: The observation load ID for the record, can be null and will default to dataSourceCode
+            load_id: The observation load ID for the record, can be null and will default to dataSourceCode
         """
 
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
         _jsonData = self.prepareStringArgument(jsonData)
-        _loadId = self.prepareStringArgument(loadId)
+        _load_id = self.prepareStringArgument(load_id)
         recordID[::] = b''
         self._lib_handle.G2_addRecordWithReturnedRecordID.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_size_t]
-        ret_code = self._lib_handle.G2_addRecordWithReturnedRecordID(_dataSourceCode, _jsonData, _loadId, tls_var.buf, sizeof(tls_var.buf))
+        ret_code = self._lib_handle.G2_addRecordWithReturnedRecordID(_dataSourceCode, _jsonData, _load_id, tls_var.buf, sizeof(tls_var.buf))
 
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
@@ -544,7 +544,7 @@ class G2Engine(object):
 
         recordID += tls_var.buf.value
 
-    def addRecordWithInfo(self, dataSourceCode, recordId, jsonData, response, loadId=None, flags=0, *args, **kwargs):
+    def addRecordWithInfo(self, dataSourceCode, recordId, jsonData, response, load_id=None, flags=0, *args, **kwargs):
         # type: (str,str,str,str,str,int) -> str
         """ Loads the JSON record and returns info about the load
         Args:
@@ -553,19 +553,19 @@ class G2Engine(object):
             jsonData: A JSON document containing the attribute information
                    for the observation.
             response: Json document with info about the modified resolved entities
-            loadID: The observation load ID for the record, can be null and will default to dataSourceCode
+            load_id: The observation load ID for the record, can be null and will default to dataSourceCode
             flags: reserved for future use
         """
 
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
-        _loadId = self.prepareStringArgument(loadId)
+        _load_id = self.prepareStringArgument(load_id)
         _recordId = self.prepareStringArgument(recordId)
         _jsonData = self.prepareStringArgument(jsonData)
         response[::] = b''
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_addRecordWithInfo.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_addRecordWithInfo(_dataSourceCode, _recordId, _jsonData, _loadId, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        ret_code = self._lib_handle.G2_addRecordWithInfo(_dataSourceCode, _recordId, _jsonData, _load_id, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
@@ -576,7 +576,7 @@ class G2Engine(object):
         # Add the bytes to the response bytearray from calling function
         response += tls_var.buf.value
 
-    def addRecordWithInfoWithReturnedRecordID(self, dataSourceCode, jsonData, flags, recordID, info, loadId=None, *args, **kwargs):
+    def addRecordWithInfoWithReturnedRecordID(self, dataSourceCode, jsonData, recordID, info, load_id=None, flags=0, *args, **kwargs):
         """ Loads the JSON record
         Args:
             dataSourceCode: The data source for the observation.
@@ -584,13 +584,13 @@ class G2Engine(object):
             jsonData: A JSON document containing the attribute information
                    for the observation.
             info: Json document with info about the modified resolved entities
-            loadID: The observation load ID for the record, can be null and will default to dataSourceCode
+            load_id: The observation load ID for the record, can be null and will default to dataSourceCode
             flags: reserved for future use
         """
 
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
         _jsonData = self.prepareStringArgument(jsonData)
-        _loadId = self.prepareStringArgument(loadId)
+        _load_id = self.prepareStringArgument(load_id)
 
         recordID[::] = b''
 
@@ -600,7 +600,7 @@ class G2Engine(object):
 
         self._lib_handle.G2_addRecordWithInfoWithReturnedRecordID.restype = c_int
         self._lib_handle.G2_addRecordWithInfoWithReturnedRecordID.argtypes = [c_char_p, c_char_p, c_char_p, c_longlong, c_char_p, c_size_t, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def3]
-        ret_code = self._lib_handle.G2_addRecordWithInfoWithReturnedRecordID(_dataSourceCode, _jsonData, _loadId, flags, tls_var.buf, sizeof(tls_var.buf), pointer(infoBuf), pointer(infoBufSize), self._resize_func3)
+        ret_code = self._lib_handle.G2_addRecordWithInfoWithReturnedRecordID(_dataSourceCode, _jsonData, _load_id, flags, tls_var.buf, sizeof(tls_var.buf), pointer(infoBuf), pointer(infoBufSize), self._resize_func3)
 
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
@@ -611,7 +611,7 @@ class G2Engine(object):
         recordID += tls_var.buf.value
         info += tls_var3.buf.value
 
-    def replaceRecord(self, dataSourceCode, recordId, jsonData, loadId=None, *args, **kwargs):
+    def replaceRecord(self, dataSourceCode, recordId, jsonData, load_id=None, *args, **kwargs):
         # type: (str,str,str,str) -> int
         """ Replace the JSON record, loads if doesn't exist
         Args:
@@ -619,14 +619,14 @@ class G2Engine(object):
             recordID: The ID for the record
             jsonData: A JSON document containing the attribute information
                    for the observation.
-            loadID: The load ID for the record, can be null and will default to dataSourceCode
+            load_id: The load ID for the record, can be null and will default to dataSourceCode
         """
 
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
-        _loadId = self.prepareStringArgument(loadId)
+        _load_id = self.prepareStringArgument(load_id)
         _recordId = self.prepareStringArgument(recordId)
         _jsonData = self.prepareStringArgument(jsonData)
-        ret_code = self._lib_handle.G2_replaceRecord(_dataSourceCode, _recordId, _jsonData, _loadId)
+        ret_code = self._lib_handle.G2_replaceRecord(_dataSourceCode, _recordId, _jsonData, _load_id)
 
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
@@ -634,7 +634,7 @@ class G2Engine(object):
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def replaceRecordWithInfo(self, dataSourceCode, recordId, jsonData, response, loadId=None, flags=0, *args, **kwargs):
+    def replaceRecordWithInfo(self, dataSourceCode, recordId, jsonData, response, load_id=None, flags=0, *args, **kwargs):
         # type: (str,str,str,str) -> int
         """ Replace the JSON record, loads if doesn't exist
         Args:
@@ -643,19 +643,19 @@ class G2Engine(object):
             jsonData: A JSON document containing the attribute information
                    for the observation.
             response: Json document with info about the modified resolved entities
-            loadID: The load ID for the record, can be null and will default to dataSourceCode
+            load_id: The load ID for the record, can be null and will default to dataSourceCode
             flags: reserved for future use
         """
 
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
-        _loadId = self.prepareStringArgument(loadId)
+        _load_id = self.prepareStringArgument(load_id)
         _recordId = self.prepareStringArgument(recordId)
         _jsonData = self.prepareStringArgument(jsonData)
         response[::] = b''
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_replaceRecordWithInfo.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_replaceRecordWithInfo(_dataSourceCode, _recordId, _jsonData, _loadId, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        ret_code = self._lib_handle.G2_replaceRecordWithInfo(_dataSourceCode, _recordId, _jsonData, _load_id, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
@@ -666,19 +666,19 @@ class G2Engine(object):
         # Add the bytes to the response bytearray from calling function
         response += tls_var.buf.value
 
-    def deleteRecord(self, dataSourceCode, recordId, loadId=None, *args, **kwargs):
+    def deleteRecord(self, dataSourceCode, recordId, load_id=None, *args, **kwargs):
         # type: (str,str,str) -> int
         """ Delete the record
         Args:
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
-            loadID: The load ID for the record, can be null and will default to dataSourceCode
+            load_id: The load ID for the record, can be null and will default to dataSourceCode
         """
 
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
-        _loadId = self.prepareStringArgument(loadId)
+        _load_id = self.prepareStringArgument(load_id)
         _recordId = self.prepareStringArgument(recordId)
-        ret_code = self._lib_handle.G2_deleteRecord(_dataSourceCode, _recordId, _loadId)
+        ret_code = self._lib_handle.G2_deleteRecord(_dataSourceCode, _recordId, _load_id)
 
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
@@ -686,25 +686,25 @@ class G2Engine(object):
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def deleteRecordWithInfo(self, dataSourceCode, recordId, response, loadId=None, flags=0, *args, **kwargs):
+    def deleteRecordWithInfo(self, dataSourceCode, recordId, response, load_id=None, flags=0, *args, **kwargs):
         # type: (str,str,str,str,int) -> int
         """ Delete the record
         Args:
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
             response: A bytearray for returning the response document; if an error occurred, an error response is stored here
-            loadID: The load ID for the record, can be null and will default to dataSourceCode
+            load_id: The load ID for the record, can be null and will default to dataSourceCode
             flags: reserved for future use
         """
 
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
-        _loadId = self.prepareStringArgument(loadId)
+        _load_id = self.prepareStringArgument(load_id)
         _recordId = self.prepareStringArgument(recordId)
         response[::] = b''
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_deleteRecordWithInfo.argtypes = [c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_deleteRecordWithInfo(_dataSourceCode, _recordId, _loadId, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        ret_code = self._lib_handle.G2_deleteRecordWithInfo(_dataSourceCode, _recordId, _load_id, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
@@ -763,7 +763,7 @@ class G2Engine(object):
         # Add the bytes to the response bytearray from calling function
         response += tls_var.buf.value
 
-    def reevaluateEntity(self, entityID, flags, *args, **kwargs):
+    def reevaluateEntity(self, entityID, flags=0, *args, **kwargs):
         # type: (int,int) -> int
         """ Reevaluate the JSON record
         Args:
