@@ -106,13 +106,19 @@ class G2UnacceptableJsonKeyValueException(G2BadInputException):
 # -----------------------------------------------------------------------------
 
 
-class G2MessageBufferException(G2RetryableException):
+class G2ConfigurationException(G2RetryableException):
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
 
 
-class G2ConfigurationException(G2RetryableException):
+class G2DatabaseConnectionLost(G2RetryableException):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(self, *args, **kwargs)
+
+
+class G2MessageBufferException(G2RetryableException):
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
@@ -198,6 +204,7 @@ exceptions_map = {
     "0061E": G2ConfigurationException,
     "0062E": G2ConfigurationException,
     "0064E": G2ConfigurationException,
+    "1007E": G2DatabaseConnectionLost,
     "2134E": G2ModuleResolveMissingResEnt,
     "9000E": G2ModuleLicenseException,
     "30020": G2UnacceptableJsonKeyValueException,
