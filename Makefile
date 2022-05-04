@@ -72,6 +72,7 @@ install-test:
 .PHONY: test
 test:
 	tests/test-imports.py
+	tests/test-g2engineflags.py
 
 # -----------------------------------------------------------------------------
 # uninstall
