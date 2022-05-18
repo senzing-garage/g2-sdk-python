@@ -32,6 +32,16 @@ class G2Exception(Exception):
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
 
+    def __str__(self):
+        result = []
+        for arg in self.args:
+            message = arg
+            if isinstance(arg, Exception):
+                message = "{0}.{1}:".format(arg.__module__, arg.__class__.__name__)
+            if message not in result:
+                result.append(message)
+        return " ".join(result)
+
 # -----------------------------------------------------------------------------
 # Category exceptions
 # - These exceptions represent categories of actions that can be taken by
