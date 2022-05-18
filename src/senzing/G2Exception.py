@@ -32,6 +32,9 @@ class G2Exception(Exception):
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
 
+    def __str__(self):
+        return self.args[-1]
+
 # -----------------------------------------------------------------------------
 # Category exceptions
 # - These exceptions represent categories of actions that can be taken by
