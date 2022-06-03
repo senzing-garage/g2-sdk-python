@@ -2,6 +2,7 @@
 disable=
     attribute-defined-outside-init,
     bad-continuation,
+    bad-option-value,
     bare-except,
     blacklisted-name,
     broad-except,
@@ -16,9 +17,12 @@ disable=
     no-else-break,
     no-else-raise,
     no-else-return,
+    no-member,
     no-self-use,
     not-an-iterable,
     pointless-string-statement,
+    raise-missing-from,
+    reimported,
     simplifiable-if-statement,
     super-init-not-called,
     superfluous-parens,
@@ -30,12 +34,14 @@ disable=
     too-many-nested-blocks,
     too-many-public-methods,
     unidiomatic-typecheck,
+    unspecified-encoding,
     unused-argument,
     unused-import,
     unused-variable,
     unused-wildcard-import,
     useless-object-inheritance,
     wildcard-import,
+    wrong-import-position,
 good-names=
     template-python
 ignore=
