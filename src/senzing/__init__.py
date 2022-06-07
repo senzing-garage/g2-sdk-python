@@ -7,7 +7,7 @@
 
 # Step 1: Import the files so that the __all__ attribute will work with the "name" (e.g. G2Config, G2ConfigMgr)
 
-from . import G2Config, G2ConfigMgr, G2Diagnostic, G2Engine, G2EngineFlags, G2Exception, G2Hasher, G2IniParams, G2Product
+from . import G2Config, G2ConfigMgr, G2Diagnostic, G2Engine, G2EngineFlags, G2Exception, G2Hasher, G2Product
 
 import_lists = [
     G2Config.__all__,
@@ -17,7 +17,6 @@ import_lists = [
     G2EngineFlags.__all__,
     G2Exception.__all__,
     G2Hasher.__all__,
-    G2IniParams.__all__,
     G2Product.__all__
 ]
 
@@ -35,5 +34,4 @@ from .G2Engine import *
 from .G2EngineFlags import *
 from .G2Exception import *
 from .G2Hasher import *
-from .G2IniParams import *
 from .G2Product import *
