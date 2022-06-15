@@ -449,10 +449,10 @@ class G2Diagnostic(object):
         self._lib_handle.G2Diagnostic_getFeature.restype = c_int
         self._lib_handle.G2Diagnostic_getFeature.argtypes = [c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2Diagnostic_getFeature(
-                                             libFeatID,
-                                             pointer(responseBuf),
-                                             pointer(responseSize),
-                                             self._resize_func)
+                                            libFeatID,
+                                            pointer(responseBuf),
+                                            pointer(responseSize),
+                                            self._resize_func)
 
         if ret_code == -1:
             raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
@@ -539,6 +539,7 @@ class G2Diagnostic(object):
         self._lib_handle.G2Diagnostic_getAvailableMemory.restype = c_longlong
         return self._lib_handle.G2Diagnostic_getAvailableMemory()
 
+    @deprecated(1204)
     def clearLastException(self, *args, **kwargs):
         """ Clears the last exception
         """
@@ -547,6 +548,7 @@ class G2Diagnostic(object):
         self._lib_handle.G2Diagnostic_clearLastException.argtypes = []
         self._lib_handle.G2Diagnostic_clearLastException()
 
+    @deprecated(1205)
     def getLastException(self, *args, **kwargs):
         """ Gets the last exception
         """
@@ -557,6 +559,7 @@ class G2Diagnostic(object):
         resultString = tls_var.buf.value.decode('utf-8')
         return resultString
 
+    @deprecated(1206)
     def getLastExceptionCode(self, *args, **kwargs):
         """ Gets the last exception code
         """

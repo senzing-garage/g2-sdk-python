@@ -150,6 +150,7 @@ class G2Config(object):
             self._lib_handle.G2Config_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
+    @deprecated(1302)
     def clearLastException(self, *args, **kwargs):
         """ Clears the last exception
         """
@@ -158,6 +159,7 @@ class G2Config(object):
         self._lib_handle.G2Config_clearLastException.argtypes = []
         self._lib_handle.G2Config_clearLastException()
 
+    @deprecated(1303)
     def getLastException(self, *args, **kwargs):
         """ Gets the last exception
         """
@@ -168,6 +170,7 @@ class G2Config(object):
         resultString = tls_var.buf.value.decode('utf-8')
         return resultString
 
+    @deprecated(1304)
     def getLastExceptionCode(self, *args, **kwargs):
         """ Gets the last exception code
         """

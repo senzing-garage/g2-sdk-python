@@ -178,6 +178,7 @@ class G2Hasher(object):
     def reportHasherNotIncluded(self, *args, **kwargs):
         raise G2ModuleGenericException("Hashing functions not available")
 
+    @deprecated(1503)
     def clearLastException(self, *args, **kwargs):
         """ Clears the last exception
 
@@ -189,6 +190,7 @@ class G2Hasher(object):
         self._lib_handle.G2Hasher_clearLastException.argtypes = []
         self._lib_handle.G2Hasher_clearLastException()
 
+    @deprecated(1504)
     def getLastException(self, *args, **kwargs):
         """ Gets the last exception
         """
@@ -199,6 +201,7 @@ class G2Hasher(object):
         resultString = tls_var.buf.value.decode('utf-8')
         return resultString
 
+    @deprecated(1505)
     def getLastExceptionCode(self, *args, **kwargs):
         """ Gets the last exception code
         """

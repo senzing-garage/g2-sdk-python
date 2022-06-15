@@ -238,6 +238,7 @@ class G2Product(object):
 
         self._lib_handle.G2Product_destroy()
 
+    @deprecated(1102)
     def clearLastException(self, *args, **kwargs):
         """ Clears the last exception
 
@@ -247,6 +248,7 @@ class G2Product(object):
         self._lib_handle.G2Product_clearLastException.argtypes = []
         self._lib_handle.G2Product_clearLastException()
 
+    @deprecated(1103)
     def getLastException(self, *args, **kwargs):
         """ Gets the last exception
         """
@@ -257,6 +259,7 @@ class G2Product(object):
         resultString = tls_var.buf.value.decode('utf-8')
         return resultString
 
+    @deprecated(1104)
     def getLastExceptionCode(self, *args, **kwargs):
         """ Gets the last exception code
         """

@@ -255,6 +255,7 @@ class G2Engine(object):
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
+    @deprecated(1022)
     def clearLastException(self, *args, **kwargs):
         """ Clears the last exception
         """
@@ -263,6 +264,7 @@ class G2Engine(object):
         self._lib_handle.G2_clearLastException.argtypes = []
         self._lib_handle.G2_clearLastException()
 
+    @deprecated(1023)
     def getLastException(self, *args, **kwargs):
         """ Gets the last exception
         """
@@ -273,6 +275,7 @@ class G2Engine(object):
         resultString = tls_var.buf.value.decode('utf-8')
         return resultString
 
+    @deprecated(1024)
     def getLastExceptionCode(self, *args, **kwargs):
         """ Gets the last exception code
         """
@@ -366,8 +369,8 @@ class G2Engine(object):
         Args:
             record: An input record to be processed. Contains the data and control info.
             response: If there is a response to the message it will be returned here.
-                     Note there are performance benefits of calling the process method
-                     that doesn't need a response message.
+                    Note there are performance benefits of calling the process method
+                    that doesn't need a response message.
         """
 
         # type: (str) -> str
@@ -399,7 +402,7 @@ class G2Engine(object):
         """ Scores the input record against the specified one
         Args:
             input_umf_: A JSON document containing the attribute information
-                   for the observation.
+                for the observation.
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
         """
@@ -500,7 +503,7 @@ class G2Engine(object):
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
             jsonData: A JSON document containing the attribute information
-                   for the observation.
+                for the observation.
             load_id: The observation load ID for the record, can be null and will default to dataSourceCode
         """
 
@@ -525,7 +528,7 @@ class G2Engine(object):
             dataSourceCode: The data source for the observation.
             recordID: A memory buffer for returning the recordID
             jsonData: A JSON document containing the attribute information
-                   for the observation.
+                for the observation.
             load_id: The observation load ID for the record, can be null and will default to dataSourceCode
         """
 
@@ -551,7 +554,7 @@ class G2Engine(object):
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
             jsonData: A JSON document containing the attribute information
-                   for the observation.
+                for the observation.
             response: Json document with info about the modified resolved entities
             load_id: The observation load ID for the record, can be null and will default to dataSourceCode
             flags: reserved for future use
@@ -582,7 +585,7 @@ class G2Engine(object):
             dataSourceCode: The data source for the observation.
             recordID: A memory buffer for returning the recordID
             jsonData: A JSON document containing the attribute information
-                   for the observation.
+                for the observation.
             info: Json document with info about the modified resolved entities
             load_id: The observation load ID for the record, can be null and will default to dataSourceCode
             flags: reserved for future use
@@ -618,7 +621,7 @@ class G2Engine(object):
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
             jsonData: A JSON document containing the attribute information
-                   for the observation.
+                for the observation.
             load_id: The load ID for the record, can be null and will default to dataSourceCode
         """
 
@@ -641,7 +644,7 @@ class G2Engine(object):
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
             jsonData: A JSON document containing the attribute information
-                   for the observation.
+                for the observation.
             response: Json document with info about the modified resolved entities
             load_id: The load ID for the record, can be null and will default to dataSourceCode
             flags: reserved for future use
@@ -1242,7 +1245,7 @@ class G2Engine(object):
         """ Find the entity with the given ID
         Args:
             entityID: The entity ID you want returned.  Typically referred to as
-                      ENTITY_ID in JSON results.
+                    ENTITY_ID in JSON results.
             flags: control flags.
             response: A bytearray for returning the response document; if an error occurred, an error response is stored here.
         """

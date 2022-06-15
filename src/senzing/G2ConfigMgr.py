@@ -280,6 +280,7 @@ class G2ConfigMgr(object):
         if cID.value:
             configID += (str(cID.value).encode())
 
+    @deprecated(1402)
     def clearLastException(self, *args, **kwargs):
         """ Clears the last exception
         """
@@ -288,6 +289,7 @@ class G2ConfigMgr(object):
         self._lib_handle.G2ConfigMgr_clearLastException.argtypes = []
         self._lib_handle.G2ConfigMgr_clearLastException()
 
+    @deprecated(1403)
     def getLastException(self, *args, **kwargs):
         """ Gets the last exception
         """
@@ -298,6 +300,7 @@ class G2ConfigMgr(object):
         resultString = tls_var.buf.value.decode('utf-8')
         return resultString
 
+    @deprecated(1404)
     def getLastExceptionCode(self, *args, **kwargs):
         """ Gets the last exception code
         """
