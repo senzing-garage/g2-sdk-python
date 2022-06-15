@@ -13,7 +13,7 @@ SENZING_PRODUCT_ID = "5027"  # See https://github.com/Senzing/knowledge-base/blo
 
 class MyBuffer(threading.local):
 
-     def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         self.buf = create_string_buffer(65535)
         self.bufSize = sizeof(self.buf)
         # print("Created new Buffer {}".format(self.buf))
