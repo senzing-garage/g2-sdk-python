@@ -216,6 +216,7 @@ exceptions_map = {
     "0064E": G2ConfigurationException,
     "1007E": G2DatabaseConnectionLost,
     "2134E": G2ModuleResolveMissingResEnt,
+    "7221E": G2ConfigurationException,
     "9000E": G2ModuleLicenseException,
     "30020": G2UnacceptableJsonKeyValueException,
     "30110E": G2MessageBufferException,
@@ -240,4 +241,5 @@ def TranslateG2ModuleException(exception_message):
 
     senzing_error_code = exception_message_string.split('|', 1)[0].strip()
     senzing_error_class = exceptions_map.get(senzing_error_code, G2Exception)
+
     return senzing_error_class(exception_message_string)
