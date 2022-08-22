@@ -14,6 +14,7 @@ __all__ = [
     'G2ModuleLicenseException',
     'G2ModuleNotInitialized',
     'G2ModuleResolveMissingResEnt',
+    'G2NotFoundException',
     'G2RepositoryPurgedException',
     'G2RetryableException',
     'G2UnacceptableJsonKeyValueException',
@@ -97,6 +98,12 @@ class G2MissingConfigurationException(G2BadInputException):
 
 
 class G2MissingDataSourceException(G2BadInputException):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(self, *args, **kwargs)
+
+        
+class G2NotFoundException(G2BadInputException):
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
