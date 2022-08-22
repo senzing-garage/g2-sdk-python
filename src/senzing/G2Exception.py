@@ -102,7 +102,7 @@ class G2MissingDataSourceException(G2BadInputException):
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
 
-        
+
 class G2NotFoundException(G2BadInputException):
 
     def __init__(self, *args, **kwargs):
