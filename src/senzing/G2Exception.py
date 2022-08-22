@@ -198,6 +198,7 @@ class G2ModuleResolveMissingResEnt(G2ModuleException):
 
 
 exceptions_map = {
+    "999E": G2ModuleLicenseException,
     "0002E": G2ModuleInvalidXML,
     "0007E": G2ModuleEmptyMessage,
     "0023E": G2UnacceptableJsonKeyValueException,
@@ -209,6 +210,7 @@ exceptions_map = {
     "0034E": G2ConfigurationException,
     "0035E": G2ConfigurationException,
     "0036E": G2ConfigurationException,
+    "0037E": G2NotFoundException,
     "0051E": G2UnacceptableJsonKeyValueException,
     "0054E": G2RepositoryPurgedException,
     "0061E": G2ConfigurationException,
