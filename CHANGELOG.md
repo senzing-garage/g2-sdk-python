@@ -6,15 +6,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 [markdownlint](https://dlaa.me/markdownlint/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [3.3.0] - 2022-09-23
 
-- Added new code mappings to G2Exception
+### Added to 3.3.0
+
+- Exception classes:
+    - `G2ModuleLicenseException`
+    - `G2NotFoundException`
+    - `G2ConfigurationException`
+
+### Changed in 3.3.0
+
+- Deprecated methods:
+    - `clearLastException()`
+    - `getLastException()`
+    - `getLastExceptionCode()`
+
+### Deleted in 3.3.0
+
+- Removed `G2IniParams.py`
 
 ## [3.1.0] - 2022-06-07
 
 ### Added to 3.1.0
 
-- Released Senzing version 3.1.0 
+- Released Senzing version 3.1.0
 - Improve error message text
 - Migrate from "master" to "main" in documentation.
 
