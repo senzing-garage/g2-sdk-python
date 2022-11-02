@@ -170,9 +170,7 @@ class G2Diagnostic(object):
         if self._debug:
             print("Initialization Status: " + str(ret_code))
 
-        if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
-        elif ret_code < 0:
+        if ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
@@ -195,9 +193,7 @@ class G2Diagnostic(object):
         if self._debug:
             print("Initialization Status: " + str(ret_code))
 
-        if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
-        elif ret_code < 0:
+        if ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
@@ -212,9 +208,7 @@ class G2Diagnostic(object):
         self._lib_handle.G2Diagnostic_reinit.argtypes = [c_longlong]
         ret_code = self._lib_handle.G2Diagnostic_reinit(configIDValue)
 
-        if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
-        elif ret_code < 0:
+        if ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 

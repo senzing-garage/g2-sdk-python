@@ -144,9 +144,7 @@ class G2Config(object):
         if self._debug:
             print("Initialization Status: " + str(ret_code))
 
-        if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Config has not been successfully initialized')
-        elif ret_code < 0:
+        if ret_code < 0:
             self._lib_handle.G2Config_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 

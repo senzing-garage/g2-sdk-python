@@ -140,9 +140,7 @@ class G2Hasher(object):
         if self._debug:
             print("Initialization Status: " + str(ret_code))
 
-        if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Hasher has not been successfully initialized')
-        elif ret_code < 0:
+        if ret_code < 0:
             self._lib_handle.G2Hasher_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
@@ -169,9 +167,7 @@ class G2Hasher(object):
         if self._debug:
             print("Initialization Status: " + str(ret_code))
 
-        if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Hasher has not been successfully initialized')
-        elif ret_code < 0:
+        if ret_code < 0:
             self._lib_handle.G2Hasher_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
