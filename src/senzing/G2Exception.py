@@ -1,6 +1,8 @@
 __all__ = [
     'G2BadInputException',
     'G2ConfigurationException',
+    'G2DatabaseConnectionLost',
+    'G2DatabaseException',
     'G2Exception',
     'G2IncompleteRecordException',
     'G2MalformedJsonException',
@@ -28,7 +30,7 @@ __all__ = [
 
 
 class G2Exception(Exception):
-    '''Base exception for G2 related python code'''
+    """Base exception for G2 related python code."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
@@ -43,32 +45,24 @@ class G2Exception(Exception):
                 result.append(message)
         return " ".join(result)
 
+
 # -----------------------------------------------------------------------------
 # Category exceptions
 # - These exceptions represent categories of actions that can be taken by
 #   the calling program.
-# - G2BadInputException - The user-supplied input contained an error.
-# - G2RetryableException - The program can provide a remedy and continue.
-# - G2UnrecoverableException - System failure; can't continue.
 # -----------------------------------------------------------------------------
 
 
 class G2BadInputException(G2Exception):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+    """The user-supplied input contained an error."""
 
 
 class G2RetryableException(G2Exception):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+    """The program can provide a remedy and continue."""
 
 
 class G2UnrecoverableException(G2Exception):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+    """System failure, can't continue."""
 
 # -----------------------------------------------------------------------------
 # Detail exceptions for G2BadInputException
@@ -80,39 +74,27 @@ class G2UnrecoverableException(G2Exception):
 
 
 class G2IncompleteRecordException(G2BadInputException):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+    pass
 
 
 class G2MalformedJsonException(G2BadInputException):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+    pass
 
 
 class G2MissingConfigurationException(G2BadInputException):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+    pass
 
 
 class G2MissingDataSourceException(G2BadInputException):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
-
-
-class G2NotFoundException(G2BadInputException):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+    pass
 
 
 class G2UnacceptableJsonKeyValueException(G2BadInputException):
+    pass
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+
+class G2NotFoundException(G2BadInputException):
+    pass
 
 # -----------------------------------------------------------------------------
 # Detail exceptions for G2RetryableException
@@ -124,27 +106,19 @@ class G2UnacceptableJsonKeyValueException(G2BadInputException):
 
 
 class G2ConfigurationException(G2RetryableException):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+    pass
 
 
 class G2DatabaseConnectionLost(G2RetryableException):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+    pass
 
 
 class G2MessageBufferException(G2RetryableException):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+    pass
 
 
 class G2RepositoryPurgedException(G2RetryableException):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+    pass
 
 # -----------------------------------------------------------------------------
 # Detail exceptions for G2UnrecoverableException
@@ -155,48 +129,39 @@ class G2RepositoryPurgedException(G2RetryableException):
 
 
 class G2ModuleException(G2Exception):
-    '''Base exception for G2 Module related python code'''
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+    """Base exception for G2 Module related python code."""
 
 
-class G2ModuleEmptyMessage(G2ModuleException):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+class G2ModuleEmptyMessage(G2UnrecoverableException):
+    pass
 
 
-class G2ModuleGenericException(G2ModuleException):
-    '''Generic exception for non-subclassed G2 Module exception '''
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+class G2UnhandledException(G2UnrecoverableException):
+    pass
 
 
-class G2ModuleInvalidXML(G2ModuleException):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+class G2ModuleGenericException(G2UnrecoverableException):
+    """Generic exception for non-subclassed G2 Module exception """
 
 
-class G2ModuleLicenseException(G2ModuleException):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+class G2ModuleInvalidXML(G2UnrecoverableException):
+    pass
 
 
-class G2ModuleNotInitialized(G2ModuleException):
-    '''G2 Module called but has not been initialized '''
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+class G2ModuleLicenseException(G2UnrecoverableException):
+    pass
 
 
-class G2ModuleResolveMissingResEnt(G2ModuleException):
+class G2ModuleNotInitialized(G2UnrecoverableException):
+    """G2 Module called but has not been initialized """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+
+class G2ModuleResolveMissingResEnt(G2UnrecoverableException):
+    pass
+
+
+class G2DatabaseException(G2UnrecoverableException):
+    pass
 
 # -----------------------------------------------------------------------------
 # Determine Exception based on Senzing reason code.
@@ -206,14 +171,16 @@ class G2ModuleResolveMissingResEnt(G2ModuleException):
 
 exceptions_map = {
     "999E": G2ModuleLicenseException,
-    "0002E": G2ModuleInvalidXML,
+    "0001E": G2ModuleInvalidXML,
+    "0002E": G2UnhandledException,
     "0007E": G2ModuleEmptyMessage,
     "0023E": G2UnacceptableJsonKeyValueException,
     "0024E": G2UnacceptableJsonKeyValueException,
     "0025E": G2UnacceptableJsonKeyValueException,
     "0026E": G2UnacceptableJsonKeyValueException,
-    "0027E": G2UnacceptableJsonKeyValueException,
+    "0027E": G2NotFoundException,
     "0032E": G2UnacceptableJsonKeyValueException,
+    "0033E": G2NotFoundException,
     "0034E": G2ConfigurationException,
     "0035E": G2ConfigurationException,
     "0036E": G2ConfigurationException,
@@ -223,9 +190,13 @@ exceptions_map = {
     "0061E": G2ConfigurationException,
     "0062E": G2ConfigurationException,
     "0064E": G2ConfigurationException,
+    "1001E": G2DatabaseException,
     "1007E": G2DatabaseConnectionLost,
+    "2089E": G2NotFoundException,
     "2134E": G2ModuleResolveMissingResEnt,
+    "2208E": G2ConfigurationException,
     "7221E": G2ConfigurationException,
+    "7344E": G2NotFoundException,
     "9000E": G2ModuleLicenseException,
     "30020": G2UnacceptableJsonKeyValueException,
     "30110E": G2MessageBufferException,
@@ -233,7 +204,7 @@ exceptions_map = {
     "30112E": G2MessageBufferException,
     "30121E": G2MalformedJsonException,
     "30122E": G2MalformedJsonException,
-    "30123E": G2MalformedJsonException,
+    "30123E": G2MalformedJsonException
 }
 
 
