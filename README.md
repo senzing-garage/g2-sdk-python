@@ -7,7 +7,7 @@ Senzing Software Development Kit (SDK) for Python.
 This SDK provide python access to the
 [senzingapi](https://senzing.com/senzing-api/)
 
-*Warning:*  Using `pip install senzing` will install a version of the Senzing Python SDK
+**Warning:**  Using `pip install senzing` will install a version of the Senzing Python SDK
 that is *not* covered by the Service Level Agreement (SLA).
 To obtain a version of the Senzing Python SDK that *is* covered, see
 [???](https:/senzing.com)
