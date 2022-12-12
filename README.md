@@ -3,7 +3,6 @@
 ## Synopsis
 
 Senzing Software Development Kit (SDK) for Python.
-
 This SDK provide python access to the
 [senzingapi](https://senzing.com/senzing-api/)
 
