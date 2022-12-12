@@ -9,7 +9,7 @@ This SDK provide python access to the
 **Warning:**  Using `pip install senzing` will install a version of the Senzing Python SDK
 that is *not* covered by Senzing's Service Level Agreement (SLA).
 To obtain a version of the Senzing Python SDK that *is* covered, see
-[???](https:/senzing.com)
+[Install Senzing API](https://hub.senzing.com/knowledge-base/senzingapi/install).
 
 More information at
 [github.com/Senzing/g2-sdk-python](https://github.com/Senzing/g2-sdk-python)
