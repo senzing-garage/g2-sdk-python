@@ -19,6 +19,7 @@ __all__ = [
     'G2NotFoundException',
     'G2RepositoryPurgedException',
     'G2RetryableException',
+    'G2RetryTimeoutExceeded',
     'G2UnacceptableJsonKeyValueException',
     'G2UnrecoverableException',
     'TranslateG2ModuleException',
@@ -120,6 +121,9 @@ class G2MessageBufferException(G2RetryableException):
 class G2RepositoryPurgedException(G2RetryableException):
     pass
 
+class G2RetryTimeoutExceeded(G2RetryableException):
+    pass
+
 # -----------------------------------------------------------------------------
 # Detail exceptions for G2UnrecoverableException
 # - Processing did not complete.
@@ -174,6 +178,7 @@ exceptions_map = {
     "0001E": G2ModuleInvalidXML,
     "0002E": G2UnhandledException,
     "0007E": G2ModuleEmptyMessage,
+    "0010E": G2RetryTimeoutExceeded,
     "0023E": G2UnacceptableJsonKeyValueException,
     "0024E": G2UnacceptableJsonKeyValueException,
     "0025E": G2UnacceptableJsonKeyValueException,
