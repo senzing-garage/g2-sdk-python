@@ -209,6 +209,7 @@ exceptions_map = {
     2134: G2ModuleResolveMissingResEnt,
     2208: G2ConfigurationException,
     7221: G2ConfigurationException,
+    7426: G2BadInputException,
     7344: G2NotFoundException,
     9000: G2ModuleLicenseException,
     30020: G2UnacceptableJsonKeyValueException,
