@@ -229,7 +229,7 @@ def ExceptionMessage(exception):
     elif isinstance(exception, bytes):
         result = exception.decode()
     elif isinstance(exception, Exception):
-        result = str(exception)
+        result = str(exception).split(':', 1)[1].strip()
     else:
         result = exception
     assert(isinstance(result, str))
@@ -239,9 +239,7 @@ def ExceptionMessage(exception):
 def ExceptionCode(exception):
     exception_message = ExceptionMessage(exception)
     exception_message_splits = exception_message.split('|', 1)
-    error_code_string = exception_message_splits[0].strip().rstrip('EIW')
-    error_code_string_splits = error_code_string.split(' ')
-    result = int(error_code_string_splits[-1].strip())
+    result = int(exception_message_splits[0].strip().rstrip('EIW'))
     assert(isinstance(result, int))
     return result
 
