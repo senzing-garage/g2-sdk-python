@@ -33,10 +33,12 @@ __all__ = [
 class G2Exception(Exception):
     """Base exception for G2 related python code."""
 
-    def __init__(self, error_code, message, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+    def __init__(self, exception_message, error_code=-1, description=None):
+        super().__init__(self, exception_message)
         self._error_code = error_code
-        self._message = message
+        self._message = exception_message
+        if not description:
+            self._message = description
 
     def code(self):
         return self._error_code
@@ -246,4 +248,4 @@ def TranslateG2ModuleException(exception_message):
     senzing_message = error_split[1].strip()
     senzing_error_class = exceptions_map.get(senzing_error_code, G2Exception)
 
-    return senzing_error_class(senzing_error_code, senzing_message, exception_message_string)
+    return senzing_error_class(exception_message_string, error_code=senzing_error_code, description=senzing_message)
