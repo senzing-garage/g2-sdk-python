@@ -1,5 +1,7 @@
 # g2-sdk-python
 
+## WARNING: Only the SDK obtained from the official senzingapi Linux packages is covered by the Senzing Warranty.  Any other mechanism is without Warranty.
+
 ## Synopsis
 
 Senzing Software Development Kit (SDK) for Python.

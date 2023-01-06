@@ -33,8 +33,16 @@ __all__ = [
 class G2Exception(Exception):
     """Base exception for G2 related python code."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, error_code, message, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
+        self._error_code = error_code
+        self._message = message
+
+    def code(self):
+        return self._error_code
+
+    def message(self):
+        return self._message
 
     def __str__(self):
         result = []
@@ -174,48 +182,49 @@ class G2DatabaseException(G2UnrecoverableException):
 
 
 exceptions_map = {
-    "999E": G2ModuleLicenseException,
-    "0001E": G2ModuleInvalidXML,
-    "0002E": G2UnhandledException,
-    "0007E": G2ModuleEmptyMessage,
-    "0010E": G2RetryTimeoutExceeded,
-    "0023E": G2UnacceptableJsonKeyValueException,
-    "0024E": G2UnacceptableJsonKeyValueException,
-    "0025E": G2UnacceptableJsonKeyValueException,
-    "0026E": G2UnacceptableJsonKeyValueException,
-    "0027E": G2NotFoundException,
-    "0032E": G2UnacceptableJsonKeyValueException,
-    "0033E": G2NotFoundException,
-    "0034E": G2ConfigurationException,
-    "0035E": G2ConfigurationException,
-    "0036E": G2ConfigurationException,
-    "0037E": G2NotFoundException,
-    "0047E": G2ModuleGenericException,
-    "0048E": G2ModuleNotInitialized,
-    "0049E": G2ModuleNotInitialized,
-    "0050E": G2ModuleNotInitialized,
-    "0051E": G2UnacceptableJsonKeyValueException,
-    "0053E": G2ModuleNotInitialized,
-    "0054E": G2RepositoryPurgedException,
-    "0061E": G2ConfigurationException,
-    "0062E": G2ConfigurationException,
-    "0063E": G2ModuleNotInitialized,
-    "0064E": G2ConfigurationException,
-    "1001E": G2DatabaseException,
-    "1007E": G2DatabaseConnectionLost,
-    "2089E": G2NotFoundException,
-    "2134E": G2ModuleResolveMissingResEnt,
-    "2208E": G2ConfigurationException,
-    "7221E": G2ConfigurationException,
-    "7344E": G2NotFoundException,
-    "9000E": G2ModuleLicenseException,
-    "30020": G2UnacceptableJsonKeyValueException,
-    "30110E": G2MessageBufferException,
-    "30111E": G2MessageBufferException,
-    "30112E": G2MessageBufferException,
-    "30121E": G2MalformedJsonException,
-    "30122E": G2MalformedJsonException,
-    "30123E": G2MalformedJsonException
+    999: G2ModuleLicenseException,
+    1: G2ModuleInvalidXML,
+    2: G2UnhandledException,
+    7: G2ModuleEmptyMessage,
+    10: G2RetryTimeoutExceeded,
+    23: G2UnacceptableJsonKeyValueException,
+    24: G2UnacceptableJsonKeyValueException,
+    25: G2UnacceptableJsonKeyValueException,
+    26: G2UnacceptableJsonKeyValueException,
+    27: G2NotFoundException,
+    32: G2UnacceptableJsonKeyValueException,
+    33: G2NotFoundException,
+    34: G2ConfigurationException,
+    35: G2ConfigurationException,
+    36: G2ConfigurationException,
+    37: G2NotFoundException,
+    47: G2ModuleGenericException,
+    48: G2ModuleNotInitialized,
+    49: G2ModuleNotInitialized,
+    50: G2ModuleNotInitialized,
+    51: G2UnacceptableJsonKeyValueException,
+    53: G2ModuleNotInitialized,
+    54: G2RepositoryPurgedException,
+    61: G2ConfigurationException,
+    62: G2ConfigurationException,
+    63: G2ModuleNotInitialized,
+    64: G2ConfigurationException,
+    1001: G2DatabaseException,
+    1007: G2DatabaseConnectionLost,
+    2089: G2NotFoundException,
+    2134: G2ModuleResolveMissingResEnt,
+    2208: G2ConfigurationException,
+    7221: G2ConfigurationException,
+    7426: G2BadInputException,
+    7344: G2NotFoundException,
+    9000: G2ModuleLicenseException,
+    30020: G2UnacceptableJsonKeyValueException,
+    30110: G2MessageBufferException,
+    30111: G2MessageBufferException,
+    30112: G2MessageBufferException,
+    30121: G2MalformedJsonException,
+    30122: G2MalformedJsonException,
+    30123: G2MalformedJsonException
 }
 
 
@@ -230,7 +239,11 @@ def TranslateG2ModuleException(exception_message):
     else:
         exception_message_string = exception_message
 
-    senzing_error_code = exception_message_string.split('|', 1)[0].strip()
+    # note the API actually has a G2_getLastExceptionCode() function that returns the int
+    # code but that would require the callers to call 2 functions
+    error_split = exception_message_string.split('|', 1)
+    senzing_error_code = int(error_split[0].strip().rstrip('EIW'))
+    senzing_message = error_split[1].strip()
     senzing_error_class = exceptions_map.get(senzing_error_code, G2Exception)
 
-    return senzing_error_class(exception_message_string)
+    return senzing_error_class(senzing_error_code, senzing_message, exception_message_string)
