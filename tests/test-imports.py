@@ -16,7 +16,7 @@ g2_hasher = G2Hasher()
 # g2_product = G2Product()
 
 an_exception_class = G2ModuleException
-an_exception_object = G2ModuleException()
+an_exception_object = G2ModuleException("Some Error")
 
 print("Test 1: Success")
 
