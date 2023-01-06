@@ -246,7 +246,7 @@ def ExceptionCode(exception):
     return result
 
 
-def TranslateG2ModuleException(exception_message):
-    senzing_error_code = ExceptionCode(exception_message)
+def TranslateG2ModuleException(exception):
+    senzing_error_code = ExceptionCode(exception)
     senzing_error_class = exceptions_map.get(senzing_error_code, G2Exception)
-    return senzing_error_class(ExceptionMessage(exception_message))
+    return senzing_error_class(ExceptionMessage(exception))
