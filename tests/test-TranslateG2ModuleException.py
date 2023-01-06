@@ -37,4 +37,3 @@ print(result)
 
 result = ExceptionCode(err)
 print(result)
-
