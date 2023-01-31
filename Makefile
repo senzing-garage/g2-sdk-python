@@ -38,7 +38,7 @@ publish-signed: package
 
 .PHONY: install
 install:
-	pip3 install senzing
+	pip3 install senzing-ce
 	
 .PHONY: install-dependencies
 install-dependencies:
@@ -56,14 +56,14 @@ install-file: package
 		--no-index \
 		--find-links dist/ \
 		--force-reinstall \
-		senzing
+		senzing-ce
 	
 .PHONY: install-test
 install-test:
 	pip3 install \
 		--index-url https://test.pypi.org/simple/ \
 		--no-deps \
-		senzing	
+		senzing-ce	
 
 # -----------------------------------------------------------------------------
 # test
@@ -80,7 +80,7 @@ test:
 
 .PHONY: uninstall
 uninstall:
-	pip3 uninstall -y senzing
+	pip3 uninstall -y senzing-ce
 	
 # -----------------------------------------------------------------------------
 # Clean up targets
