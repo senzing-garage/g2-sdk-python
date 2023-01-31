@@ -1,4 +1,6 @@
 __all__ = [
+    'ExceptionCode',
+    'ExceptionMessage',
     'G2BadInputException',
     'G2ConfigurationException',
     'G2DatabaseConnectionLost',
@@ -19,6 +21,7 @@ __all__ = [
     'G2NotFoundException',
     'G2RepositoryPurgedException',
     'G2RetryableException',
+    'G2RetryTimeoutExceeded',
     'G2UnacceptableJsonKeyValueException',
     'G2UnrecoverableException',
     'TranslateG2ModuleException',
@@ -44,7 +47,6 @@ class G2Exception(Exception):
             if message not in result:
                 result.append(message)
         return " ".join(result)
-
 
 # -----------------------------------------------------------------------------
 # Category exceptions
@@ -120,6 +122,10 @@ class G2MessageBufferException(G2RetryableException):
 class G2RepositoryPurgedException(G2RetryableException):
     pass
 
+
+class G2RetryTimeoutExceeded(G2RetryableException):
+    pass
+
 # -----------------------------------------------------------------------------
 # Detail exceptions for G2UnrecoverableException
 # - Processing did not complete.
@@ -170,62 +176,76 @@ class G2DatabaseException(G2UnrecoverableException):
 
 
 exceptions_map = {
-    "999E": G2ModuleLicenseException,
-    "0001E": G2ModuleInvalidXML,
-    "0002E": G2UnhandledException,
-    "0007E": G2ModuleEmptyMessage,
-    "0023E": G2UnacceptableJsonKeyValueException,
-    "0024E": G2UnacceptableJsonKeyValueException,
-    "0025E": G2UnacceptableJsonKeyValueException,
-    "0026E": G2UnacceptableJsonKeyValueException,
-    "0027E": G2NotFoundException,
-    "0032E": G2UnacceptableJsonKeyValueException,
-    "0033E": G2NotFoundException,
-    "0034E": G2ConfigurationException,
-    "0035E": G2ConfigurationException,
-    "0036E": G2ConfigurationException,
-    "0037E": G2NotFoundException,
-    "0047E": G2ModuleGenericException,
-    "0048E": G2ModuleNotInitialized,
-    "0049E": G2ModuleNotInitialized,
-    "0050E": G2ModuleNotInitialized,
-    "0051E": G2UnacceptableJsonKeyValueException,
-    "0053E": G2ModuleNotInitialized,
-    "0054E": G2RepositoryPurgedException,
-    "0061E": G2ConfigurationException,
-    "0062E": G2ConfigurationException,
-    "0063E": G2ModuleNotInitialized,
-    "0064E": G2ConfigurationException,
-    "1001E": G2DatabaseException,
-    "1007E": G2DatabaseConnectionLost,
-    "2089E": G2NotFoundException,
-    "2134E": G2ModuleResolveMissingResEnt,
-    "2208E": G2ConfigurationException,
-    "7221E": G2ConfigurationException,
-    "7344E": G2NotFoundException,
-    "9000E": G2ModuleLicenseException,
-    "30020": G2UnacceptableJsonKeyValueException,
-    "30110E": G2MessageBufferException,
-    "30111E": G2MessageBufferException,
-    "30112E": G2MessageBufferException,
-    "30121E": G2MalformedJsonException,
-    "30122E": G2MalformedJsonException,
-    "30123E": G2MalformedJsonException
+    1: G2ModuleInvalidXML,
+    2: G2UnhandledException,
+    7: G2ModuleEmptyMessage,
+    10: G2RetryTimeoutExceeded,
+    23: G2UnacceptableJsonKeyValueException,
+    24: G2UnacceptableJsonKeyValueException,
+    25: G2UnacceptableJsonKeyValueException,
+    26: G2UnacceptableJsonKeyValueException,
+    27: G2NotFoundException,
+    32: G2UnacceptableJsonKeyValueException,
+    33: G2NotFoundException,
+    34: G2ConfigurationException,
+    35: G2ConfigurationException,
+    36: G2ConfigurationException,
+    37: G2NotFoundException,
+    47: G2ModuleGenericException,
+    48: G2ModuleNotInitialized,
+    49: G2ModuleNotInitialized,
+    50: G2ModuleNotInitialized,
+    51: G2UnacceptableJsonKeyValueException,
+    53: G2ModuleNotInitialized,
+    54: G2RepositoryPurgedException,
+    61: G2ConfigurationException,
+    62: G2ConfigurationException,
+    63: G2ModuleNotInitialized,
+    64: G2ConfigurationException,
+    999: G2ModuleLicenseException,
+    1001: G2DatabaseException,
+    1007: G2DatabaseConnectionLost,
+    2089: G2NotFoundException,
+    2134: G2ModuleResolveMissingResEnt,
+    2208: G2ConfigurationException,
+    7221: G2ConfigurationException,
+    7426: G2BadInputException,
+    7344: G2NotFoundException,
+    9000: G2ModuleLicenseException,
+    30020: G2UnacceptableJsonKeyValueException,
+    30110: G2MessageBufferException,
+    30111: G2MessageBufferException,
+    30112: G2MessageBufferException,
+    30121: G2MalformedJsonException,
+    30122: G2MalformedJsonException,
+    30123: G2MalformedJsonException
 }
 
 
-def TranslateG2ModuleException(exception_message):
-
-    if exception_message is None:
-        exception_message_string = ''
-    elif isinstance(exception_message, bytearray):
-        exception_message_string = exception_message.decode()
-    elif isinstance(exception_message, bytes):
-        exception_message_string = exception_message.decode()
+def ExceptionMessage(exception):
+    if exception is None:
+        result = ''
+    elif isinstance(exception, bytearray):
+        result = exception.decode()
+    elif isinstance(exception, bytes):
+        result = exception.decode()
+    elif isinstance(exception, Exception):
+        result = str(exception).split(':', 1)[1].strip()
     else:
-        exception_message_string = exception_message
+        result = exception
+    assert(isinstance(result, str))
+    return result
 
-    senzing_error_code = exception_message_string.split('|', 1)[0].strip()
+
+def ExceptionCode(exception):
+    exception_message = ExceptionMessage(exception)
+    exception_message_splits = exception_message.split('|', 1)
+    result = int(exception_message_splits[0].strip().rstrip('EIW'))
+    assert(isinstance(result, int))
+    return result
+
+
+def TranslateG2ModuleException(exception):
+    senzing_error_code = ExceptionCode(exception)
     senzing_error_class = exceptions_map.get(senzing_error_code, G2Exception)
-
-    return senzing_error_class(exception_message_string)
+    return senzing_error_class(ExceptionMessage(exception))

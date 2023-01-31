@@ -302,12 +302,7 @@ class G2Engine(object):
             None
         """
 
-        if type(input_umf_) == str:
-            input_umf_string = input_umf_.encode('utf-8')
-        elif type(input_umf_) == bytearray:
-            input_umf_string = str(input_umf_)
-        else:
-            input_umf_string = input_umf_
+        input_umf_string = self.prepareStringArgument(input_umf_)
         self._lib_handle.G2_process.argtypes = [c_char_p]
         self._lib_handle.G2_process.restype = c_int
         ret_code = self._lib_handle.G2_process(input_umf_string)
@@ -332,13 +327,7 @@ class G2Engine(object):
             None
         """
 
-        if type(input_umf_) == str:
-            input_umf_string = input_umf_.encode('utf-8')
-        elif type(input_umf_) == bytearray:
-            input_umf_string = str(input_umf_)
-        else:
-            input_umf_string = input_umf_
-
+        input_umf_string = self.prepareStringArgument(input_umf_)
         response[::] = b''
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
@@ -372,12 +361,8 @@ class G2Engine(object):
         Args:
             input_umf_: G2 style JSON
         """
-        if type(input_umf_) == str:
-            input_umf_string = input_umf_.encode('utf-8')
-        elif type(input_umf_) == bytearray:
-            input_umf_string = str(input_umf_)
-        else:
-            input_umf_string = input_umf_
+
+        input_umf_string = self.prepareStringArgument(input_umf_)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_processWithResponseResize.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
