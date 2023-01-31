@@ -45,8 +45,7 @@ It also contains:
 
 1. Use the [pip install](https://pip.pypa.io/en/stable/cli/pip_install/)
    command to install the
-   [Senzing SDK for Python](https://pypi.org/project/senzing/)
-   community edition.
+   [Senzing SDK for Python](https://pypi.org/project/senzing/) community edition.
    Example:
 
     ```console
