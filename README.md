@@ -6,7 +6,7 @@ Senzing Software Development Kit (SDK) for Python.
 This SDK provide python access to the
 [senzingapi](https://senzing.com/senzing-api/)
 
-**Warning:**  Using `pip install senzing` will install a version of the Senzing Python SDK
+**Warning:**  Using `pip install senzing-ce` will install a version of the Senzing Python SDK
 that *is not* covered by Senzing's Service Level Agreement (SLA).
 To obtain a version of the Senzing Python SDK that *is* covered, see
 [Install Senzing API](https://hub.senzing.com/knowledge-base/senzingapi/install).
@@ -16,7 +16,7 @@ More information at
 
 ## Overview
 
-The git repository  at
+The git repository at
 [github.com/Senzing/g2-sdk-python](https://github.com/Senzing/g2-sdk-python)
 contains the Senzing SDK for Python files in `src/senzing`.
 
@@ -45,11 +45,12 @@ It also contains:
 
 1. Use the [pip install](https://pip.pypa.io/en/stable/cli/pip_install/)
    command to install the
-   [Senzing SDK for Python](https://pypi.org/project/senzing/).
+   [Senzing SDK for Python](https://pypi.org/project/senzing/)
+   community edition.
    Example:
 
     ```console
-    pip install senzing
+    pip install senzing-ce
     ```
 
 1. More information at
