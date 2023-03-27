@@ -580,6 +580,9 @@ class G2Engine(object):
         infoBuf = c_char_p(addressof(tls_var3.buf))
         infoBufSize = c_size_t(tls_var3.bufSize)
 
+        # Make sure we have enough room to receive the Record ID
+        resize_return_buffer(tls_var.buf, 100)
+
         self._lib_handle.G2_addRecordWithInfoWithReturnedRecordID.restype = c_int
         self._lib_handle.G2_addRecordWithInfoWithReturnedRecordID.argtypes = [c_char_p, c_char_p, c_char_p, c_longlong, c_char_p, c_size_t, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def3]
         ret_code = self._lib_handle.G2_addRecordWithInfoWithReturnedRecordID(_dataSourceCode, _jsonData, _load_id, flags, tls_var.buf, sizeof(tls_var.buf), pointer(infoBuf), pointer(infoBufSize), self._resize_func3)
@@ -1380,22 +1383,26 @@ class G2Engine(object):
             response: A bytearray for returning the info about changed resolved entities
         """
 
+        # clear the output params
         response[::] = b''
         info[::] = b''
-        responseBuf = c_char_p(self.tls_var2.buf)
-        infoBuf = c_char_p(self.info_buf.buf)
 
-        self._lib_handle.G2_processRedoRecordWithInfo.restype = c_int
-        self._lib_handle.G2_processRedoRecordWithInfo.argtypes = [c_longlong, POINTER(c_char_p), POINTER(c_size_t), POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def2]
-        ret_code = self._lib_handle.G2_processRedoRecordWithInfo(flags, pointer(responseBuf), pointer(self.tls_var2.bufSize), pointer(infoBuf), pointer(self.info_buf.bufSize), self._resize_func2)
-        if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
+        # get a redo record
+        getRecordResponse = bytearray()
+        getRecordResponse[::] = b''
+        self.getRedoRecord(getRecordResponse, args, kwargs)
+        response += getRecordResponse
 
-        response += responseBuf.value
-        info += infoBuf.value
+        # get the record to be processesd
+        inputUMF = getRecordResponse
+
+        # process the redo record
+        if len(inputUMF) > 0:
+            processWithInfoResponse = bytearray()
+            processWithInfoResponse[::] = b''
+            self.processWithInfo(inputUMF, processWithInfoResponse, flags, args, kwargs)
+            info += processWithInfoResponse
+
 
     def countRedoRecords(self, *args, **kwargs):
         # type: () -> int
