@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - In G2Exception.py, added ExceptionMessage and ExceptionCode
 
+## [3.5.0] - 2023-04-03
+
+## [3.4.0] - 2023-01-11
+
 ## [3.3.0] - 2022-09-23
 
 ### Added to 3.3.0
