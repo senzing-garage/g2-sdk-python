@@ -583,3 +583,28 @@ class G2Diagnostic(object):
             raise TranslateG2ModuleException(tls_var.buf.value)
 
         response += tls_var.buf.value
+
+
+    def purgeRepository(self, reset_resolver_=True, *args, **kwargs):
+        # type: (bool) -> None
+        """ Purges the G2 repository
+
+        Args:
+            reset_resolver: Re-initializes the engine.  Should be left True.
+
+        Return:
+            None
+        """
+
+        ret_code = self._lib_handle.G2Diagnostic_purgeRepository()
+
+        if ret_code == -1:
+            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
+        elif ret_code < 0:
+            self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
+            raise TranslateG2ModuleException(tls_var.buf.value)
+
+
+
+
+
