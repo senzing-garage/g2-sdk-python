@@ -62,6 +62,7 @@ class G2EngineFlags(IntFlag):
     # Flags for finding entity path data.
 
     G2_FIND_PATH_PREFER_EXCLUDE = (1 << 25)
+    G2_FIND_PATH_MATCHING_INFO = (1 << 30)
 
     # Flags for including search result information.
 
