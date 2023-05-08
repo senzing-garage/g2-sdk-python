@@ -603,8 +603,3 @@ class G2Diagnostic(object):
         elif ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
-
-
-
-
-
