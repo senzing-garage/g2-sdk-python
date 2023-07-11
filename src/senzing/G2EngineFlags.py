@@ -63,6 +63,7 @@ class G2EngineFlags(IntFlag):
 
     G2_FIND_PATH_PREFER_EXCLUDE = (1 << 25)
     G2_FIND_PATH_MATCHING_INFO = (1 << 30)
+    G2_FIND_NETWORK_MATCHING_INFO = (1 << 33)
 
     # Flags for including search result information.
 
