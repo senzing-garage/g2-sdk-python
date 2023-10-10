@@ -1,3 +1,6 @@
+import functools
+import warnings
+
 __all__ = [
 
 # -- Deprecated- -------------------------------------------------------------------------------
@@ -664,55 +667,6 @@ exceptions_map = {
     30122: G2BadInputException,               # EAS_ERR_JSON_PARSING_FAILURE_MUST_BE_OBJECT_OR_ARRAY                                   "JSON Parsing Failure.  JSON must be object or array."
     30123: G2BadInputException,               # EAS_ERR_JSON_PARSING_FAILURE_OBJECT_HAS_DUPLICATE_KEYS                                 "Json object has duplicate keys."
     30131: G2BadInputException,               # EAS_ERR_UNKNOWN_COLUMN_REQUESTED_FOR_CSV_EXPORT                                        "Invalid column [{0}] requested for CSV export."
-}
-
-
-
-
-exceptions_map = {
-    1: G2ModuleInvalidXML,
-    2: G2UnhandledException,
-    7: G2ModuleEmptyMessage,
-    10: G2RetryTimeoutExceeded,
-    23: G2UnacceptableJsonKeyValueException,
-    24: G2UnacceptableJsonKeyValueException,
-    25: G2UnacceptableJsonKeyValueException,
-    26: G2UnacceptableJsonKeyValueException,
-    27: G2NotFoundException,
-    32: G2UnacceptableJsonKeyValueException,
-    33: G2NotFoundException,
-    34: G2ConfigurationException,
-    35: G2ConfigurationException,
-    36: G2ConfigurationException,
-    37: G2NotFoundException,
-    47: G2ModuleGenericException,
-    48: G2ModuleNotInitialized,
-    49: G2ModuleNotInitialized,
-    50: G2ModuleNotInitialized,
-    51: G2UnacceptableJsonKeyValueException,
-    53: G2ModuleNotInitialized,
-    54: G2RepositoryPurgedException,
-    61: G2ConfigurationException,
-    62: G2ConfigurationException,
-    63: G2ModuleNotInitialized,
-    64: G2ConfigurationException,
-    999: G2ModuleLicenseException,
-    1001: G2DatabaseException,
-    1007: G2DatabaseConnectionLost,
-    2089: G2NotFoundException,
-    2134: G2ModuleResolveMissingResEnt,
-    2208: G2ConfigurationException,
-    7221: G2ConfigurationException,
-    7426: G2BadInputException,
-    7344: G2NotFoundException,
-    9000: G2ModuleLicenseException,
-    30020: G2UnacceptableJsonKeyValueException,
-    30110: G2MessageBufferException,
-    30111: G2MessageBufferException,
-    30112: G2MessageBufferException,
-    30121: G2MalformedJsonException,
-    30122: G2MalformedJsonException,
-    30123: G2MalformedJsonException
 }
 
 
