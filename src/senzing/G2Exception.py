@@ -2,8 +2,6 @@ import functools
 import warnings
 
 __all__ = [
-
-# -- Deprecated- -------------------------------------------------------------------------------
     'ExceptionCode',
     'ExceptionMessage',
     'G2BadInputException',
@@ -11,6 +9,19 @@ __all__ = [
     'G2DatabaseConnectionLostException',
     'G2DatabaseException',
     'G2Exception',
+    'G2LicenseException',
+    'G2NotFoundException',
+    'G2NotInitializedException',
+    'G2RetryTimeoutExceededException',
+    'G2RetryableException',
+    'G2UnhandledException',
+    'G2UnknownDatasourceException',
+    'G2UnrecoverableException',
+    'TranslateG2ModuleException',
+
+# -- Deprecated- -------------------------------------------------------------------------------
+
+    'G2DatabaseConnectionLost',
     'G2IncompleteRecordException',
     'G2MalformedJsonException',
     'G2MessageBufferException',
@@ -23,17 +34,9 @@ __all__ = [
     'G2ModuleLicenseException',
     'G2ModuleNotInitialized',
     'G2ModuleResolveMissingResEnt',
-    'G2NotFoundException',
     'G2RepositoryPurgedException',
-    'G2RetryableException',
     'G2RetryTimeoutExceeded',
     'G2UnacceptableJsonKeyValueException',
-    'G2UnrecoverableException',
-    'TranslateG2ModuleException',
-    'G2UnknownDatasourceException',
-    'G2LicenseException',
-    'G2NotInitialized',
-    'G2UnhandledException',
 ]
 
 SENZING_PRODUCT_ID = "5044"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
@@ -164,7 +167,17 @@ class G2MessageBufferException(G2RetryableException):
 
 
 @deprecated(1021)
+class G2DatabaseConnectionLost(G2RetryableException):
+    pass
+
+
+@deprecated(1022)
 class G2RepositoryPurgedException(G2RetryableException):
+    pass
+
+
+@deprecated(1023)
+class G2RetryTimeoutExceeded(G2RetryableException):
     pass
 
 # -----------------------------------------------------------------------------
