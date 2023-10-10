@@ -8,7 +8,7 @@ import warnings
 from .G2Exception import TranslateG2ModuleException, G2ModuleNotInitialized, G2ModuleGenericException
 
 __all__ = ['G2ConfigMgr']
-SENZING_PRODUCT_ID = "5027"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-product-ids.md
+SENZING_PRODUCT_ID = "5041"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 
 class MyBuffer(threading.local):
