@@ -6,6 +6,7 @@ disable=
     bare-except,
     blacklisted-name,
     broad-except,
+    catching-non-exception,
     consider-using-f-string,
     duplicate-code,
     invalid-name,

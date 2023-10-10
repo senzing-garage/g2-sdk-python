@@ -4,6 +4,7 @@
 
 # from senzing import TranslateG2ModuleException, ExceptionMessage, ExceptionCode, G2ModuleNotInitialized, G2DatabaseConnectionLostException, G2ModuleLicenseException
 from senzing import *
+from senzing import G2Exception
 
 # Create error messages of different types.
 
@@ -30,8 +31,8 @@ print("ExceptionCode 1: {0}".format(result))
 
 # Test detailed Exception class
 
+testname = "Detailed Exception class:"
 try:
-    testname = "Detailed Exception class:"
     raise TranslateG2ModuleException("0033E|..")
 except G2NotFoundException as err:
     print(testname, "PASS - G2NotFoundException")
@@ -44,8 +45,8 @@ except Exception as err:
 
 # Test general Exception class
 
+testname = "General Exception class:"
 try:
-    testname = "General Exception class:"
     raise TranslateG2ModuleException("0033E|..")
 except G2BadInputException as err:
     print(testname, "PASS - G2BadInputException")
@@ -56,8 +57,8 @@ except Exception as err:
 
 # Test senzing Exception class
 
+testname = "Senzing Exception class:"
 try:
-    testname = "Senzing Exception class:"
     raise TranslateG2ModuleException("0033E|..")
 except G2Exception as err:
     print(testname, "PASS - G2Exception")
@@ -66,8 +67,8 @@ except Exception as err:
 
 # Test Exception class
 
+testname = "Exception class:"
 try:
-    testname = "Exception class:"
     raise TranslateG2ModuleException("0033E|..")
 except G2Exception as err:
     print(testname, "PASS - Exception")
@@ -79,4 +80,3 @@ print("TranslateG2ModuleException 3: {0}".format(result))
 
 err = G2ModuleNotInitialized("0050E|Fake G2ModuleNotInitialized exception")
 err = G2ModuleLicenseException("0050E|Fake G2ModuleNotInitialized exception")
-
