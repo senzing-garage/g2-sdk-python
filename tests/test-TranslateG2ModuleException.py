@@ -2,7 +2,8 @@
 
 # Test exceptions.
 
-from senzing import TranslateG2ModuleException, ExceptionMessage, ExceptionCode, G2ModuleNotInitialized
+# from senzing import TranslateG2ModuleException, ExceptionMessage, ExceptionCode, G2ModuleNotInitialized, G2DatabaseConnectionLostException, G2ModuleLicenseException
+from senzing import *
 
 # Create error messages of different types.
 
@@ -12,28 +13,70 @@ error_bytearray = bytearray(error_string, 'utf-8')
 # Test string.
 
 result = TranslateG2ModuleException(error_string)
-print(result)
+print("TranslateG2ModuleException 1: {0}".format(result))
 
 # Test bytearray.
 
 result = TranslateG2ModuleException(error_bytearray)
-print(result)
-
+print("TranslateG2ModuleException 2: {0}".format(result))
 
 # Test error
 
 result = ExceptionMessage(error_bytearray)
-print(result)
+print("ExceptionMessage 1: {0}".format(result))
 
 result = ExceptionCode(error_bytearray)
-print(result)
+print("ExceptionCode 1: {0}".format(result))
 
-# Test error
+# Test detailed Exception class
+
+try:
+    testname = "Detailed Exception class:"
+    raise TranslateG2ModuleException("0033E|..")
+except G2NotFoundException as err:
+    print(testname, "PASS - G2NotFoundException")
+except G2BadInputException as err:
+    print(testname, "FAIL - G2BadInputException")
+except G2Exception as err:
+    print(testname, "FAIL - G2Exception")
+except Exception as err:
+    print(">>> Exception")
+
+# Test general Exception class
+
+try:
+    testname = "General Exception class:"
+    raise TranslateG2ModuleException("0033E|..")
+except G2BadInputException as err:
+    print(testname, "PASS - G2BadInputException")
+except G2Exception as err:
+    print(testname, "FAIL - G2Exception")
+except Exception as err:
+    print(testname, "FAIL - Exception")
+
+# Test senzing Exception class
+
+try:
+    testname = "Senzing Exception class:"
+    raise TranslateG2ModuleException("0033E|..")
+except G2Exception as err:
+    print(testname, "PASS - G2Exception")
+except Exception as err:
+    print(testname, "FAIL - Exception")
+
+# Test Exception class
+
+try:
+    testname = "Exception class:"
+    raise TranslateG2ModuleException("0033E|..")
+except G2Exception as err:
+    print(testname, "PASS - Exception")
+
+result = TranslateG2ModuleException("0033E|..")
+print("TranslateG2ModuleException 3: {0}".format(result))
+
+# Test deprecation
 
 err = G2ModuleNotInitialized("0050E|Fake G2ModuleNotInitialized exception")
+err = G2ModuleLicenseException("0050E|Fake G2ModuleNotInitialized exception")
 
-result = ExceptionMessage(err)
-print(result)
-
-result = ExceptionCode(err)
-print(result)

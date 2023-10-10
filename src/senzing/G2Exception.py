@@ -50,7 +50,7 @@ def deprecated(instance):
         def wrapper(*args, **kwargs):
             warnings.simplefilter('always', DeprecationWarning)  # turn off filter
             warnings.warn(
-                "senzing-{0}{1:04d}W Call to deprecated function {2}.".format(SENZING_PRODUCT_ID, instance, func.__name__),
+                "senzing-{0}{1:04d}W Exception class '{2}' has been deprecated.".format(SENZING_PRODUCT_ID, instance, func.__name__),
                 category=DeprecationWarning,
                 stacklevel=2)
             warnings.simplefilter('default', DeprecationWarning)  # reset filter
