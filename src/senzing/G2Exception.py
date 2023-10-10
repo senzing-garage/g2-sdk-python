@@ -1,4 +1,6 @@
 __all__ = [
+
+# -- Deprecated- -------------------------------------------------------------------------------
     'ExceptionCode',
     'ExceptionMessage',
     'G2BadInputException',
@@ -25,7 +27,32 @@ __all__ = [
     'G2UnacceptableJsonKeyValueException',
     'G2UnrecoverableException',
     'TranslateG2ModuleException',
+    'G2UnknownDatasourceException',
+    'G2LicenseException',
+    'G2NotInitialized',
+    'G2UnhandledException',
 ]
+
+SENZING_PRODUCT_ID = "5044"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
+
+
+def deprecated(instance):
+
+    def the_decorator(func):
+
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            warnings.simplefilter('always', DeprecationWarning)  # turn off filter
+            warnings.warn(
+                "senzing-{0}{1:04d}W Call to deprecated function {2}.".format(SENZING_PRODUCT_ID, instance, func.__name__),
+                category=DeprecationWarning,
+                stacklevel=2)
+            warnings.simplefilter('default', DeprecationWarning)  # reset filter
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return the_decorator
 
 # -----------------------------------------------------------------------------
 # Base G2Exception
@@ -59,6 +86,10 @@ class G2BadInputException(G2Exception):
     """The user-supplied input contained an error."""
 
 
+class G2ConfigurationException(G2Exception):
+    """The program can provide a remedy and continue."""
+
+
 class G2RetryableException(G2Exception):
     """The program can provide a remedy and continue."""
 
@@ -75,27 +106,36 @@ class G2UnrecoverableException(G2Exception):
 # -----------------------------------------------------------------------------
 
 
+class G2NotFoundException(G2BadInputException):
+    pass
+
+
+class G2UnknownDatasourceException(G2BadInputException):
+    pass
+
+
+@deprecated(1010)
 class G2IncompleteRecordException(G2BadInputException):
     pass
 
 
+@deprecated(1011)
 class G2MalformedJsonException(G2BadInputException):
     pass
 
 
+@deprecated(1012)
 class G2MissingConfigurationException(G2BadInputException):
     pass
 
 
+@deprecated(1013)
 class G2MissingDataSourceException(G2BadInputException):
     pass
 
 
+@deprecated(1014)
 class G2UnacceptableJsonKeyValueException(G2BadInputException):
-    pass
-
-
-class G2NotFoundException(G2BadInputException):
     pass
 
 # -----------------------------------------------------------------------------
@@ -107,23 +147,21 @@ class G2NotFoundException(G2BadInputException):
 # -----------------------------------------------------------------------------
 
 
-class G2ConfigurationException(G2RetryableException):
-    pass
-
-
 class G2DatabaseConnectionLost(G2RetryableException):
     pass
 
 
+class G2RetryTimeoutExceeded(G2RetryableException):
+    pass
+
+
+@deprecated(1020)
 class G2MessageBufferException(G2RetryableException):
     pass
 
 
+@deprecated(1021)
 class G2RepositoryPurgedException(G2RetryableException):
-    pass
-
-
-class G2RetryTimeoutExceeded(G2RetryableException):
     pass
 
 # -----------------------------------------------------------------------------
@@ -134,11 +172,15 @@ class G2RetryTimeoutExceeded(G2RetryableException):
 # -----------------------------------------------------------------------------
 
 
-class G2ModuleException(G2Exception):
-    """Base exception for G2 Module related python code."""
+class G2DatabaseException(G2UnrecoverableException):
+    pass
 
 
-class G2ModuleEmptyMessage(G2UnrecoverableException):
+class G2LicenseException(G2UnrecoverableException):
+    pass
+
+
+class G2NotInitialized(G2UnrecoverableException):
     pass
 
 
@@ -146,27 +188,38 @@ class G2UnhandledException(G2UnrecoverableException):
     pass
 
 
+@deprecated(1030)
+class G2ModuleException(G2Exception):
+    """Base exception for G2 Module related python code."""
+
+
+@deprecated(1031)
+class G2ModuleEmptyMessage(G2UnrecoverableException):
+    pass
+
+
+@deprecated(1032)
 class G2ModuleGenericException(G2UnrecoverableException):
     """Generic exception for non-subclassed G2 Module exception """
 
 
+@deprecated(1033)
 class G2ModuleInvalidXML(G2UnrecoverableException):
     pass
 
 
+@deprecated(1034)
 class G2ModuleLicenseException(G2UnrecoverableException):
     pass
 
 
+@deprecated(1035)
 class G2ModuleNotInitialized(G2UnrecoverableException):
     """G2 Module called but has not been initialized """
 
 
+@deprecated(1036)
 class G2ModuleResolveMissingResEnt(G2UnrecoverableException):
-    pass
-
-
-class G2DatabaseException(G2UnrecoverableException):
     pass
 
 # -----------------------------------------------------------------------------
