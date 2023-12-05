@@ -130,6 +130,7 @@ class G2Config(object):
         self.init(module_name_, ini_params_, debug_)
 
     def init(self, module_name_, ini_params_, debug_=False, *args, **kwargs):
+        raise G2RetryTimeoutExceeded(">>>>> BOB was here")
 
         self._module_name = self.prepareStringArgument(module_name_)
         self._ini_params = self.prepareStringArgument(ini_params_)

@@ -7,6 +7,8 @@
 
 # Step 1: Import the files so that the __all__ attribute will work with the "name" (e.g. G2Config, G2ConfigMgr)
 
+import warnings
+
 from . import G2Config, G2ConfigMgr, G2Diagnostic, G2Engine, G2EngineFlags, G2Exception, G2Hasher, G2Product
 
 import_lists = [
@@ -33,5 +35,16 @@ from .G2Diagnostic import *
 from .G2Engine import *
 from .G2EngineFlags import *
 from .G2Exception import *
+from .G2Exception import DEPRECATED_CLASSES
 from .G2Hasher import *
 from .G2Product import *
+
+def __getattr__(name):
+    if name in DEPRECATED_CLASSES.keys():
+        replacement_class = DEPRECATED_CLASSES.get(name, G2Exception)
+        message = ">>>> __init__.py says: {0} is deprecated. Using {1} instead.".format(
+            name, replacement_class.__name__
+        )
+        warnings.warn(message, DeprecationWarning, stacklevel=2)
+        return replacement_class
+    raise AttributeError
