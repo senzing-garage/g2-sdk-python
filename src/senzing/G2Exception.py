@@ -593,7 +593,7 @@ DEPRECATED_CLASSES = {
 
 
 def __getattr__(name):
-    if name in DEPRECATED_CLASSES.keys():
+    if name in DEPRECATED_CLASSES:
         replacement_class = DEPRECATED_CLASSES.get(name, G2Exception)
         replacement_class_name = replacement_class.__name__
         warnings.warn(
