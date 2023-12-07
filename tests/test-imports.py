@@ -15,8 +15,8 @@ from senzing import *
 g2_hasher = G2Hasher()
 # g2_product = G2Product()
 
-an_exception_class = G2ModuleException
-an_exception_object = G2ModuleException()
+an_exception_class = G2Exception
+an_exception_object = G2Exception()
 
 print("Test 1: Success")
 
@@ -35,8 +35,8 @@ print("Test 2: Success")
 
 # ----- Import from G2Exception -----------------------------------------------
 
-from senzing.G2Exception import G2ModuleException
-from senzing.G2Exception import G2ModuleException as bob
+from senzing.G2Exception import G2Exception
+from senzing.G2Exception import G2Exception as bob
 import senzing.G2Exception
 
 print("Test 3: Success")

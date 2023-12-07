@@ -1,11 +1,10 @@
 from ctypes import *
 import threading
-import json
 import os
 import functools
 import warnings
 
-from .G2Exception import TranslateG2ModuleException, G2ModuleNotInitialized, G2ModuleGenericException
+from .G2Exception import TranslateG2ModuleException, G2NotInitializedException, G2Exception
 
 __all__ = ['G2Config']
 SENZING_PRODUCT_ID = "5040"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
@@ -94,7 +93,7 @@ class G2Config(object):
             print("ERROR: Unable to load G2.  Did you remember to setup your environment by sourcing the setupEnv file?")
             print("ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart")
             print("ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements")
-            raise G2ModuleGenericException("Failed to load the G2 library")
+            raise G2Exception("Failed to load the G2 library")
 
         self._resize_func_def = CFUNCTYPE(c_char_p, c_char_p, c_size_t)
         self._resize_func = self._resize_func_def(resize_return_buffer)
@@ -187,7 +186,7 @@ class G2Config(object):
         ret_code = self._lib_handle.G2Config_create(byref(configHandle))
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Config has not been successfully initialized')
+            raise G2NotInitializedException('G2Config has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Config_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -204,7 +203,7 @@ class G2Config(object):
         ret_code = self._lib_handle.G2Config_load(_jsonConfig, byref(configHandle))
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Config has not been successfully initialized')
+            raise G2NotInitializedException('G2Config has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Config_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -227,7 +226,7 @@ class G2Config(object):
         ret_code = self._lib_handle.G2Config_save(configHandle, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Config has not been successfully initialized')
+            raise G2NotInitializedException('G2Config has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Config_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -243,7 +242,7 @@ class G2Config(object):
         ret_code = self._lib_handle.G2Config_listDataSources(configHandle, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Config has not been successfully initialized')
+            raise G2NotInitializedException('G2Config has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Config_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -259,7 +258,7 @@ class G2Config(object):
         self._lib_handle.G2Config_addDataSource.argtypes = [c_void_p, c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2Config_addDataSource(configHandle, _inputJson, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Config has not been successfully initialized')
+            raise G2NotInitializedException('G2Config has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Config_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -274,7 +273,7 @@ class G2Config(object):
         ret_code = self._lib_handle.G2Config_deleteDataSource(configHandle, _inputJson)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Config has not been successfully initialized')
+            raise G2NotInitializedException('G2Config has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Config_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)

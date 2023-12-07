@@ -1,12 +1,10 @@
 from ctypes import *
 import threading
-import json
 import os
 import functools
 import warnings
-from csv import reader as csvreader
 
-from .G2Exception import TranslateG2ModuleException, G2ModuleNotInitialized, G2ModuleGenericException
+from .G2Exception import TranslateG2ModuleException, G2NotInitializedException, G2Exception
 
 __all__ = ['G2Diagnostic']
 SENZING_PRODUCT_ID = "5042"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
@@ -95,7 +93,7 @@ class G2Diagnostic(object):
             print("ERROR: Unable to load G2.  Did you remember to setup your environment by sourcing the setupEnv file?")
             print("ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart")
             print("ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements")
-            raise G2ModuleGenericException("Failed to load the G2 library")
+            raise G2Exception("Failed to load the G2 library")
 
         self._resize_func_def = CFUNCTYPE(c_char_p, c_char_p, c_size_t)
         self._resize_func = self._resize_func_def(resize_return_buffer)
@@ -226,7 +224,7 @@ class G2Diagnostic(object):
         self._lib_handle.G2Diagnostic_getEntityDetails.argtypes = [c_longlong, c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2Diagnostic_getEntityDetails(entityID, _includeInternalFeatures, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
+            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -247,7 +245,7 @@ class G2Diagnostic(object):
         self._lib_handle.G2Diagnostic_getRelationshipDetails.argtypes = [c_longlong, c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2Diagnostic_getRelationshipDetails(relationshipID, _includeInternalFeatures, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
+            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -266,7 +264,7 @@ class G2Diagnostic(object):
         self._lib_handle.G2Diagnostic_getEntityResume.argtypes = [c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2Diagnostic_getEntityResume(entityID, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
+            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -285,7 +283,7 @@ class G2Diagnostic(object):
         ret_code = self._lib_handle.G2Diagnostic_getEntityListBySize(entitySize, byref(sizedEntityHandle))
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
+            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -300,7 +298,7 @@ class G2Diagnostic(object):
         while resultValue != 0:
 
             if resultValue == -1:
-                raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
+                raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
             elif resultValue < 0:
                 self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
                 raise TranslateG2ModuleException(tls_var.buf.value)
@@ -328,7 +326,7 @@ class G2Diagnostic(object):
         ret_code = self._lib_handle.G2Diagnostic_checkDBPerf(secondsToRun, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
+            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -345,7 +343,7 @@ class G2Diagnostic(object):
         self._lib_handle.G2Diagnostic_getDBInfo.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2Diagnostic_getDBInfo(pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
+            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -362,7 +360,7 @@ class G2Diagnostic(object):
         self._lib_handle.G2Diagnostic_getDataSourceCounts.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2Diagnostic_getDataSourceCounts(pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
+            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -382,7 +380,7 @@ class G2Diagnostic(object):
         self._lib_handle.G2Diagnostic_getMappingStatistics.argtypes = [c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2Diagnostic_getMappingStatistics(_includeInternalFeatures, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
+            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -403,7 +401,7 @@ class G2Diagnostic(object):
         self._lib_handle.G2Diagnostic_getGenericFeatures.argtypes = [c_char_p, c_size_t, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2Diagnostic_getGenericFeatures(_featureType, maximumEstimatedCount, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
+            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -424,7 +422,7 @@ class G2Diagnostic(object):
         self._lib_handle.G2Diagnostic_getEntitySizeBreakdown.argtypes = [c_size_t, c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2Diagnostic_getEntitySizeBreakdown(minimumEntitySize, _includeInternalFeatures, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
+            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -449,7 +447,7 @@ class G2Diagnostic(object):
                                             self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
+            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -467,7 +465,7 @@ class G2Diagnostic(object):
         ret_code = self._lib_handle.G2Diagnostic_getResolutionStatistics(pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
+            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -577,7 +575,7 @@ class G2Diagnostic(object):
         self._lib_handle.G2Diagnostic_findEntitiesByFeatureIDs.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2Diagnostic_findEntitiesByFeatureIDs(_features, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Diagnostic has not been successfully initialized')
+            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
