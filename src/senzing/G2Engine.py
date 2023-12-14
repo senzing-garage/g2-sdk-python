@@ -1,13 +1,11 @@
 from ctypes import *
 import threading
-import json
 import os
 import functools
 import warnings
 
-from csv import reader as csvreader
 
-from .G2Exception import TranslateG2ModuleException, G2ModuleNotInitialized, G2ModuleGenericException
+from .G2Exception import TranslateG2ModuleException, G2NotInitializedException, G2Exception
 from .G2EngineFlags import G2EngineFlags
 
 __all__ = ['G2Engine']
@@ -131,7 +129,7 @@ class G2Engine(object):
             print("ERROR: Unable to load G2.  Did you remember to setup your environment by sourcing the setupEnv file?")
             print("ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart")
             print("ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements")
-            raise G2ModuleGenericException("Failed to load the G2 library")
+            raise G2Exception("Failed to load the G2 library")
 
         self._resize_func_def = CFUNCTYPE(c_char_p, c_char_p, c_size_t)
         self._resize_func = self._resize_func_def(resize_return_buffer)
@@ -285,7 +283,7 @@ class G2Engine(object):
             print("Initialization Status: " + str(ret_code))
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -308,7 +306,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_process(input_umf_string)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -335,7 +333,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_processWithInfo(input_umf_string, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -369,7 +367,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_processWithResponseResize(input_umf_string, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -393,7 +391,7 @@ class G2Engine(object):
         self._lib_handle.G2_checkRecord.argtypes = [c_char_p, c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2_checkRecord(_inputUmfString, _recordQueryList, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -413,7 +411,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_exportJSONEntityReport(flags, byref(exportHandle))
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -436,7 +434,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_exportCSVEntityReport(_headersForCSV, flags, byref(exportHandle))
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -458,7 +456,7 @@ class G2Engine(object):
         while resultValue != 0:
 
             if resultValue == -1:
-                raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+                raise G2NotInitializedException('G2Engine has not been successfully initialized')
             elif resultValue < 0:
                 self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
                 raise TranslateG2ModuleException(tls_var.buf.value)
@@ -493,7 +491,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_addRecord(_dataSourceCode, _recordId, _jsonData)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -515,7 +513,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_addRecordWithReturnedRecordID(_dataSourceCode, _jsonData, tls_var.buf, sizeof(tls_var.buf))
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -544,7 +542,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_addRecordWithInfo(_dataSourceCode, _recordId, _jsonData, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -580,7 +578,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_addRecordWithInfoWithReturnedRecordID(_dataSourceCode, _jsonData, flags, tls_var.buf, sizeof(tls_var.buf), pointer(infoBuf), pointer(infoBufSize), self._resize_func3)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -604,7 +602,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_replaceRecord(_dataSourceCode, _recordId, _jsonData)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -631,7 +629,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_replaceRecordWithInfo(_dataSourceCode, _recordId, _jsonData, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -652,7 +650,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_deleteRecord(_dataSourceCode, _recordId)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -676,7 +674,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_deleteRecordWithInfo(_dataSourceCode, _recordId, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -700,7 +698,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_reevaluateRecord(_dataSourceCode, _recordId, flags)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -724,7 +722,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_reevaluateRecordWithInfo(_dataSourceCode, _recordId, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -744,7 +742,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_reevaluateEntity(entityID, flags)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -766,7 +764,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_reevaluateEntityWithInfo(entityID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -794,7 +792,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_searchByAttributes_V2(_jsonData, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -819,7 +817,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_searchByAttributes_V3(_jsonData, _searchProfile, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -848,7 +846,7 @@ class G2Engine(object):
         self._lib_handle.G2_findPathByEntityID_V2.argtypes = [c_longlong, c_longlong, c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2_findPathByEntityID_V2(startEntityID, endEntityID, maxDegree, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -879,7 +877,7 @@ class G2Engine(object):
         self._lib_handle.G2_findNetworkByEntityID_V2.argtypes = [c_char_p, c_int, c_int, c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2_findNetworkByEntityID_V2(_entityList, maxDegree, buildOutDegree, maxEntities, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -914,7 +912,7 @@ class G2Engine(object):
         self._lib_handle.G2_findPathByRecordID_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2_findPathByRecordID_V2(_startDsrcCode, _startRecordId, _endDsrcCode, _endRecordId, maxDegree, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -945,7 +943,7 @@ class G2Engine(object):
         self._lib_handle.G2_findNetworkByRecordID_V2.argtypes = [c_char_p, c_int, c_int, c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2_findNetworkByRecordID_V2(_recordList, maxDegree, buildOutDegree, maxEntities, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -964,7 +962,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_whyRecordInEntity_V2(_dataSourceCode, _recordID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -987,7 +985,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_whyEntityByRecordID_V2(_dataSourceCode, _recordID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1007,7 +1005,7 @@ class G2Engine(object):
         self._lib_handle.G2_whyEntityByEntityID_V2.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2_whyEntityByEntityID_V2(entityID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1027,7 +1025,7 @@ class G2Engine(object):
         self._lib_handle.G2_howEntityByEntityID_V2.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2_howEntityByEntityID_V2(entityID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1049,7 +1047,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_getVirtualEntityByRecordID_V2(_recordList, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1070,7 +1068,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_whyEntities_V2(entityID1, entityID2, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1095,7 +1093,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_whyRecords_V2(_dataSourceCode1, _recordID1, _dataSourceCode2, _recordID2, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1127,7 +1125,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_findPathExcludingByEntityID_V2(startEntityID, endEntityID, maxDegree, _excludedEntities, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1161,7 +1159,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_findPathIncludingSourceByEntityID_V2(startEntityID, endEntityID, maxDegree, _excludedEntities, _requiredDsrcs, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1199,7 +1197,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_findPathExcludingByRecordID_V2(_startDsrcCode, _startRecordId, _endDsrcCode, _endRecordId, maxDegree, _excludedEntities, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1239,7 +1237,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_findPathIncludingSourceByRecordID_V2(_startDsrcCode, _startRecordId, _endDsrcCode, _endRecordId, maxDegree, _excludedEntities, _requiredDsrcs, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1268,7 +1266,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_getEntityByEntityID_V2(entityID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1300,7 +1298,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_getEntityByRecordID_V2(_dsrcCode, _recordId, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1324,7 +1322,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_findInterestingEntitiesByEntityID(entityID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1352,7 +1350,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_findInterestingEntitiesByRecordID(_dsrcCode, _recordId, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1374,7 +1372,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_getRedoRecord(pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1396,7 +1394,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_processRedoRecord(pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1444,7 +1442,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_countRedoRecords()
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1475,7 +1473,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_getRecord_V2(_dsrcCode, _recordId, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1497,7 +1495,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_stats(pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1519,7 +1517,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_exportConfig(pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1533,7 +1531,7 @@ class G2Engine(object):
             ret_code2 = self._lib_handle.G2_getActiveConfigID(cID)
 
             if ret_code2 == -1:
-                raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+                raise G2NotInitializedException('G2Engine has not been successfully initialized')
             elif ret_code2 < 0:
                 self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
                 raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1554,7 +1552,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_getActiveConfigID(cID)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1575,7 +1573,7 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_getRepositoryLastModifiedTime(lastModifiedTimeStamp)
 
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)

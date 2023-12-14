@@ -1,11 +1,10 @@
 from ctypes import *
 import threading
-import json
 import os
 import functools
 import warnings
 
-from .G2Exception import TranslateG2ModuleException, G2ModuleNotInitialized, G2ModuleGenericException
+from .G2Exception import TranslateG2ModuleException, G2NotInitializedException, G2Exception
 
 __all__ = ['G2Hasher']
 SENZING_PRODUCT_ID = "5045"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
@@ -172,7 +171,7 @@ class G2Hasher(object):
             raise TranslateG2ModuleException(tls_var.buf.value)
 
     def reportHasherNotIncluded(self, *args, **kwargs):
-        raise G2ModuleGenericException("Hashing functions not available")
+        raise G2Exception("Hashing functions not available")
 
     @deprecated(1503)
     def clearLastException(self, *args, **kwargs):
@@ -216,7 +215,7 @@ class G2Hasher(object):
         self._lib_handle.G2Hasher_exportTokenLibrary.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2Hasher_exportTokenLibrary(pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Hasher has not been successfully initialized')
+            raise G2NotInitializedException('G2Hasher has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Hasher_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -233,7 +232,7 @@ class G2Hasher(object):
         self._lib_handle.G2Hasher_process.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2Hasher_process(_record, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
-            raise G2ModuleNotInitialized('G2Hasher has not been successfully initialized')
+            raise G2NotInitializedException('G2Hasher has not been successfully initialized')
         elif ret_code < 0:
             self._lib_handle.G2Hasher_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)

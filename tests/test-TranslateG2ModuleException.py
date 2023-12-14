@@ -78,5 +78,6 @@ print("TranslateG2ModuleException 3: {0}".format(result))
 
 # Test deprecation
 
+# pylint: disable=undefined-variable
 err = G2ModuleNotInitialized("0050E|Fake G2ModuleNotInitialized exception")
 err = G2ModuleLicenseException("0050E|Fake G2ModuleNotInitialized exception")
