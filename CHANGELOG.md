@@ -8,7 +8,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- In G2Exception.py, added ExceptionMessage and ExceptionCode
+- In G2Exception.py
+    - Added ExceptionMessage and ExceptionCode
+    - Deprecated some exceptions. Existing code will continue to work, the deprecated exceptions map to the replacement exceptions at runtime. Deprecation warnings are issued if the deprecated exceptions are used in import statements 
+
+    | Deprecated Exception  | Replacement Exception |
+    | ------------- | ------------- |
+    | G2DatabaseConnectionLost  | G2DatabaseConnectionLostException  |
+    | G2IncompleteRecordException | G2BadInputException  |
+    | G2MalformedJsonException | G2BadInputException  |
+    | G2MessageBufferException | G2Exception |
+    | G2MissingConfigurationException | G2ConfigurationException |
+    | G2MissingDataSourceException | G2UnknownDatasourceException |
+    | G2ModuleEmptyMessage | G2BadInputException |
+    | G2ModuleException | G2Exception |
+    | G2ModuleGenericException | G2Exception |
+    | G2ModuleInvalidXML | G2Exception |
+    | G2ModuleLicenseException | G2LicenseException |
+    | G2ModuleNotInitialized | G2NotInitializedException |
+    | G2ModuleResolveMissingResEnt | G2Exception |
+    | G2RepositoryPurgedException | G2DatabaseException |
+    | G2RetryTimeoutExceeded | G2RetryTimeoutExceededException |
+    | G2UnacceptableJsonKeyValueException | G2BadInputException |
+
+- Added deprecation support to \_\_init\_\_.py
+- Replaced deprecated exceptions with replacements in G2Config.py, G2ConfigMgr.py, G2Diagnostic.py, G2Engine.py, G2Hasher.py and G2Product.py
 
 ## [3.5.0] - 2023-04-03
 

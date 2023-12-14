@@ -1,64 +1,26 @@
-import functools
 import warnings
 
 __all__ = [
-    'ExceptionCode',
-    'ExceptionMessage',
-    'G2BadInputException',
-    'G2ConfigurationException',
-    'G2DatabaseConnectionLostException',
-    'G2DatabaseException',
-    'G2Exception',
-    'G2LicenseException',
-    'G2NotFoundException',
-    'G2NotInitializedException',
-    'G2RetryTimeoutExceededException',
-    'G2RetryableException',
-    'G2UnhandledException',
-    'G2UnknownDatasourceException',
-    'G2UnrecoverableException',
-    'TranslateG2ModuleException',
-
-# -- Deprecated- -------------------------------------------------------------------------------
-
-    'G2DatabaseConnectionLost',
-    'G2IncompleteRecordException',
-    'G2MalformedJsonException',
-    'G2MessageBufferException',
-    'G2MissingConfigurationException',
-    'G2MissingDataSourceException',
-    'G2ModuleEmptyMessage',
-    'G2ModuleException',
-    'G2ModuleGenericException',
-    'G2ModuleInvalidXML',
-    'G2ModuleLicenseException',
-    'G2ModuleNotInitialized',
-    'G2ModuleResolveMissingResEnt',
-    'G2RepositoryPurgedException',
-    'G2RetryTimeoutExceeded',
-    'G2UnacceptableJsonKeyValueException',
+    "ExceptionCode",
+    "ExceptionMessage",
+    "G2BadInputException",
+    "G2ConfigurationException",
+    "G2DatabaseConnectionLostException",
+    "G2DatabaseException",
+    "G2Exception",
+    "G2LicenseException",
+    "G2NotFoundException",
+    "G2NotInitializedException",
+    "G2RetryTimeoutExceededException",
+    "G2RetryableException",
+    "G2UnhandledException",
+    "G2UnknownDatasourceException",
+    "G2UnrecoverableException",
+    "TranslateG2ModuleException",
 ]
 
-SENZING_PRODUCT_ID = "5044"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
-
-
-def deprecated(instance):
-
-    def the_decorator(func):
-
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            warnings.simplefilter('always', DeprecationWarning)  # turn off filter
-            warnings.warn(
-                "senzing-{0}{1:04d}W Exception class '{2}' has been deprecated.".format(SENZING_PRODUCT_ID, instance, func.__name__),
-                category=DeprecationWarning,
-                stacklevel=2)
-            warnings.simplefilter('default', DeprecationWarning)  # reset filter
-            return func(*args, **kwargs)
-
-        return wrapper
-
-    return the_decorator
+# See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
+SENZING_PRODUCT_ID = "5044"
 
 # -----------------------------------------------------------------------------
 # Base G2Exception
@@ -120,30 +82,6 @@ class G2UnknownDatasourceException(G2BadInputException):
     pass
 
 
-@deprecated(1010)
-class G2IncompleteRecordException(G2BadInputException):
-    pass
-
-
-@deprecated(1011)
-class G2MalformedJsonException(G2BadInputException):
-    pass
-
-
-@deprecated(1012)
-class G2MissingConfigurationException(G2BadInputException):
-    pass
-
-
-@deprecated(1013)
-class G2MissingDataSourceException(G2BadInputException):
-    pass
-
-
-@deprecated(1014)
-class G2UnacceptableJsonKeyValueException(G2BadInputException):
-    pass
-
 # -----------------------------------------------------------------------------
 # Detail exceptions for G2RetryableException
 # - Processing did not complete.
@@ -160,25 +98,6 @@ class G2DatabaseConnectionLostException(G2RetryableException):
 class G2RetryTimeoutExceededException(G2RetryableException):
     pass
 
-
-@deprecated(1020)
-class G2MessageBufferException(G2RetryableException):
-    pass
-
-
-@deprecated(1021)
-class G2DatabaseConnectionLost(G2RetryableException):
-    pass
-
-
-@deprecated(1022)
-class G2RepositoryPurgedException(G2RetryableException):
-    pass
-
-
-@deprecated(1023)
-class G2RetryTimeoutExceeded(G2RetryableException):
-    pass
 
 # -----------------------------------------------------------------------------
 # Detail exceptions for G2UnrecoverableException
@@ -204,47 +123,13 @@ class G2UnhandledException(G2UnrecoverableException):
     pass
 
 
-@deprecated(1030)
-class G2ModuleException(G2Exception):
-    """Base exception for G2 Module related python code."""
-
-
-@deprecated(1031)
-class G2ModuleEmptyMessage(G2UnrecoverableException):
-    pass
-
-
-@deprecated(1032)
-class G2ModuleGenericException(G2UnrecoverableException):
-    """Generic exception for non-subclassed G2 Module exception """
-
-
-@deprecated(1033)
-class G2ModuleInvalidXML(G2UnrecoverableException):
-    pass
-
-
-@deprecated(1034)
-class G2ModuleLicenseException(G2UnrecoverableException):
-    pass
-
-
-@deprecated(1035)
-class G2ModuleNotInitialized(G2UnrecoverableException):
-    """G2 Module called but has not been initialized """
-
-
-@deprecated(1036)
-class G2ModuleResolveMissingResEnt(G2UnrecoverableException):
-    pass
-
 # -----------------------------------------------------------------------------
 # Determine Exception based on Senzing reason code.
 # Reference: https://senzing.zendesk.com/hc/en-us/articles/360026678133-Engine-Error-codes
 # -----------------------------------------------------------------------------
 
+# fmt: off
 exceptions_map = {
-
     2:     G2BadInputException,               # EAS_ERR_INVALID_XML                                                                    "Invalid XML"
     5:     G2Exception,                       # EAS_ERR_EXCEEDED_MAX_RETRIES                                                           "Exceeded the Maximum Number of Retries Allowed"
     7:     G2BadInputException,               # EAS_ERR_EMPTY_XML_MESSAGE                                                              "Empty XML Message"
@@ -681,28 +566,72 @@ exceptions_map = {
     30123: G2BadInputException,               # EAS_ERR_JSON_PARSING_FAILURE_OBJECT_HAS_DUPLICATE_KEYS                                 "Json object has duplicate keys."
     30131: G2BadInputException,               # EAS_ERR_UNKNOWN_COLUMN_REQUESTED_FOR_CSV_EXPORT                                        "Invalid column [{0}] requested for CSV export."
 }
+# fmt: on
+
+# -----------------------------------------------------------------------------
+# Deprecation management
+# -----------------------------------------------------------------------------
+
+DEPRECATED_CLASSES = {
+    "G2DatabaseConnectionLost": G2DatabaseConnectionLostException,
+    "G2IncompleteRecordException": G2BadInputException,
+    "G2MalformedJsonException": G2BadInputException,
+    "G2MessageBufferException": G2Exception,
+    "G2MissingConfigurationException": G2ConfigurationException,
+    "G2MissingDataSourceException": G2UnknownDatasourceException,
+    "G2ModuleEmptyMessage": G2BadInputException,
+    "G2ModuleException": G2Exception,
+    "G2ModuleGenericException": G2Exception,
+    "G2ModuleInvalidXML": G2Exception,
+    "G2ModuleLicenseException": G2LicenseException,
+    "G2ModuleNotInitialized": G2NotInitializedException,
+    "G2ModuleResolveMissingResEnt": G2Exception,
+    "G2RepositoryPurgedException": G2DatabaseException,
+    "G2RetryTimeoutExceeded": G2RetryTimeoutExceededException,
+    "G2UnacceptableJsonKeyValueException": G2BadInputException,
+}
+
+
+def __getattr__(name):
+    if name in DEPRECATED_CLASSES:
+        replacement_class = DEPRECATED_CLASSES.get(name, G2Exception)
+        replacement_class_name = replacement_class.__name__
+        warnings.warn(
+            f"{name} has been deprecated and replaced at runtime with"
+            f" {replacement_class_name}. You can modify the code to explicitly use"
+            f" {replacement_class_name} and remove this warning.",
+            DeprecationWarning,
+            stacklevel=4,
+        )
+        return replacement_class
+    raise AttributeError
+
+
+# -----------------------------------------------------------------------------
+# Exception management
+# -----------------------------------------------------------------------------
 
 
 def ExceptionMessage(exception):
     if exception is None:
-        result = ''
+        result = ""
     elif isinstance(exception, bytearray):
         result = exception.decode()
     elif isinstance(exception, bytes):
         result = exception.decode()
     elif isinstance(exception, Exception):
-        result = str(exception).split(':', 1)[1].strip()
+        result = str(exception).split(":", 1)[1].strip()
     else:
         result = exception
-    assert(isinstance(result, str))
+    assert isinstance(result, str)
     return result
 
 
 def ExceptionCode(exception):
     exception_message = ExceptionMessage(exception)
-    exception_message_splits = exception_message.split('|', 1)
-    result = int(exception_message_splits[0].strip().rstrip('EIW'))
-    assert(isinstance(result, int))
+    exception_message_splits = exception_message.split("|", 1)
+    result = int(exception_message_splits[0].strip().rstrip("EIW"))
+    assert isinstance(result, int)
     return result
 
 
