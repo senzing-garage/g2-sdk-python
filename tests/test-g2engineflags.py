@@ -9,12 +9,12 @@ class TestEnumMethods(unittest.TestCase):
     def test_flag_values(self):
         '''Test that each detailed flag has the correct value.'''
 
-        self.assertEqual(G2EngineFlags.G2_EXPORT_INCLUDE_RESOLVED, 2 ** 0)
+        self.assertEqual(G2EngineFlags.G2_EXPORT_INCLUDE_MULTI_RECORD_ENTITIES, 2 ** 0)
         self.assertEqual(G2EngineFlags.G2_EXPORT_INCLUDE_POSSIBLY_SAME, 2 ** 1)
         self.assertEqual(G2EngineFlags.G2_EXPORT_INCLUDE_POSSIBLY_RELATED, 2 ** 2)
         self.assertEqual(G2EngineFlags.G2_EXPORT_INCLUDE_NAME_ONLY, 2 ** 3)
         self.assertEqual(G2EngineFlags.G2_EXPORT_INCLUDE_DISCLOSED, 2 ** 4)
-        self.assertEqual(G2EngineFlags.G2_EXPORT_INCLUDE_SINGLETONS, 2 ** 5)
+        self.assertEqual(G2EngineFlags.G2_EXPORT_INCLUDE_SINGLE_RECORD_ENTITIES, 2 ** 5)
         self.assertEqual(G2EngineFlags.G2_ENTITY_INCLUDE_POSSIBLY_SAME_RELATIONS, 2 ** 6)
         self.assertEqual(G2EngineFlags.G2_ENTITY_INCLUDE_POSSIBLY_RELATED_RELATIONS, 2 ** 7)
         self.assertEqual(G2EngineFlags.G2_ENTITY_INCLUDE_NAME_ONLY_RELATIONS, 2 ** 8)
@@ -183,7 +183,7 @@ class TestEnumMethods(unittest.TestCase):
         # Create a list of strings that are names of enum members that add up to 7.
 
         strings = {
-            "G2_EXPORT_INCLUDE_RESOLVED",
+            "G2_EXPORT_INCLUDE_MULTI_RECORD_ENTITIES",
             "G2_EXPORT_INCLUDE_POSSIBLY_SAME",
             "G2_EXPORT_INCLUDE_POSSIBLY_RELATED"
         }

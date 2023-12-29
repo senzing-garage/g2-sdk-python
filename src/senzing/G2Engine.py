@@ -857,7 +857,7 @@ class G2Engine(object):
     def findNetworkByEntityIDV2(self, entityList, maxDegree, buildOutDegree, maxEntities, flags, response):
         self.findNetworkByEntityID(entityList, maxDegree, buildOutDegree, maxEntities, response, flags)
 
-    def findNetworkByEntityID(self, entityList, maxDegree, buildOutDegree, maxEntities, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findNetworkByEntityID(self, entityList, maxDegree, buildOutDegree, maxEntities, response, flags=G2EngineFlags.G2_FIND_NETWORK_DEFAULT_FLAGS, *args, **kwargs):
         # type: (int) -> str
         """ Find a network between entities in the system.
         Args:
@@ -923,7 +923,7 @@ class G2Engine(object):
     def findNetworkByRecordIDV2(self, recordList, maxDegree, buildOutDegree, maxEntities, flags, response):
         self.findNetworkByRecordID(recordList, maxDegree, buildOutDegree, maxEntities, response, flags)
 
-    def findNetworkByRecordID(self, recordList, maxDegree, buildOutDegree, maxEntities, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findNetworkByRecordID(self, recordList, maxDegree, buildOutDegree, maxEntities, response, flags=G2EngineFlags.G2_FIND_NETWORK_DEFAULT_FLAGS, *args, **kwargs):
         # type: (str,str) -> str
         """ Find a network between entities in the system.
         Args:
@@ -950,7 +950,7 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
-    def whyRecordInEntity(self, dataSourceCode, recordID, response, flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def whyRecordInEntity(self, dataSourceCode, recordID, response, flags=G2EngineFlags.G2_WHY_RECORD_IN_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
 
         response[::] = b''
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
@@ -961,49 +961,6 @@ class G2Engine(object):
         self._lib_handle.G2_whyRecordInEntity_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2_whyRecordInEntity_V2(_dataSourceCode, _recordID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        response += tls_var.buf.value
-
-    @deprecated(1009)
-    def whyEntityByRecordIDV2(self, dataSourceCode, recordID, flags, response):
-        self.whyEntityByRecordID(dataSourceCode, recordID, response, flags)
-
-    def whyEntityByRecordID(self, dataSourceCode, recordID, response, flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
-
-        response[::] = b''
-        _dataSourceCode = self.prepareStringArgument(dataSourceCode)
-        _recordID = self.prepareStringArgument(recordID)
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_whyEntityByRecordID_V2.restype = c_int
-        self._lib_handle.G2_whyEntityByRecordID_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_whyEntityByRecordID_V2(_dataSourceCode, _recordID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
-
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        response += tls_var.buf.value
-
-    @deprecated(1010)
-    def whyEntityByEntityIDV2(self, entityID, flags, response):
-        self.whyEntityByEntityID(entityID, response, flags)
-
-    def whyEntityByEntityID(self, entityID, response, flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
-
-        response[::] = b''
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_whyEntityByEntityID_V2.restype = c_int
-        self._lib_handle.G2_whyEntityByEntityID_V2.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_whyEntityByEntityID_V2(entityID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
             raise G2NotInitializedException('G2Engine has not been successfully initialized')
         elif ret_code < 0:
@@ -1058,7 +1015,7 @@ class G2Engine(object):
     def whyEntitiesV2(self, entityID1, entityID2, flags, response):
         self.whyEntities(entityID1, entityID2, response, flags)
 
-    def whyEntities(self, entityID1, entityID2, response, flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def whyEntities(self, entityID1, entityID2, response, flags=G2EngineFlags.G2_WHY_ENTITIES_DEFAULT_FLAGS, *args, **kwargs):
 
         response[::] = b''
         responseBuf = c_char_p(addressof(tls_var.buf))
@@ -1079,7 +1036,7 @@ class G2Engine(object):
     def whyRecordsV2(self, dataSourceCode1, recordID1, dataSourceCode2, recordID2, flags, response):
         self.whyRecords(dataSourceCode1, recordID1, dataSourceCode2, recordID2, response, flags)
 
-    def whyRecords(self, dataSourceCode1, recordID1, dataSourceCode2, recordID2, response, flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def whyRecords(self, dataSourceCode1, recordID1, dataSourceCode2, recordID2, response, flags=G2EngineFlags.G2_WHY_RECORDS_DEFAULT_FLAGS, *args, **kwargs):
 
         response[::] = b''
         _dataSourceCode1 = self.prepareStringArgument(dataSourceCode1)
