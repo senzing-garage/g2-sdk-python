@@ -19,7 +19,7 @@ __all__ = [
     "TranslateG2ModuleException",
 ]
 
-# See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
+# See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
 SENZING_PRODUCT_ID = "5044"
 
 # -----------------------------------------------------------------------------
