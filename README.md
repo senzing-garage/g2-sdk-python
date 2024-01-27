@@ -1,5 +1,17 @@
 # g2-sdk-python
 
+If you are beginning your journey with
+[Senzing](https://senzing.com/),
+please start with
+[Senzing Quick Start guides](https://docs.senzing.com/quickstart/).
+
+You are in the
+[Senzing Garage](https://github.com/senzing-garage)
+where projects are "tinkered" on.
+Although this GitHub repository may help you understand an approach to using Senzing,
+it's not considered to be "production ready" and is not considered to be part of the Senzing product.
+Heck, it may not even be appropriate for your application of Senzing!
+
 ## Synopsis
 
 Senzing Software Development Kit (SDK) for Python.
@@ -12,12 +24,12 @@ To obtain a version of the Senzing Python SDK that *is* covered, see
 [Install Senzing API](https://hub.senzing.com/knowledge-base/senzingapi/install).
 
 More information at
-[github.com/Senzing/g2-sdk-python](https://github.com/Senzing/g2-sdk-python)
+[github.com/senzing-garage/g2-sdk-python](https://github.com/senzing-garage/g2-sdk-python)
 
 ## Overview
 
 The git repository at
-[github.com/Senzing/g2-sdk-python](https://github.com/Senzing/g2-sdk-python)
+[github.com/senzing-garage/g2-sdk-python](https://github.com/senzing-garage/g2-sdk-python)
 contains the Senzing SDK for Python files in `src/senzing`.
 
 It also contains:
@@ -53,7 +65,7 @@ It also contains:
     ```
 
 1. More information at
-   [github.com/Senzing/g2-sdk-python](https://github.com/Senzing/g2-sdk-python)
+   [github.com/senzing-garage/g2-sdk-python](https://github.com/senzing-garage/g2-sdk-python)
 
 ## Develop
 
@@ -65,9 +77,9 @@ The following instructions are used when modifying and building the Docker image
 These are "one-time tasks" which may already have been completed.
 
 1. The following software programs need to be installed:
-    1. [git](https://github.com/Senzing/knowledge-base/blob/main/WHATIS/git.md)
-    1. [make](https://github.com/Senzing/knowledge-base/blob/main/WHATIS/make.md)
-    1. [pip](https://github.com/Senzing/knowledge-base/blob/main/HOWTO/install-pip.md)
+    1. [git](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/git.md)
+    1. [make](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/make.md)
+    1. [pip](https://github.com/senzing-garage/knowledge-base/blob/main/HOWTO/install-pip.md)
 
 1. :pencil2: Make a `~/.pypirc` file.
    Example:
@@ -85,7 +97,7 @@ These are "one-time tasks" which may already have been completed.
 ### Clone repository
 
 For more information on environment variables,
-see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/main/lists/environment-variables.md).
+see [Environment Variables](https://github.com/senzing-garage/knowledge-base/blob/main/lists/environment-variables.md).
 
 1. Set these environment variable values:
 
@@ -96,7 +108,7 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/main/
     export GIT_REPOSITORY_DIR="${GIT_ACCOUNT_DIR}/${GIT_REPOSITORY}"
     ```
 
-1. Using the environment variables values just set, follow steps in [clone-repository](https://github.com/Senzing/knowledge-base/blob/main/HOWTO/clone-repository.md) to install the Git repository.
+1. Using the environment variables values just set, follow steps in [clone-repository](https://github.com/senzing-garage/knowledge-base/blob/main/HOWTO/clone-repository.md) to install the Git repository.
 
 ### Install dependencies
 
