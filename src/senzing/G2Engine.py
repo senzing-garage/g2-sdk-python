@@ -9,7 +9,7 @@ from .G2Exception import TranslateG2ModuleException, G2NotInitializedException, 
 from .G2EngineFlags import G2EngineFlags
 
 __all__ = ['G2Engine']
-SENZING_PRODUCT_ID = "5043"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
+SENZING_PRODUCT_ID = "5043"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 
 class MyBuffer(threading.local):
