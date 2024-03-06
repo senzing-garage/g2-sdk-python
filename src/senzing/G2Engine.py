@@ -288,92 +288,6 @@ class G2Engine(object):
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def process(self, input_umf_, *args, **kwargs):
-        # type: (str) -> None
-        """ Generic process function without return
-        This method will send a record for processing in g2.
-
-        Args:
-            record: An input record to be processed. Contains the data and control info.
-
-        Return:
-            None
-        """
-
-        input_umf_string = self.prepareStringArgument(input_umf_)
-        self._lib_handle.G2_process.argtypes = [c_char_p]
-        self._lib_handle.G2_process.restype = c_int
-        ret_code = self._lib_handle.G2_process(input_umf_string)
-
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-    def processWithInfo(self, input_umf_, response, flags=0, *args, **kwargs):
-        # type: (str, str, int) -> int
-        """ Generic process function without return
-        This method will send a record for processing in g2.
-
-        Args:
-            record: An input record to be processed. Contains the data and control info.
-            response: Json document with info about the modified resolved entities
-            flags: reserved for future use
-
-        Return:
-            None
-        """
-
-        input_umf_string = self.prepareStringArgument(input_umf_)
-        response[::] = b''
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_processWithInfo.argtypes = [c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_processWithInfo(input_umf_string, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
-
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        # Add the bytes to the response bytearray from calling function
-        response += tls_var.buf.value
-
-    def processWithResponse(self, input_umf_, response, *args, **kwargs):
-        """ Generic process function that returns results
-        This method will send a record for processing in g2. It is a synchronous
-        call, i.e. it will wait until g2 actually processes the record, and then
-        optionally return any response message.
-
-        Args:
-            record: An input record to be processed. Contains the data and control info.
-            response: If there is a response to the message it will be returned here.
-                    Note there are performance benefits of calling the process method
-                    that doesn't need a response message.
-        """
-
-        # type: (str) -> str
-        """  resolves an entity synchronously
-        Args:
-            input_umf_: G2 style JSON
-        """
-
-        input_umf_string = self.prepareStringArgument(input_umf_)
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_processWithResponseResize.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_processWithResponseResize(input_umf_string, pointer(responseBuf), pointer(responseSize), self._resize_func)
-
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        response += responseBuf.value
-
     def checkRecord(self, input_umf_, recordQueryList, response, *args, **kwargs):
         # type: (str,str,str) -> str
         """ Scores the input record against the specified one
@@ -496,30 +410,6 @@ class G2Engine(object):
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def addRecordWithReturnedRecordID(self, dataSourceCode, recordID, jsonData, *args, **kwargs):
-        # type: (str,str,str,str) -> int
-        """ Loads the JSON record
-        Args:
-            dataSourceCode: The data source for the observation.
-            recordID: A memory buffer for returning the recordID
-            jsonData: A JSON document containing the attribute information
-                for the observation.
-        """
-
-        _dataSourceCode = self.prepareStringArgument(dataSourceCode)
-        _jsonData = self.prepareStringArgument(jsonData)
-        recordID[::] = b''
-        self._lib_handle.G2_addRecordWithReturnedRecordID.argtypes = [c_char_p, c_char_p, c_char_p, c_size_t]
-        ret_code = self._lib_handle.G2_addRecordWithReturnedRecordID(_dataSourceCode, _jsonData, tls_var.buf, sizeof(tls_var.buf))
-
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        recordID += tls_var.buf.value
-
     def addRecordWithInfo(self, dataSourceCode, recordId, jsonData, response, flags=0, *args, **kwargs):
         # type: (str,str,str,str,str,int) -> str
         """ Loads the JSON record and returns info about the load
@@ -550,41 +440,6 @@ class G2Engine(object):
         # Add the bytes to the response bytearray from calling function
         response += tls_var.buf.value
 
-    def addRecordWithInfoWithReturnedRecordID(self, dataSourceCode, jsonData, recordID, info, flags=0, *args, **kwargs):
-        """ Loads the JSON record
-        Args:
-            dataSourceCode: The data source for the observation.
-            recordID: A memory buffer for returning the recordID
-            jsonData: A JSON document containing the attribute information
-                for the observation.
-            info: Json document with info about the modified resolved entities
-            flags: reserved for future use
-        """
-
-        _dataSourceCode = self.prepareStringArgument(dataSourceCode)
-        _jsonData = self.prepareStringArgument(jsonData)
-
-        recordID[::] = b''
-
-        info[::] = b''
-        infoBuf = c_char_p(addressof(tls_var3.buf))
-        infoBufSize = c_size_t(tls_var3.bufSize)
-
-        # Make sure we have enough room to receive the Record ID
-        resize_return_buffer(tls_var.buf, 100)
-
-        self._lib_handle.G2_addRecordWithInfoWithReturnedRecordID.restype = c_int
-        self._lib_handle.G2_addRecordWithInfoWithReturnedRecordID.argtypes = [c_char_p, c_char_p, c_longlong, c_char_p, c_size_t, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def3]
-        ret_code = self._lib_handle.G2_addRecordWithInfoWithReturnedRecordID(_dataSourceCode, _jsonData, flags, tls_var.buf, sizeof(tls_var.buf), pointer(infoBuf), pointer(infoBufSize), self._resize_func3)
-
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        recordID += tls_var.buf.value
-        info += tls_var3.buf.value
 
     def replaceRecord(self, dataSourceCode, recordId, jsonData, *args, **kwargs):
         # type: (str,str,str,str) -> int
@@ -1336,19 +1191,18 @@ class G2Engine(object):
 
         response += responseBuf.value
 
-    def processRedoRecord(self, response, flags=0, *args, **kwargs):
+    def processRedoRecord(self, redoRecord, flags=0, *args, **kwargs):
         # type: (bytearray) -> int
-        """ Process the next Redo record
+        """ Process a redo record
         Args:
-            response: A bytearray for returning the response document; if an error occurred, an error response is stored here.
+            redoRecord: redoRecord: A redo record to be processed
         """
 
-        response[::] = b''
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
+        _redoRecord = self.prepareStringArgument(redoRecord)
+
         self._lib_handle.G2_processRedoRecord.restype = c_int
-        self._lib_handle.G2_processRedoRecord.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_processRedoRecord(pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_processRedoRecord.argtypes = [c_char_p]
+        ret_code = self._lib_handle.G2_processRedoRecord(redoRecord)
 
         if ret_code == -1:
             raise G2NotInitializedException('G2Engine has not been successfully initialized')
@@ -1356,35 +1210,33 @@ class G2Engine(object):
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-        response += responseBuf.value
 
-    def processRedoRecordWithInfo(self, response, info, flags=0, *args, **kwargs):
+    def processRedoRecordWithInfo(self, redoRecord, response, flags=0, *args, **kwargs):
         # type: (bytearray) -> int
-        """ Process the next Redo record
+        """ Process a redo record
         Args:
-            response: A bytearray for returning the response document; if an error occurred, an error response is stored here.
+            redoRecord: redoRecord: A redo record to be processed
             response: A bytearray for returning the info about changed resolved entities
         """
 
+        _redoRecord = self.prepareStringArgument(redoRecord)
+
         # clear the output params
         response[::] = b''
-        info[::] = b''
+        responseBuf = c_char_p(addressof(tls_var.buf))
+        responseSize = c_size_t(tls_var.bufSize)
 
-        # get a redo record
-        getRecordResponse = bytearray()
-        getRecordResponse[::] = b''
-        self.getRedoRecord(getRecordResponse, args, kwargs)
-        response += getRecordResponse
+        self._lib_handle.G2_processRedoRecordWithInfo.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        ret_code = self._lib_handle.G2_processRedoRecordWithInfo(redoRecord, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
-        # get the record to be processesd
-        inputUMF = getRecordResponse
+        if ret_code == -1:
+            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+        elif ret_code < 0:
+            self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
+            raise TranslateG2ModuleException(tls_var.buf.value)
 
-        # process the redo record
-        if len(inputUMF) > 0:
-            processWithInfoResponse = bytearray()
-            processWithInfoResponse[::] = b''
-            self.processWithInfo(inputUMF, processWithInfoResponse, flags, args, kwargs)
-            info += processWithInfoResponse
+        # Add the bytes to the response bytearray from calling function
+        response += tls_var.buf.value
 
 
     def countRedoRecords(self, *args, **kwargs):
@@ -1459,41 +1311,6 @@ class G2Engine(object):
 
         response += tls_var.buf.value
 
-    def exportConfig(self, response, configID, *args, **kwargs):
-        # type: (bytearray) -> int
-        """ Retrieve the G2 engine configuration
-
-        Args:
-            response: A bytearray for returning the response document; if an error occurred, an error response is stored here.
-        """
-
-        response[::] = b''
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_exportConfig.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_exportConfig(pointer(responseBuf), pointer(responseSize), self._resize_func)
-
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        response += tls_var.buf.value
-
-        if type(configID) == bytearray:
-            configID[::] = b''
-            cID = c_longlong(0)
-            self._lib_handle.G2_getActiveConfigID.argtypes = [POINTER(c_longlong)]
-            ret_code2 = self._lib_handle.G2_getActiveConfigID(cID)
-
-            if ret_code2 == -1:
-                raise G2NotInitializedException('G2Engine has not been successfully initialized')
-            elif ret_code2 < 0:
-                self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
-                raise TranslateG2ModuleException(tls_var.buf.value)
-
-            configID += (str(cID.value).encode())
 
     def getActiveConfigID(self, configID, *args, **kwargs):
         # type: (bytearray) -> object

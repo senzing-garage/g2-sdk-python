@@ -210,111 +210,6 @@ class G2Diagnostic(object):
             self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def getEntityDetails(self, entityID, includeInternalFeatures, response, *args, **kwargs):
-        # type: (int) -> str
-        """ Get the details for the resolved entity
-        Args:
-            entityID: The entity ID to get results for
-            includeInternalFeatures: boolean value indicating whether to include internal features
-        """
-
-        _includeInternalFeatures = self.prepareBooleanArgument(includeInternalFeatures)
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2Diagnostic_getEntityDetails.argtypes = [c_longlong, c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getEntityDetails(entityID, _includeInternalFeatures, pointer(responseBuf), pointer(responseSize), self._resize_func)
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        response += tls_var.buf.value
-
-    def getRelationshipDetails(self, relationshipID, includeInternalFeatures, response, *args, **kwargs):
-        # type: (int) -> str
-        """ Get the details for the resolved entity relationship
-        Args:
-            relationshipID: The relationshp ID to get results for
-            includeInternalFeatures: boolean value indicating whether to include internal features
-        """
-
-        _includeInternalFeatures = self.prepareBooleanArgument(includeInternalFeatures)
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2Diagnostic_getRelationshipDetails.argtypes = [c_longlong, c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getRelationshipDetails(relationshipID, _includeInternalFeatures, pointer(responseBuf), pointer(responseSize), self._resize_func)
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        response += tls_var.buf.value
-
-    def getEntityResume(self, entityID, response, *args, **kwargs):
-        # type: (int) -> str
-        """ Get the related records for the resolved entity
-        Args:
-            entityID: The entity ID to get results for
-        """
-
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2Diagnostic_getEntityResume.argtypes = [c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getEntityResume(entityID, pointer(responseBuf), pointer(responseSize), self._resize_func)
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        response += tls_var.buf.value
-
-    def getEntityListBySize(self, entitySize, *args, **kwargs):
-        """ Generate a list of resolved entities of a particular size
-
-        Args:
-            entitySize: The size of the resolved entity (observed entity count)
-        """
-        self._lib_handle.G2Diagnostic_getEntityListBySize.restype = c_int
-        self._lib_handle.G2Diagnostic_getEntityListBySize.argtypes = [c_ulonglong, POINTER(c_void_p)]
-        sizedEntityHandle = c_void_p(0)
-        ret_code = self._lib_handle.G2Diagnostic_getEntityListBySize(entitySize, byref(sizedEntityHandle))
-
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        return sizedEntityHandle.value
-
-    def fetchNextEntityBySize(self, sizedEntityHandle, response, *args, **kwargs):
-        response[::] = b''
-        self._lib_handle.G2Diagnostic_fetchNextEntityBySize.restype = c_int
-        self._lib_handle.G2Diagnostic_fetchNextEntityBySize.argtypes = [c_void_p, c_char_p, c_size_t]
-        resultValue = self._lib_handle.G2Diagnostic_fetchNextEntityBySize(c_void_p(sizedEntityHandle), tls_var.buf, sizeof(tls_var.buf))
-        while resultValue != 0:
-
-            if resultValue == -1:
-                raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
-            elif resultValue < 0:
-                self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
-                raise TranslateG2ModuleException(tls_var.buf.value)
-
-            response += tls_var.buf.value
-            if (response.decode())[-1] == '\n':
-                break
-            else:
-                resultValue = self._lib_handle.G2Diagnostic_fetchNextEntityBySize(c_void_p(sizedEntityHandle), tls_var.buf, sizeof(tls_var.buf))
-        return response
-
-    def closeEntityListBySize(self, sizedEntityHandle, *args, **kwargs):
-        self._lib_handle.G2Diagnostic_closeEntityListBySize.restype = c_int
-        self._lib_handle.G2Diagnostic_closeEntityListBySize.argtypes = [c_void_p]
-        self._lib_handle.G2Diagnostic_closeEntityListBySize(c_void_p(sizedEntityHandle))
-
     def checkDBPerf(self, secondsToRun, response, *args, **kwargs):
         # type: () -> object,int
         """ Retrieve JSON of DB performance test
@@ -325,102 +220,6 @@ class G2Diagnostic(object):
         self._lib_handle.G2Diagnostic_checkDBPerf.argtypes = [c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2Diagnostic_checkDBPerf(secondsToRun, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        response += tls_var.buf.value
-
-    def getDBInfo(self, response, *args, **kwargs):
-        # type: () -> object,int
-        """ Retrieve JSON of DB information
-        """
-
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2Diagnostic_getDBInfo.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getDBInfo(pointer(responseBuf), pointer(responseSize), self._resize_func)
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        response += tls_var.buf.value
-
-    def getDataSourceCounts(self, response, *args, **kwargs):
-        # type: () -> object
-        """ Retrieve record counts by data source and entity type.
-        """
-
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2Diagnostic_getDataSourceCounts.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getDataSourceCounts(pointer(responseBuf), pointer(responseSize), self._resize_func)
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        response += tls_var.buf.value
-
-    def getMappingStatistics(self, includeInternalFeatures, response, *args, **kwargs):
-        # type: () -> object
-        """ Retrieve data source mapping statistics.
-        Args:
-            includeInternalFeatures: boolean value indicating whether to include derived features
-        """
-
-        _includeInternalFeatures = self.prepareBooleanArgument(includeInternalFeatures)
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2Diagnostic_getMappingStatistics.argtypes = [c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getMappingStatistics(_includeInternalFeatures, pointer(responseBuf), pointer(responseSize), self._resize_func)
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        response += tls_var.buf.value
-
-    def getGenericFeatures(self, featureType, maximumEstimatedCount, response, *args, **kwargs):
-        # type: () -> object
-        """ Retrieve generic features.
-        Args:
-            featureType: the feature type to find generics for
-            maximumEstimatedCount: the maximum estimated count for the generics to find
-        """
-
-        _featureType = self.prepareStringArgument(featureType)
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2Diagnostic_getGenericFeatures.argtypes = [c_char_p, c_size_t, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getGenericFeatures(_featureType, maximumEstimatedCount, pointer(responseBuf), pointer(responseSize), self._resize_func)
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        response += tls_var.buf.value
-
-    def getEntitySizeBreakdown(self, minimumEntitySize, includeInternalFeatures, response, *args, **kwargs):
-        # type: () -> object
-        """ Retrieve data source mapping statistics.
-        Args:
-            minimumEntitySize: the minimum entity size to report on
-            includeInternalFeatures: boolean value indicating whether to include derived features
-        """
-
-        _includeInternalFeatures = self.prepareBooleanArgument(includeInternalFeatures)
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2Diagnostic_getEntitySizeBreakdown.argtypes = [c_size_t, c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getEntitySizeBreakdown(minimumEntitySize, _includeInternalFeatures, pointer(responseBuf), pointer(responseSize), self._resize_func)
         if ret_code == -1:
             raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
         elif ret_code < 0:
@@ -454,24 +253,6 @@ class G2Diagnostic(object):
 
         response += tls_var.buf.value
 
-    def getResolutionStatistics(self, response, *args, **kwargs):
-        # type: () -> object
-        """ Retrieve resolution statistics.
-        """
-
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2Diagnostic_getResolutionStatistics.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_getResolutionStatistics(pointer(responseBuf), pointer(responseSize), self._resize_func)
-
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        response += tls_var.buf.value
-
     def destroy(self, *args, **kwargs):
         """ Uninitializes the engine
         This should be done once per process after init(...) is called.
@@ -484,52 +265,6 @@ class G2Diagnostic(object):
         """
 
         self._lib_handle.G2Diagnostic_destroy()
-
-    def getPhysicalCores(self, *args, **kwargs):
-        # type: () -> object
-        """ Retrieve number of physical CPU cores
-
-        Return:
-            int: number of cores
-        """
-
-        self._lib_handle.G2Diagnostic_getPhysicalCores.argtypes = []
-        return self._lib_handle.G2Diagnostic_getPhysicalCores()
-
-    def getLogicalCores(self, *args, **kwargs):
-        # type: () -> object
-        """ Retrieve number of logical CPU cores
-
-        Return:
-            int: number of cores
-        """
-
-        self._lib_handle.G2Diagnostic_getLogicalCores.argtypes = []
-        return self._lib_handle.G2Diagnostic_getLogicalCores()
-
-    def getTotalSystemMemory(self, *args, **kwargs):
-        # type: () -> object
-        """ Retrieve total system memory
-
-        Return:
-            int: number of bytes
-        """
-
-        self._lib_handle.G2Diagnostic_getTotalSystemMemory.argtypes = []
-        self._lib_handle.G2Diagnostic_getTotalSystemMemory.restype = c_longlong
-        return self._lib_handle.G2Diagnostic_getTotalSystemMemory()
-
-    def getAvailableMemory(self, *args, **kwargs):
-        # type: () -> object
-        """ Retrieve available memory
-
-        Return:
-            int: number of bytes
-        """
-
-        self._lib_handle.G2Diagnostic_getAvailableMemory.argtypes = []
-        self._lib_handle.G2Diagnostic_getAvailableMemory.restype = c_longlong
-        return self._lib_handle.G2Diagnostic_getAvailableMemory()
 
     @deprecated(1204)
     def clearLastException(self, *args, **kwargs):
@@ -560,28 +295,6 @@ class G2Diagnostic(object):
         self._lib_handle.G2Diagnostic_getLastExceptionCode.argtypes = []
         exception_code = self._lib_handle.G2Diagnostic_getLastExceptionCode()
         return exception_code
-
-    def findEntitiesByFeatureIDs(self, features, response, *args, **kwargs):
-        # type: () -> object
-        """ Retrieve entities based on supplied features.
-        Args:
-            features: Json document containing an entity id (one to exclude) and list of features.
-        """
-
-        _features = self.prepareStringArgument(features)
-
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2Diagnostic_findEntitiesByFeatureIDs.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2Diagnostic_findEntitiesByFeatureIDs(_features, pointer(responseBuf), pointer(responseSize), self._resize_func)
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Diagnostic has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2Diagnostic_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        response += tls_var.buf.value
-
 
     def purgeRepository(self, reset_resolver_=True, *args, **kwargs):
         # type: (bool) -> None
