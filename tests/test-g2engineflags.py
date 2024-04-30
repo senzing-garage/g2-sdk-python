@@ -34,14 +34,14 @@ class TestEnumMethods(unittest.TestCase):
         self.assertEqual(G2EngineFlags.G2_ENTITY_INCLUDE_RELATED_RECORD_SUMMARY, 2 ** 21)
         self.assertEqual(G2EngineFlags.G2_ENTITY_INCLUDE_RELATED_RECORD_TYPES, 2 ** 29)
         self.assertEqual(G2EngineFlags.G2_ENTITY_INCLUDE_RELATED_RECORD_DATA, 2 ** 22)
-        self.assertEqual(G2EngineFlags.G2_ENTITY_OPTION_INCLUDE_INTERNAL_FEATURES, 2 ** 23)
-        self.assertEqual(G2EngineFlags.G2_ENTITY_OPTION_INCLUDE_FEATURE_STATS, 2 ** 24)
-        self.assertEqual(G2EngineFlags.G2_ENTITY_OPTION_INCLUDE_FEATURE_ELEMENTS, 2 ** 32)
-        self.assertEqual(G2EngineFlags.G2_ENTITY_OPTION_INCLUDE_MATCH_KEY_DETAILS, 2 ** 34)
+        self.assertEqual(G2EngineFlags.G2_ENTITY_INCLUDE_INTERNAL_FEATURES, 2 ** 23)
+        self.assertEqual(G2EngineFlags.G2_ENTITY_INCLUDE_FEATURE_STATS, 2 ** 24)
+        self.assertEqual(G2EngineFlags.G2_ENTITY_INCLUDE_FEATURE_ELEMENTS, 2 ** 32)
+        self.assertEqual(G2EngineFlags.G2_INCLUDE_MATCH_KEY_DETAILS, 2 ** 34)
         self.assertEqual(G2EngineFlags.G2_FIND_PATH_PREFER_EXCLUDE, 2 ** 25)
-        self.assertEqual(G2EngineFlags.G2_FIND_PATH_MATCHING_INFO, 2 ** 30)
-        self.assertEqual(G2EngineFlags.G2_FIND_NETWORK_MATCHING_INFO, 2 ** 33)
-        self.assertEqual(G2EngineFlags.G2_SEARCH_INCLUDE_FEATURE_SCORES, 2 ** 26)
+        self.assertEqual(G2EngineFlags.G2_FIND_PATH_INCLUDE_MATCHING_INFO, 2 ** 30)
+        self.assertEqual(G2EngineFlags.G2_FIND_NETWORK_INCLUDE_MATCHING_INFO, 2 ** 33)
+        self.assertEqual(G2EngineFlags.G2_INCLUDE_FEATURE_SCORES, 2 ** 26)
         self.assertEqual(G2EngineFlags.G2_SEARCH_INCLUDE_STATS, 2 ** 27)
 
     def test_flag_by_string(self):
@@ -82,7 +82,7 @@ class TestEnumMethods(unittest.TestCase):
             "G2_ENTITY_INCLUDE_REPRESENTATIVE_FEATURES",
             "G2_ENTITY_INCLUDE_ENTITY_NAME",
             "G2_ENTITY_INCLUDE_RECORD_SUMMARY",
-            "G2_SEARCH_INCLUDE_FEATURE_SCORES"
+            "G2_INCLUDE_FEATURE_SCORES"
         }
 
         # Bitwise "or" list of strings.
@@ -105,7 +105,7 @@ class TestEnumMethods(unittest.TestCase):
             "G2_ENTITY_INCLUDE_REPRESENTATIVE_FEATURES",
             "G2_ENTITY_INCLUDE_ENTITY_NAME",
             "G2_ENTITY_INCLUDE_RECORD_SUMMARY",
-            "G2_SEARCH_INCLUDE_FEATURE_SCORES"
+            "G2_INCLUDE_FEATURE_SCORES"
         ]
 
         # Bitwise "or" list of strings.
@@ -126,7 +126,7 @@ class TestEnumMethods(unittest.TestCase):
             "G2_ENTITY_INCLUDE_REPRESENTATIVE_FEATURES",
             "G2_ENTITY_INCLUDE_ENTITY_NAME",
             "G2_ENTITY_INCLUDE_RECORD_SUMMARY",
-            "G2_SEARCH_INCLUDE_FEATURE_SCORES"
+            "G2_INCLUDE_FEATURE_SCORES"
         }
 
         # Bitwise "or" list of strings.
@@ -147,7 +147,7 @@ class TestEnumMethods(unittest.TestCase):
             "G2_ENTITY_INCLUDE_REPRESENTATIVE_FEATURES",
             "G2_ENTITY_INCLUDE_ENTITY_NAME",
             "G2_ENTITY_INCLUDE_RECORD_SUMMARY",
-            "G2_SEARCH_INCLUDE_FEATURE_SCORES"
+            "G2_INCLUDE_FEATURE_SCORES"
         )
 
         # Bitwise "or" list of strings.
@@ -168,7 +168,7 @@ class TestEnumMethods(unittest.TestCase):
             "G2_ENTITY_INCLUDE_REPRESENTATIVE_FEATURES",
             "G2_ENTITY_INCLUDE_ENTITY_NAME",
             "G2_ENTITY_INCLUDE_RECORD_SUMMARY",
-            "G2_SEARCH_INCLUDE_FEATURE_SCORES"
+            "G2_INCLUDE_FEATURE_SCORES"
         )
 
         # Dynamically add a method to the G2EngineFlags.

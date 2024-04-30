@@ -441,57 +441,6 @@ class G2Engine(object):
         response += tls_var.buf.value
 
 
-    def replaceRecord(self, dataSourceCode, recordId, jsonData, *args, **kwargs):
-        # type: (str,str,str,str) -> int
-        """ Replace the JSON record, loads if doesn't exist
-        Args:
-            dataSourceCode: The data source for the observation.
-            recordID: The ID for the record
-            jsonData: A JSON document containing the attribute information
-                for the observation.
-        """
-
-        _dataSourceCode = self.prepareStringArgument(dataSourceCode)
-        _recordId = self.prepareStringArgument(recordId)
-        _jsonData = self.prepareStringArgument(jsonData)
-        ret_code = self._lib_handle.G2_replaceRecord(_dataSourceCode, _recordId, _jsonData)
-
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-    def replaceRecordWithInfo(self, dataSourceCode, recordId, jsonData, response, flags=0, *args, **kwargs):
-        # type: (str,str,str,str) -> int
-        """ Replace the JSON record, loads if doesn't exist
-        Args:
-            dataSourceCode: The data source for the observation.
-            recordID: The ID for the record
-            jsonData: A JSON document containing the attribute information
-                for the observation.
-            response: Json document with info about the modified resolved entities
-            flags: reserved for future use
-        """
-
-        _dataSourceCode = self.prepareStringArgument(dataSourceCode)
-        _recordId = self.prepareStringArgument(recordId)
-        _jsonData = self.prepareStringArgument(jsonData)
-        response[::] = b''
-        responseBuf = c_char_p(addressof(tls_var.buf))
-        responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_replaceRecordWithInfo.argtypes = [c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_replaceRecordWithInfo(_dataSourceCode, _recordId, _jsonData, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
-
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        # Add the bytes to the response bytearray from calling function
-        response += tls_var.buf.value
-
     def deleteRecord(self, dataSourceCode, recordId, *args, **kwargs):
         # type: (str,str,str) -> int
         """ Delete the record
@@ -1333,27 +1282,6 @@ class G2Engine(object):
             raise TranslateG2ModuleException(tls_var.buf.value)
 
         configID += (str(cID.value).encode())
-
-    def getRepositoryLastModifiedTime(self, lastModifiedTime, *args, **kwargs):
-        # type: (bytearray) -> object
-        """ Retrieve the last modified time stamp of the entity store repository
-
-        Args:
-            lastModifiedTime: A bytearray for returning the last modified time of the data repository
-        """
-
-        lastModifiedTime[::] = b''
-        lastModifiedTimeStamp = c_longlong(0)
-        self._lib_handle.G2_getRepositoryLastModifiedTime.argtypes = [POINTER(c_longlong)]
-        ret_code = self._lib_handle.G2_getRepositoryLastModifiedTime(lastModifiedTimeStamp)
-
-        if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
-        elif ret_code < 0:
-            self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
-            raise TranslateG2ModuleException(tls_var.buf.value)
-
-        lastModifiedTime += (str(lastModifiedTimeStamp.value).encode())
 
     def destroy(self, *args, **kwargs):
         """ Uninitializes the engine
