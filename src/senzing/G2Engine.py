@@ -776,7 +776,7 @@ class G2Engine(object):
         response[::] = b''
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_reevaluateEntityWithInfo.argtypes = [c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        self._lib_handle.G2_reevaluateEntityWithInfo.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         ret_code = self._lib_handle.G2_reevaluateEntityWithInfo(entityID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
