@@ -38,7 +38,7 @@ class TestEnumMethods(unittest.TestCase):
         self.assertEqual(G2EngineFlags.G2_ENTITY_INCLUDE_FEATURE_STATS, 2 ** 24)
         self.assertEqual(G2EngineFlags.G2_ENTITY_INCLUDE_FEATURE_ELEMENTS, 2 ** 32)
         self.assertEqual(G2EngineFlags.G2_INCLUDE_MATCH_KEY_DETAILS, 2 ** 34)
-        self.assertEqual(G2EngineFlags.G2_FIND_PATH_PREFER_EXCLUDE, 2 ** 25)
+        self.assertEqual(G2EngineFlags.G2_FIND_PATH_STRICT_AVOID, 2 ** 25)
         self.assertEqual(G2EngineFlags.G2_FIND_PATH_INCLUDE_MATCHING_INFO, 2 ** 30)
         self.assertEqual(G2EngineFlags.G2_FIND_NETWORK_INCLUDE_MATCHING_INFO, 2 ** 33)
         self.assertEqual(G2EngineFlags.G2_INCLUDE_FEATURE_SCORES, 2 ** 26)
