@@ -862,28 +862,28 @@ class G2Engine(object):
         response += tls_var.buf.value
 
     @deprecated(1015)
-    def findPathExcludingByEntityIDV2(self, startEntityID, endEntityID, maxDegree, excludedEntities, flags, response):
-        self.findPathExcludingByEntityID(startEntityID, endEntityID, maxDegree, excludedEntities, response, flags)
+    def findPathByEntityIDWithAvoidsV2(self, startEntityID, endEntityID, maxDegree, avoidedEntities, flags, response):
+        self.findPathByEntityIDWithAvoids(startEntityID, endEntityID, maxDegree, avoidedEntities, response, flags)
 
-    def findPathExcludingByEntityID(self, startEntityID, endEntityID, maxDegree, excludedEntities, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findPathByEntityIDWithAvoids(self, startEntityID, endEntityID, maxDegree, avoidedEntities, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
         # type: (int) -> str
         """ Find a path between two entities in the system.
         Args:
             startEntityID: The entity ID you want to find the path from
             endEntityID: The entity ID you want to find the path to
             maxDegree: The maximum path length to search for
-            excludedEntities: JSON document containing entities to exclude
+            avoidedEntities: JSON document containing entities to avoid
             flags: control flags
             response: A bytearray for returning the response document.
         """
 
         response[::] = b''
-        _excludedEntities = self.prepareStringArgument(excludedEntities)
+        _avoidedEntities = self.prepareStringArgument(avoidedEntities)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_findPathExcludingByEntityID_V2.restype = c_int
-        self._lib_handle.G2_findPathExcludingByEntityID_V2.argtypes = [c_longlong, c_longlong, c_int, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_findPathExcludingByEntityID_V2(startEntityID, endEntityID, maxDegree, _excludedEntities, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_findPathByEntityIDWithAvoids_V2.restype = c_int
+        self._lib_handle.G2_findPathByEntityIDWithAvoids_V2.argtypes = [c_longlong, c_longlong, c_int, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        ret_code = self._lib_handle.G2_findPathByEntityIDWithAvoids_V2(startEntityID, endEntityID, maxDegree, _avoidedEntities, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
             raise G2NotInitializedException('G2Engine has not been successfully initialized')
@@ -894,30 +894,30 @@ class G2Engine(object):
         response += tls_var.buf.value
 
     @deprecated(1016)
-    def findPathIncludingSourceByEntityIDV2(self, startEntityID, endEntityID, maxDegree, excludedEntities, requiredDsrcs, flags, response):
-        self.findPathIncludingSourceByEntityID(startEntityID, endEntityID, maxDegree, excludedEntities, requiredDsrcs, response, flags)
+    def findPathByEntityIDIncludingSourceV2(self, startEntityID, endEntityID, maxDegree, avoidedEntities, requiredDsrcs, flags, response):
+        self.findPathByEntityIDIncludingSource(startEntityID, endEntityID, maxDegree, avoidedEntities, requiredDsrcs, response, flags)
 
-    def findPathIncludingSourceByEntityID(self, startEntityID, endEntityID, maxDegree, excludedEntities, requiredDsrcs, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findPathByEntityIDIncludingSource(self, startEntityID, endEntityID, maxDegree, avoidedEntities, requiredDsrcs, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
         # type: (int) -> str
         """ Find a path between two entities in the system.
         Args:
             startEntityID: The entity ID you want to find the path from
             endEntityID: The entity ID you want to find the path to
             maxDegree: The maximum path length to search for
-            excludedEntities: JSON document containing entities to exclude
+            avoidedEntities: JSON document containing entities to avoid
             requiredDsrcs: JSON document containing data sources to require
             flags: control flags
             response: A bytearray for returning the response document.
         """
 
         response[::] = b''
-        _excludedEntities = self.prepareStringArgument(excludedEntities)
+        _avoidedEntities = self.prepareStringArgument(avoidedEntities)
         _requiredDsrcs = self.prepareStringArgument(requiredDsrcs)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_findPathIncludingSourceByEntityID_V2.restype = c_int
-        self._lib_handle.G2_findPathIncludingSourceByEntityID_V2.argtypes = [c_longlong, c_longlong, c_int, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_findPathIncludingSourceByEntityID_V2(startEntityID, endEntityID, maxDegree, _excludedEntities, _requiredDsrcs, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_findPathByEntityIDIncludingSource_V2.restype = c_int
+        self._lib_handle.G2_findPathByEntityIDIncludingSource_V2.argtypes = [c_longlong, c_longlong, c_int, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        ret_code = self._lib_handle.G2_findPathByEntityIDIncludingSource_V2(startEntityID, endEntityID, maxDegree, _avoidedEntities, _requiredDsrcs, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
             raise G2NotInitializedException('G2Engine has not been successfully initialized')
@@ -928,10 +928,10 @@ class G2Engine(object):
         response += tls_var.buf.value
 
     @deprecated(1017)
-    def findPathExcludingByRecordIDV2(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, flags, response):
-        self.findPathExcludingByRecordID(startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, response, flags)
+    def findPathByRecordIDWithAvoidsV2(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, avoidedEntities, flags, response):
+        self.findPathByRecordWithAvoidsID(startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, avoidedEntities, response, flags)
 
-    def findPathExcludingByRecordID(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findPathByRecordWithAvoidsID(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, avoidedEntities, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
         # type: (str,str) -> str
         """ Find a path between two records in the system.
         Args:
@@ -940,7 +940,7 @@ class G2Engine(object):
             endDataSourceCode: The data source for the record you want to find the path to
             endRecordID: The ID for the record you want to find the path to
             maxDegree: The maximum path length to search for
-            excludedEntities: JSON document containing entities to exclude
+            avoidedEntities: JSON document containing entities to avoid
             flags: control flags
             response: A bytearray for returning the response document.
         """
@@ -950,12 +950,12 @@ class G2Engine(object):
         _startRecordId = self.prepareStringArgument(startRecordId)
         _endDsrcCode = self.prepareStringArgument(endDsrcCode)
         _endRecordId = self.prepareStringArgument(endRecordId)
-        _excludedEntities = self.prepareStringArgument(excludedEntities)
+        _avoidedEntities = self.prepareStringArgument(avoidedEntities)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_findPathExcludingByRecordID_V2.restype = c_int
-        self._lib_handle.G2_findPathExcludingByRecordID_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_int, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_findPathExcludingByRecordID_V2(_startDsrcCode, _startRecordId, _endDsrcCode, _endRecordId, maxDegree, _excludedEntities, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_findPathByRecordIDWithAvoids_V2.restype = c_int
+        self._lib_handle.G2_findPathByRecordIDWithAvoids_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_int, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        ret_code = self._lib_handle.G2_findPathByRecordIDWithAvoids_V2(_startDsrcCode, _startRecordId, _endDsrcCode, _endRecordId, maxDegree, _avoidedEntities, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
             raise G2NotInitializedException('G2Engine has not been successfully initialized')
@@ -966,10 +966,10 @@ class G2Engine(object):
         response += tls_var.buf.value
 
     @deprecated(1018)
-    def findPathIncludingSourceByRecordIDV2(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, requiredDsrcs, flags, response):
-        self.findPathIncludingSourceByRecordID(startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, requiredDsrcs, response, flags)
+    def findPathByRecordIDIncludingSourceV2(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, avoidedEntities, requiredDsrcs, flags, response):
+        self.findPathByRecordIDIncludingSource(startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, avoidedEntities, requiredDsrcs, response, flags)
 
-    def findPathIncludingSourceByRecordID(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, requiredDsrcs, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findPathByRecordIDIncludingSource(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, avoidedEntities, requiredDsrcs, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
         # type: (str,str) -> str
         """ Find a path between two records in the system.
         Args:
@@ -978,7 +978,7 @@ class G2Engine(object):
             endDataSourceCode: The data source for the record you want to find the path to
             endRecordID: The ID for the record you want to find the path to
             maxDegree: The maximum path length to search for
-            excludedEntities: JSON document containing entities to exclude
+            avoidedEntities: JSON document containing entities to avoid
             requiredDsrcs: JSON document containing data sources to require
             flags: control flags
             response: A bytearray for returning the response document.
@@ -989,13 +989,13 @@ class G2Engine(object):
         _startRecordId = self.prepareStringArgument(startRecordId)
         _endDsrcCode = self.prepareStringArgument(endDsrcCode)
         _endRecordId = self.prepareStringArgument(endRecordId)
-        _excludedEntities = self.prepareStringArgument(excludedEntities)
+        _avoidedEntities = self.prepareStringArgument(avoidedEntities)
         _requiredDsrcs = self.prepareStringArgument(requiredDsrcs)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_findPathIncludingSourceByRecordID_V2.restype = c_int
-        self._lib_handle.G2_findPathIncludingSourceByRecordID_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_int, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_findPathIncludingSourceByRecordID_V2(_startDsrcCode, _startRecordId, _endDsrcCode, _endRecordId, maxDegree, _excludedEntities, _requiredDsrcs, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_findPathByRecordIDIncludingSource_V2.restype = c_int
+        self._lib_handle.G2_findPathByRecordIDIncludingSource_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_int, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        ret_code = self._lib_handle.G2_findPathByRecordIDIncludingSource_V2(_startDsrcCode, _startRecordId, _endDsrcCode, _endRecordId, maxDegree, _avoidedEntities, _requiredDsrcs, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
 
         if ret_code == -1:
             raise G2NotInitializedException('G2Engine has not been successfully initialized')
