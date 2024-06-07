@@ -541,7 +541,7 @@ exceptions_map = {
     9308:  G2ConfigurationException,          # EAS_ERR_MISSING_STATUS_ENTRY                                                           "Could not retrieve status entry[{0}] in the SYS_STATUS table!"
     9309:  G2ConfigurationException,          # EAS_ERR_SEQUENCE_HAS_BEEN_RESET                                                        "Sequence entry[{0}] has been reset."
     9310:  G2ConfigurationException,          # EAS_ERR_INVALID_STATUS_ENTRY_VALUE                                                     "Invalid value for status entry[{0}] in the SYS_STATUS table!"
-    9311:  G2Exception,                       # EAS_ERR_COULD_NOT_RECORD_USAGE_TYPE                                                    "Could not record usage type [{0}] in the LIB_UTYPE table!"
+    9311:  G2Exception,                       # EAS_ERR_COULD_NOT_RECORD_USAGE_TYPE                                                    "Could not record usage type [{0}] in the SYS_CODES_USED table!"
     9406:  G2Exception,                       # EAS_ERR_G2SS_SESSION_MUST_NOT_BE_OPEN                                                  "Secure Store cannot fetch a value with sync if a session is already open."
     9408:  G2ConfigurationException,          # EAS_ERR_G2SS_PASSWORD_INADEQUATE                                                       "The provided password is not strong enough: {0}"
     9409:  G2ConfigurationException,          # EAS_ERR_G2SS_FUNCTION_LIST_NOT_SET                                                     "The security token interface is not yet set"
