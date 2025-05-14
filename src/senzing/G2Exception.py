@@ -43,6 +43,7 @@ class G2Exception(Exception):
                 result.append(message)
         return " ".join(result)
 
+
 # -----------------------------------------------------------------------------
 # Category exceptions
 # - These exceptions represent categories of actions that can be taken by
@@ -64,6 +65,7 @@ class G2RetryableException(G2Exception):
 
 class G2UnrecoverableException(G2Exception):
     """System failure, can't continue."""
+
 
 # -----------------------------------------------------------------------------
 # Detail exceptions for G2BadInputException
@@ -186,7 +188,7 @@ exceptions_map = {
     76:    G2Exception,                       # EAS_ERR_INBOUND_FEATURE_VERSION_NEWER_THAN_CONFIG                                      "Inbound Feature Version [{0}] is newer than configured version [{1}] for feature type[{2}]."
     77:    G2Exception,                       # EAS_ERR_ERROR_WHEN_PRIMING_GNR                                                         "Error when priming GNR resources '{0}'"
     78:    G2Exception,                       # EAS_ERR_ERROR_WHEN_ENCRYPTING                                                          "Error when encrypting '{0}'"
-    79:    G2Exception,                       # EAS_ERR_ERROR_WHEN_DECRYPTING                                                          "Error when decryting '{0}'"
+    79:    G2Exception,                       # EAS_ERR_ERROR_WHEN_DECRYPTING                                                          "Error when decrypting '{0}'"
     80:    G2Exception,                       # EAS_ERR_ERROR_WHEN_VALIDATING_ENCRYPTION_SIGNATURE_COMPATIBILITY                       "Error when validating encryption signature compatibility '{0}'"
     81:    G2Exception,                       # EAS_ERR_ERROR_WHEN_CHECKING_DISTINCT_FEATURE_GENERALIZATION                            "Error when checking distinct feature generalization '{0}'"
     82:    G2Exception,                       # EAS_ERR_ERROR_WHEN_RUNNING_DQM                                                         "Error when running DQM '{0}'"

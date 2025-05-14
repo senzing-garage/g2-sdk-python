@@ -5,10 +5,14 @@ import functools
 import warnings
 
 
-from .G2Exception import TranslateG2ModuleException, G2NotInitializedException, G2Exception
+from .G2Exception import (
+    TranslateG2ModuleException,
+    G2NotInitializedException,
+    G2Exception,
+)
 from .G2EngineFlags import G2EngineFlags
 
-__all__ = ['G2Engine']
+__all__ = ["G2Engine"]
 SENZING_PRODUCT_ID = "5043"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 
@@ -34,7 +38,7 @@ class MyBuffer2(threading.local):
 
 
 def resize_return_buffer(buf_, size_):
-    """  callback function that resizes return buffer when it is too small
+    """callback function that resizes return buffer when it is too small
     Args:
     size_: size the return buffer needs to be
     """
@@ -43,7 +47,7 @@ def resize_return_buffer(buf_, size_):
             # print("New RESIZE_RETURN_BUF {}:{}".format(buf_,size_))
             tls_var.buf = create_string_buffer(size_)
             tls_var.bufSize = size_
-        elif (tls_var.bufSize < size_):
+        elif tls_var.bufSize < size_:
             # print("RESIZE_RETURN_BUF {}:{}/{}".format(buf_,size_,tls_var.bufSize))
             foo = tls_var.buf
             tls_var.buf = create_string_buffer(size_)
@@ -58,7 +62,7 @@ def resize_return_buffer(buf_, size_):
 
 
 def resize_return_buffer3(buf_, size_):
-    """  callback function that resizes return buffer when it is too small
+    """callback function that resizes return buffer when it is too small
     Args:
     size_: size the return buffer needs to be
     """
@@ -67,7 +71,7 @@ def resize_return_buffer3(buf_, size_):
             # print("New RESIZE_RETURN_BUF {}:{}".format(buf_,size_))
             tls_var3.buf = create_string_buffer(size_)
             tls_var3.bufSize = size_
-        elif (tls_var3.bufSize < size_):
+        elif tls_var3.bufSize < size_:
             # print("RESIZE_RETURN_BUF {}:{}/{}".format(buf_,size_,tls_var3.bufSize))
             foo = tls_var3.buf
             tls_var3.buf = create_string_buffer(size_)
@@ -87,17 +91,21 @@ def deprecated(instance):
 
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            warnings.simplefilter('always', DeprecationWarning)  # turn off filter
+            warnings.simplefilter("always", DeprecationWarning)  # turn off filter
             warnings.warn(
-                "senzing-{0}{1:04d}W Call to deprecated function {2}.".format(SENZING_PRODUCT_ID, instance, func.__name__),
+                "senzing-{0}{1:04d}W Call to deprecated function {2}.".format(
+                    SENZING_PRODUCT_ID, instance, func.__name__
+                ),
                 category=DeprecationWarning,
-                stacklevel=2)
-            warnings.simplefilter('default', DeprecationWarning)  # reset filter
+                stacklevel=2,
+            )
+            warnings.simplefilter("default", DeprecationWarning)  # reset filter
             return func(*args, **kwargs)
 
         return wrapper
 
     return the_decorator
+
 
 # -----------------------------------------------------------------------------
 # G2Engine class
@@ -109,7 +117,7 @@ class G2Engine(object):
 
     Attributes:
         _lib_handle: A boolean indicating if we like SPAM or not.
-        _resize_func_def: resize function definiton
+        _resize_func_def: resize function definition
         _resize_func: resize function pointer
         _engine_name: CME engine name
         _ini_file_name: name and location of .ini file
@@ -117,18 +125,23 @@ class G2Engine(object):
 
     def __init__(self, *args, **kwargs):
         # type: () -> None
-        """ G2Engine class initialization
-        """
+        """G2Engine class initialization"""
 
         try:
-            if os.name == 'nt':
+            if os.name == "nt":
                 self._lib_handle = cdll.LoadLibrary("G2.dll")
             else:
                 self._lib_handle = cdll.LoadLibrary("libG2.so")
         except OSError as ex:
-            print("ERROR: Unable to load G2.  Did you remember to setup your environment by sourcing the setupEnv file?")
-            print("ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart")
-            print("ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements")
+            print(
+                "ERROR: Unable to load G2.  Did you remember to setup your environment by sourcing the setupEnv file?"
+            )
+            print(
+                "ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart"
+            )
+            print(
+                "ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements"
+            )
             raise G2Exception("Failed to load the G2 library")
 
         self._resize_func_def = CFUNCTYPE(c_char_p, c_char_p, c_size_t)
@@ -141,13 +154,13 @@ class G2Engine(object):
         self.tls_var2 = MyBuffer2(self)
         self.info_buf = MyBuffer2(self)
 
-# -----------------------------------------------------------------------------
-# Internal helper methods
-# -----------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------
+    # Internal helper methods
+    # -----------------------------------------------------------------------------
 
     def prepareIntArgument(self, valueToPrepare):
         # type: (str) -> int
-        """ Internal processing function """
+        """Internal processing function"""
         """ This converts many types of values to an integer """
 
         # handle null string
@@ -155,8 +168,8 @@ class G2Engine(object):
             return 0
         # if string is unicode, transcode to utf-8 str
         if type(valueToPrepare) == str:
-            return int(valueToPrepare.encode('utf-8'))
-        # if input is bytearray, assumt utf-8 and convert to str
+            return int(valueToPrepare.encode("utf-8"))
+        # if input is bytearray, assume utf-8 and convert to str
         elif type(valueToPrepare) == bytearray:
             return int(valueToPrepare)
         elif type(valueToPrepare) == bytes:
@@ -166,25 +179,25 @@ class G2Engine(object):
 
     def prepareStringArgument(self, stringToPrepare):
         # type: (str) -> str
-        """ Internal processing function """
+        """Internal processing function"""
 
         # handle null string
         if stringToPrepare is None:
-            return b''
+            return b""
         # if string is unicode, transcode to utf-8 str
         if type(stringToPrepare) == str:
-            return stringToPrepare.encode('utf-8')
-        # if input is bytearray, assumt utf-8 and convert to str
+            return stringToPrepare.encode("utf-8")
+        # if input is bytearray, assume utf-8 and convert to str
         elif type(stringToPrepare) == bytearray:
-            return stringToPrepare.decode().encode('utf-8')
+            return stringToPrepare.decode().encode("utf-8")
         elif type(stringToPrepare) == bytes:
-            return str(stringToPrepare).encode('utf-8')
+            return str(stringToPrepare).encode("utf-8")
         # input is already a str
         return stringToPrepare
 
-# -----------------------------------------------------------------------------
-# Public API
-# -----------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------
+    # Public API
+    # -----------------------------------------------------------------------------
 
     @deprecated(1001)
     def initV2(self, engine_name_, ini_params_, debug_=False):
@@ -199,7 +212,9 @@ class G2Engine(object):
             print("Initializing G2 engine")
 
         self._lib_handle.G2_init.argtypes = [c_char_p, c_char_p, c_int]
-        ret_code = self._lib_handle.G2_init(self._engine_name, self._ini_params, self._debug)
+        ret_code = self._lib_handle.G2_init(
+            self._engine_name, self._ini_params, self._debug
+        )
 
         if self._debug:
             print("Initialization Status: " + str(ret_code))
@@ -212,7 +227,9 @@ class G2Engine(object):
     def initWithConfigIDV2(self, engine_name_, ini_params_, initConfigID_, debug_):
         self.initWithConfigID(engine_name_, ini_params_, initConfigID_, debug_)
 
-    def initWithConfigID(self, engine_name_, ini_params_, initConfigID_, debug_, *args, **kwargs):
+    def initWithConfigID(
+        self, engine_name_, ini_params_, initConfigID_, debug_, *args, **kwargs
+    ):
 
         configIDValue = self.prepareIntArgument(initConfigID_)
 
@@ -222,8 +239,15 @@ class G2Engine(object):
         if self._debug:
             print("Initializing G2 engine")
 
-        self._lib_handle.G2_initWithConfigID.argtypes = [c_char_p, c_char_p, c_longlong, c_int]
-        ret_code = self._lib_handle.G2_initWithConfigID(self._engine_name, self._ini_params, configIDValue, self._debug)
+        self._lib_handle.G2_initWithConfigID.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_longlong,
+            c_int,
+        ]
+        ret_code = self._lib_handle.G2_initWithConfigID(
+            self._engine_name, self._ini_params, configIDValue, self._debug
+        )
 
         if self._debug:
             print("Initialization Status: " + str(ret_code))
@@ -249,8 +273,7 @@ class G2Engine(object):
 
     @deprecated(1022)
     def clearLastException(self, *args, **kwargs):
-        """ Clears the last exception
-        """
+        """Clears the last exception"""
 
         self._lib_handle.G2_clearLastException.restype = None
         self._lib_handle.G2_clearLastException.argtypes = []
@@ -258,19 +281,17 @@ class G2Engine(object):
 
     @deprecated(1023)
     def getLastException(self, *args, **kwargs):
-        """ Gets the last exception
-        """
+        """Gets the last exception"""
 
         self._lib_handle.G2_getLastException.restype = c_int
         self._lib_handle.G2_getLastException.argtypes = [c_char_p, c_size_t]
         self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
-        resultString = tls_var.buf.value.decode('utf-8')
+        resultString = tls_var.buf.value.decode("utf-8")
         return resultString
 
     @deprecated(1024)
     def getLastExceptionCode(self, *args, **kwargs):
-        """ Gets the last exception code
-        """
+        """Gets the last exception code"""
 
         self._lib_handle.G2_getLastExceptionCode.restype = c_int
         self._lib_handle.G2_getLastExceptionCode.argtypes = []
@@ -283,14 +304,16 @@ class G2Engine(object):
             print("Initialization Status: " + str(ret_code))
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
     def process(self, input_umf_, *args, **kwargs):
         # type: (str) -> None
-        """ Generic process function without return
+        """Generic process function without return
         This method will send a record for processing in g2.
 
         Args:
@@ -306,14 +329,16 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_process(input_umf_string)
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
     def processWithInfo(self, input_umf_, response, flags=0, *args, **kwargs):
         # type: (str, str, int) -> int
-        """ Generic process function without return
+        """Generic process function without return
         This method will send a record for processing in g2.
 
         Args:
@@ -326,14 +351,28 @@ class G2Engine(object):
         """
 
         input_umf_string = self.prepareStringArgument(input_umf_)
-        response[::] = b''
+        response[::] = b""
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_processWithInfo.argtypes = [c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_processWithInfo(input_umf_string, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_processWithInfo.argtypes = [
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_processWithInfo(
+            input_umf_string,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -342,7 +381,7 @@ class G2Engine(object):
         response += tls_var.buf.value
 
     def processWithResponse(self, input_umf_, response, *args, **kwargs):
-        """ Generic process function that returns results
+        """Generic process function that returns results
         This method will send a record for processing in g2. It is a synchronous
         call, i.e. it will wait until g2 actually processes the record, and then
         optionally return any response message.
@@ -363,11 +402,23 @@ class G2Engine(object):
         input_umf_string = self.prepareStringArgument(input_umf_)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_processWithResponseResize.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_processWithResponseResize(input_umf_string, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_processWithResponseResize.argtypes = [
+            c_char_p,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_processWithResponseResize(
+            input_umf_string,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -376,7 +427,7 @@ class G2Engine(object):
 
     def checkRecord(self, input_umf_, recordQueryList, response, *args, **kwargs):
         # type: (str,str,str) -> str
-        """ Scores the input record against the specified one
+        """Scores the input record against the specified one
         Args:
             input_umf_: A JSON document containing the attribute information
                 for the observation.
@@ -388,53 +439,90 @@ class G2Engine(object):
         _recordQueryList = self.prepareStringArgument(recordQueryList)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_checkRecord.argtypes = [c_char_p, c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_checkRecord(_inputUmfString, _recordQueryList, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_checkRecord.argtypes = [
+            c_char_p,
+            c_char_p,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_checkRecord(
+            _inputUmfString,
+            _recordQueryList,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
         response += responseBuf.value
 
-    def exportJSONEntityReport(self, flags=G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS, *args, **kwargs):
-        """ Generate a JSON export
+    def exportJSONEntityReport(
+        self, flags=G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS, *args, **kwargs
+    ):
+        """Generate a JSON export
         This is used to export entity data from known entities.  This function
         returns an export-handle that can be read from to get the export data
         in the requested format.  The export-handle should be read using the "G2_fetchNext"
         function, and closed when work is complete.
         """
         self._lib_handle.G2_exportJSONEntityReport.restype = c_int
-        self._lib_handle.G2_exportJSONEntityReport.argtypes = [c_longlong, POINTER(c_void_p)]
+        self._lib_handle.G2_exportJSONEntityReport.argtypes = [
+            c_longlong,
+            POINTER(c_void_p),
+        ]
         exportHandle = c_void_p(0)
-        ret_code = self._lib_handle.G2_exportJSONEntityReport(flags, byref(exportHandle))
+        ret_code = self._lib_handle.G2_exportJSONEntityReport(
+            flags, byref(exportHandle)
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
         return exportHandle.value
 
-    def exportCSVEntityReport(self, headersForCSV, flags=G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS, *args, **kwargs):
-        """ Generate a CSV export
+    def exportCSVEntityReport(
+        self,
+        headersForCSV,
+        flags=G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
+        """Generate a CSV export
         This is used to export entity data from known entities.  This function
         returns an export-handle that can be read from to get the export data
         in the requested format.  The export-handle should be read using the "G2_fetchNext"
-        function, and closed when work is complete.  Tthe first output row returned
+        function, and closed when work is complete.  The first output row returned
         by the export-handle contains the CSV column headers as a string.  Each
         following row contains the exported entity data.
         """
         _headersForCSV = self.prepareStringArgument(headersForCSV)
         self._lib_handle.G2_exportCSVEntityReport.restype = c_int
-        self._lib_handle.G2_exportCSVEntityReport.argtypes = [c_char_p, c_longlong, POINTER(c_void_p)]
+        self._lib_handle.G2_exportCSVEntityReport.argtypes = [
+            c_char_p,
+            c_longlong,
+            POINTER(c_void_p),
+        ]
         exportHandle = c_void_p(0)
-        ret_code = self._lib_handle.G2_exportCSVEntityReport(_headersForCSV, flags, byref(exportHandle))
+        ret_code = self._lib_handle.G2_exportCSVEntityReport(
+            _headersForCSV, flags, byref(exportHandle)
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -442,30 +530,36 @@ class G2Engine(object):
         return exportHandle.value
 
     def fetchNext(self, exportHandle, response, *args, **kwargs):
-        """ Fetch a record from an export
+        """Fetch a record from an export
         Args:
             exportHandle: handle from generated export
 
         Returns:
             str: Record fetched, empty if there is no more data
         """
-        response[::] = b''
+        response[::] = b""
         self._lib_handle.G2_fetchNext.restype = c_int
         self._lib_handle.G2_fetchNext.argtypes = [c_void_p, c_char_p, c_size_t]
-        resultValue = self._lib_handle.G2_fetchNext(c_void_p(exportHandle), tls_var.buf, sizeof(tls_var.buf))
+        resultValue = self._lib_handle.G2_fetchNext(
+            c_void_p(exportHandle), tls_var.buf, sizeof(tls_var.buf)
+        )
         while resultValue != 0:
 
             if resultValue == -1:
-                raise G2NotInitializedException('G2Engine has not been successfully initialized')
+                raise G2NotInitializedException(
+                    "G2Engine has not been successfully initialized"
+                )
             elif resultValue < 0:
                 self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
                 raise TranslateG2ModuleException(tls_var.buf.value)
 
             response += tls_var.buf.value
-            if (response)[-1] == 0x0a:
+            if (response)[-1] == 0x0A:
                 break
             else:
-                resultValue = self._lib_handle.G2_fetchNext(c_void_p(exportHandle), tls_var.buf, sizeof(tls_var.buf))
+                resultValue = self._lib_handle.G2_fetchNext(
+                    c_void_p(exportHandle), tls_var.buf, sizeof(tls_var.buf)
+                )
         return response
 
     def closeExport(self, exportHandle, *args, **kwargs):
@@ -473,9 +567,11 @@ class G2Engine(object):
         self._lib_handle.G2_closeExport.argtypes = [c_void_p]
         self._lib_handle.G2_closeExport(c_void_p(exportHandle))
 
-    def addRecord(self, dataSourceCode, recordId, jsonData, load_id=None, *args, **kwargs):
+    def addRecord(
+        self, dataSourceCode, recordId, jsonData, load_id=None, *args, **kwargs
+    ):
         # type: (str,str,str,str) -> int
-        """ Loads the JSON record
+        """Loads the JSON record
         Args:
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
@@ -489,18 +585,29 @@ class G2Engine(object):
         _recordId = self.prepareStringArgument(recordId)
         _jsonData = self.prepareStringArgument(jsonData)
         self._lib_handle.G2_addRecord.restype = c_int
-        self._lib_handle.G2_addRecord.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p]
-        ret_code = self._lib_handle.G2_addRecord(_dataSourceCode, _recordId, _jsonData, _load_id)
+        self._lib_handle.G2_addRecord.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_char_p,
+        ]
+        ret_code = self._lib_handle.G2_addRecord(
+            _dataSourceCode, _recordId, _jsonData, _load_id
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def addRecordWithReturnedRecordID(self, dataSourceCode, recordID, jsonData, load_id=None, *args, **kwargs):
+    def addRecordWithReturnedRecordID(
+        self, dataSourceCode, recordID, jsonData, load_id=None, *args, **kwargs
+    ):
         # type: (str,str,str,str) -> int
-        """ Loads the JSON record
+        """Loads the JSON record
         Args:
             dataSourceCode: The data source for the observation.
             recordID: A memory buffer for returning the recordID
@@ -512,21 +619,41 @@ class G2Engine(object):
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
         _jsonData = self.prepareStringArgument(jsonData)
         _load_id = self.prepareStringArgument(load_id)
-        recordID[::] = b''
-        self._lib_handle.G2_addRecordWithReturnedRecordID.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_size_t]
-        ret_code = self._lib_handle.G2_addRecordWithReturnedRecordID(_dataSourceCode, _jsonData, _load_id, tls_var.buf, sizeof(tls_var.buf))
+        recordID[::] = b""
+        self._lib_handle.G2_addRecordWithReturnedRecordID.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_size_t,
+        ]
+        ret_code = self._lib_handle.G2_addRecordWithReturnedRecordID(
+            _dataSourceCode, _jsonData, _load_id, tls_var.buf, sizeof(tls_var.buf)
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
         recordID += tls_var.buf.value
 
-    def addRecordWithInfo(self, dataSourceCode, recordId, jsonData, response, load_id=None, flags=0, *args, **kwargs):
+    def addRecordWithInfo(
+        self,
+        dataSourceCode,
+        recordId,
+        jsonData,
+        response,
+        load_id=None,
+        flags=0,
+        *args,
+        **kwargs
+    ):
         # type: (str,str,str,str,str,int) -> str
-        """ Loads the JSON record and returns info about the load
+        """Loads the JSON record and returns info about the load
         Args:
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
@@ -541,14 +668,34 @@ class G2Engine(object):
         _load_id = self.prepareStringArgument(load_id)
         _recordId = self.prepareStringArgument(recordId)
         _jsonData = self.prepareStringArgument(jsonData)
-        response[::] = b''
+        response[::] = b""
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_addRecordWithInfo.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_addRecordWithInfo(_dataSourceCode, _recordId, _jsonData, _load_id, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_addRecordWithInfo.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_addRecordWithInfo(
+            _dataSourceCode,
+            _recordId,
+            _jsonData,
+            _load_id,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -556,8 +703,18 @@ class G2Engine(object):
         # Add the bytes to the response bytearray from calling function
         response += tls_var.buf.value
 
-    def addRecordWithInfoWithReturnedRecordID(self, dataSourceCode, jsonData, recordID, info, load_id=None, flags=0, *args, **kwargs):
-        """ Loads the JSON record
+    def addRecordWithInfoWithReturnedRecordID(
+        self,
+        dataSourceCode,
+        jsonData,
+        recordID,
+        info,
+        load_id=None,
+        flags=0,
+        *args,
+        **kwargs
+    ):
+        """Loads the JSON record
         Args:
             dataSourceCode: The data source for the observation.
             recordID: A memory buffer for returning the recordID
@@ -572,9 +729,9 @@ class G2Engine(object):
         _jsonData = self.prepareStringArgument(jsonData)
         _load_id = self.prepareStringArgument(load_id)
 
-        recordID[::] = b''
+        recordID[::] = b""
 
-        info[::] = b''
+        info[::] = b""
         infoBuf = c_char_p(addressof(tls_var3.buf))
         infoBufSize = c_size_t(tls_var3.bufSize)
 
@@ -582,11 +739,33 @@ class G2Engine(object):
         resize_return_buffer(tls_var.buf, 100)
 
         self._lib_handle.G2_addRecordWithInfoWithReturnedRecordID.restype = c_int
-        self._lib_handle.G2_addRecordWithInfoWithReturnedRecordID.argtypes = [c_char_p, c_char_p, c_char_p, c_longlong, c_char_p, c_size_t, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def3]
-        ret_code = self._lib_handle.G2_addRecordWithInfoWithReturnedRecordID(_dataSourceCode, _jsonData, _load_id, flags, tls_var.buf, sizeof(tls_var.buf), pointer(infoBuf), pointer(infoBufSize), self._resize_func3)
+        self._lib_handle.G2_addRecordWithInfoWithReturnedRecordID.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_longlong,
+            c_char_p,
+            c_size_t,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def3,
+        ]
+        ret_code = self._lib_handle.G2_addRecordWithInfoWithReturnedRecordID(
+            _dataSourceCode,
+            _jsonData,
+            _load_id,
+            flags,
+            tls_var.buf,
+            sizeof(tls_var.buf),
+            pointer(infoBuf),
+            pointer(infoBufSize),
+            self._resize_func3,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -594,9 +773,11 @@ class G2Engine(object):
         recordID += tls_var.buf.value
         info += tls_var3.buf.value
 
-    def replaceRecord(self, dataSourceCode, recordId, jsonData, load_id=None, *args, **kwargs):
+    def replaceRecord(
+        self, dataSourceCode, recordId, jsonData, load_id=None, *args, **kwargs
+    ):
         # type: (str,str,str,str) -> int
-        """ Replace the JSON record, loads if doesn't exist
+        """Replace the JSON record, loads if doesn't exist
         Args:
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
@@ -609,17 +790,31 @@ class G2Engine(object):
         _load_id = self.prepareStringArgument(load_id)
         _recordId = self.prepareStringArgument(recordId)
         _jsonData = self.prepareStringArgument(jsonData)
-        ret_code = self._lib_handle.G2_replaceRecord(_dataSourceCode, _recordId, _jsonData, _load_id)
+        ret_code = self._lib_handle.G2_replaceRecord(
+            _dataSourceCode, _recordId, _jsonData, _load_id
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def replaceRecordWithInfo(self, dataSourceCode, recordId, jsonData, response, load_id=None, flags=0, *args, **kwargs):
+    def replaceRecordWithInfo(
+        self,
+        dataSourceCode,
+        recordId,
+        jsonData,
+        response,
+        load_id=None,
+        flags=0,
+        *args,
+        **kwargs
+    ):
         # type: (str,str,str,str) -> int
-        """ Replace the JSON record, loads if doesn't exist
+        """Replace the JSON record, loads if doesn't exist
         Args:
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
@@ -634,14 +829,34 @@ class G2Engine(object):
         _load_id = self.prepareStringArgument(load_id)
         _recordId = self.prepareStringArgument(recordId)
         _jsonData = self.prepareStringArgument(jsonData)
-        response[::] = b''
+        response[::] = b""
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_replaceRecordWithInfo.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_replaceRecordWithInfo(_dataSourceCode, _recordId, _jsonData, _load_id, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_replaceRecordWithInfo.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_replaceRecordWithInfo(
+            _dataSourceCode,
+            _recordId,
+            _jsonData,
+            _load_id,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -651,7 +866,7 @@ class G2Engine(object):
 
     def deleteRecord(self, dataSourceCode, recordId, load_id=None, *args, **kwargs):
         # type: (str,str,str) -> int
-        """ Delete the record
+        """Delete the record
         Args:
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
@@ -661,17 +876,23 @@ class G2Engine(object):
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
         _load_id = self.prepareStringArgument(load_id)
         _recordId = self.prepareStringArgument(recordId)
-        ret_code = self._lib_handle.G2_deleteRecord(_dataSourceCode, _recordId, _load_id)
+        ret_code = self._lib_handle.G2_deleteRecord(
+            _dataSourceCode, _recordId, _load_id
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def deleteRecordWithInfo(self, dataSourceCode, recordId, response, load_id=None, flags=0, *args, **kwargs):
+    def deleteRecordWithInfo(
+        self, dataSourceCode, recordId, response, load_id=None, flags=0, *args, **kwargs
+    ):
         # type: (str,str,str,str,int) -> int
-        """ Delete the record
+        """Delete the record
         Args:
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
@@ -683,14 +904,32 @@ class G2Engine(object):
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
         _load_id = self.prepareStringArgument(load_id)
         _recordId = self.prepareStringArgument(recordId)
-        response[::] = b''
+        response[::] = b""
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_deleteRecordWithInfo.argtypes = [c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_deleteRecordWithInfo(_dataSourceCode, _recordId, _load_id, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_deleteRecordWithInfo.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_deleteRecordWithInfo(
+            _dataSourceCode,
+            _recordId,
+            _load_id,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -700,7 +939,7 @@ class G2Engine(object):
 
     def reevaluateRecord(self, dataSourceCode, recordId, flags=0, *args, **kwargs):
         # type: (str,str,int) -> int
-        """ Reevaluate the JSON record
+        """Reevaluate the JSON record
         Args:
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
@@ -711,17 +950,23 @@ class G2Engine(object):
         _recordId = self.prepareStringArgument(recordId)
         self._lib_handle.G2_reevaluateRecord.restype = c_int
         self._lib_handle.G2_reevaluateRecord.argtypes = [c_char_p, c_char_p, c_longlong]
-        ret_code = self._lib_handle.G2_reevaluateRecord(_dataSourceCode, _recordId, flags)
+        ret_code = self._lib_handle.G2_reevaluateRecord(
+            _dataSourceCode, _recordId, flags
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-    def reevaluateRecordWithInfo(self, dataSourceCode, recordId, response, flags=0, *args, **kwargs):
+    def reevaluateRecordWithInfo(
+        self, dataSourceCode, recordId, response, flags=0, *args, **kwargs
+    ):
         # type: (str,str,str,int) -> int
-        """ Reevaluate the JSON record and return modified resolved entities
+        """Reevaluate the JSON record and return modified resolved entities
         Args:
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
@@ -731,14 +976,30 @@ class G2Engine(object):
 
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
         _recordId = self.prepareStringArgument(recordId)
-        response[::] = b''
+        response[::] = b""
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_reevaluateRecordWithInfo.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_reevaluateRecordWithInfo(_dataSourceCode, _recordId, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_reevaluateRecordWithInfo.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_reevaluateRecordWithInfo(
+            _dataSourceCode,
+            _recordId,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -748,7 +1009,7 @@ class G2Engine(object):
 
     def reevaluateEntity(self, entityID, flags=0, *args, **kwargs):
         # type: (int,int) -> int
-        """ Reevaluate the JSON record
+        """Reevaluate the JSON record
         Args:
             entityID: The entity ID to reevaluate.
             flags: Bitwise control flags
@@ -758,14 +1019,16 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_reevaluateEntity(entityID, flags)
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
     def reevaluateEntityWithInfo(self, entityID, response, flags=0, *args, **kwargs):
         # type: (int,int,str) -> int
-        """ Reevaluate the JSON record and return the modified resolved entities
+        """Reevaluate the JSON record and return the modified resolved entities
         Args:
             entityID: The entity ID to reevaluate.
 
@@ -773,14 +1036,28 @@ class G2Engine(object):
             flags: Bitwise control flags
         """
 
-        response[::] = b''
+        response[::] = b""
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_reevaluateEntityWithInfo.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_reevaluateEntityWithInfo(entityID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_reevaluateEntityWithInfo.argtypes = [
+            c_longlong,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_reevaluateEntityWithInfo(
+            entityID,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -792,48 +1069,93 @@ class G2Engine(object):
     def searchByAttributesV2(self, jsonData, flags, response):
         self.searchByAttributes(jsonData, response, flags)
 
-    def searchByAttributes(self, jsonData, response, flags=G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS, *args, **kwargs):
+    def searchByAttributes(
+        self,
+        jsonData,
+        response,
+        flags=G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
         # type: (str,bytearray) -> int
-        """ Find records matching the provided attributes
+        """Find records matching the provided attributes
         Args:
             jsonData: A JSON document containing the attribute information to search.
             flags: control flags.
             response: A bytearray for returning the response document; if an error occurred, an error response is stored here.
         """
-        response[::] = b''
+        response[::] = b""
         _jsonData = self.prepareStringArgument(jsonData)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_searchByAttributes_V2.argtypes = [c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_searchByAttributes_V2(_jsonData, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_searchByAttributes_V2.argtypes = [
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_searchByAttributes_V2(
+            _jsonData,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
         response += tls_var.buf.value
 
-    def searchByAttributesV3(self, jsonData, searchProfile, response, flags=G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS, *args, **kwargs):
+    def searchByAttributesV3(
+        self,
+        jsonData,
+        searchProfile,
+        response,
+        flags=G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
         # type: (str,str,bytearray) -> int
-        """ Find records matching the provided attributes
+        """Find records matching the provided attributes
         Args:
             jsonData: A JSON document containing the attribute information to search.
             searchProfile: A search profile name.
             flags: control flags.
             response: A bytearray for returning the response document; if an error occurred, an error response is stored here.
         """
-        response[::] = b''
+        response[::] = b""
         _jsonData = self.prepareStringArgument(jsonData)
         _searchProfile = self.prepareStringArgument(searchProfile)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_searchByAttributes_V3.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_searchByAttributes_V3(_jsonData, _searchProfile, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_searchByAttributes_V3.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_searchByAttributes_V3(
+            _jsonData,
+            _searchProfile,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -841,12 +1163,23 @@ class G2Engine(object):
         response += tls_var.buf.value
 
     @deprecated(1005)
-    def findPathByEntityIDV2(self, startEntityID, endEntityID, maxDegree, flags, response):
+    def findPathByEntityIDV2(
+        self, startEntityID, endEntityID, maxDegree, flags, response
+    ):
         self.findPathByEntityID(startEntityID, endEntityID, maxDegree, response, flags)
 
-    def findPathByEntityID(self, startEntityID, endEntityID, maxDegree, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findPathByEntityID(
+        self,
+        startEntityID,
+        endEntityID,
+        maxDegree,
+        response,
+        flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
         # type: (int) -> str
-        """ Find a path between two entities in the system.
+        """Find a path between two entities in the system.
         Args:
             startEntityID: The entity ID you want to find the path from
             endEntityID: The entity ID you want to find the path to
@@ -855,14 +1188,32 @@ class G2Engine(object):
             response: A bytearray for returning the response document.
         """
 
-        response[::] = b''
+        response[::] = b""
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_findPathByEntityID_V2.restype = c_int
-        self._lib_handle.G2_findPathByEntityID_V2.argtypes = [c_longlong, c_longlong, c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_findPathByEntityID_V2(startEntityID, endEntityID, maxDegree, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_findPathByEntityID_V2.argtypes = [
+            c_longlong,
+            c_longlong,
+            c_int,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_findPathByEntityID_V2(
+            startEntityID,
+            endEntityID,
+            maxDegree,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -870,12 +1221,26 @@ class G2Engine(object):
         response += tls_var.buf.value
 
     @deprecated(1006)
-    def findNetworkByEntityIDV2(self, entityList, maxDegree, buildOutDegree, maxEntities, flags, response):
-        self.findNetworkByEntityID(entityList, maxDegree, buildOutDegree, maxEntities, response, flags)
+    def findNetworkByEntityIDV2(
+        self, entityList, maxDegree, buildOutDegree, maxEntities, flags, response
+    ):
+        self.findNetworkByEntityID(
+            entityList, maxDegree, buildOutDegree, maxEntities, response, flags
+        )
 
-    def findNetworkByEntityID(self, entityList, maxDegree, buildOutDegree, maxEntities, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findNetworkByEntityID(
+        self,
+        entityList,
+        maxDegree,
+        buildOutDegree,
+        maxEntities,
+        response,
+        flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
         # type: (int) -> str
-        """ Find a network between entities in the system.
+        """Find a network between entities in the system.
         Args:
             entityList: The entities to search for the network of
             maxDegree: The maximum path length to search for between entities
@@ -885,15 +1250,35 @@ class G2Engine(object):
             response: A bytearray for returning the response document.
         """
 
-        response[::] = b''
+        response[::] = b""
         _entityList = self.prepareStringArgument(entityList)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_findNetworkByEntityID_V2.restype = c_int
-        self._lib_handle.G2_findNetworkByEntityID_V2.argtypes = [c_char_p, c_int, c_int, c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_findNetworkByEntityID_V2(_entityList, maxDegree, buildOutDegree, maxEntities, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_findNetworkByEntityID_V2.argtypes = [
+            c_char_p,
+            c_int,
+            c_int,
+            c_int,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_findNetworkByEntityID_V2(
+            _entityList,
+            maxDegree,
+            buildOutDegree,
+            maxEntities,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -901,12 +1286,40 @@ class G2Engine(object):
         response += tls_var.buf.value
 
     @deprecated(1007)
-    def findPathByRecordIDV2(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, flags, response):
-        self.findPathByRecordID(startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, response, flags)
+    def findPathByRecordIDV2(
+        self,
+        startDsrcCode,
+        startRecordId,
+        endDsrcCode,
+        endRecordId,
+        maxDegree,
+        flags,
+        response,
+    ):
+        self.findPathByRecordID(
+            startDsrcCode,
+            startRecordId,
+            endDsrcCode,
+            endRecordId,
+            maxDegree,
+            response,
+            flags,
+        )
 
-    def findPathByRecordID(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findPathByRecordID(
+        self,
+        startDsrcCode,
+        startRecordId,
+        endDsrcCode,
+        endRecordId,
+        maxDegree,
+        response,
+        flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
         # type: (str,str) -> str
-        """ Find a path between two records in the system.
+        """Find a path between two records in the system.
         Args:
             startDataSourceCode: The data source for the record you want to find the path from
             startRecordID: The ID for the record you want to find the path from
@@ -917,7 +1330,7 @@ class G2Engine(object):
             response: A bytearray for returning the response document.
         """
 
-        response[::] = b''
+        response[::] = b""
         _startDsrcCode = self.prepareStringArgument(startDsrcCode)
         _startRecordId = self.prepareStringArgument(startRecordId)
         _endDsrcCode = self.prepareStringArgument(endDsrcCode)
@@ -925,10 +1338,32 @@ class G2Engine(object):
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_findPathByRecordID_V2.restype = c_int
-        self._lib_handle.G2_findPathByRecordID_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_findPathByRecordID_V2(_startDsrcCode, _startRecordId, _endDsrcCode, _endRecordId, maxDegree, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_findPathByRecordID_V2.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_int,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_findPathByRecordID_V2(
+            _startDsrcCode,
+            _startRecordId,
+            _endDsrcCode,
+            _endRecordId,
+            maxDegree,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -936,12 +1371,26 @@ class G2Engine(object):
         response += tls_var.buf.value
 
     @deprecated(1008)
-    def findNetworkByRecordIDV2(self, recordList, maxDegree, buildOutDegree, maxEntities, flags, response):
-        self.findNetworkByRecordID(recordList, maxDegree, buildOutDegree, maxEntities, response, flags)
+    def findNetworkByRecordIDV2(
+        self, recordList, maxDegree, buildOutDegree, maxEntities, flags, response
+    ):
+        self.findNetworkByRecordID(
+            recordList, maxDegree, buildOutDegree, maxEntities, response, flags
+        )
 
-    def findNetworkByRecordID(self, recordList, maxDegree, buildOutDegree, maxEntities, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findNetworkByRecordID(
+        self,
+        recordList,
+        maxDegree,
+        buildOutDegree,
+        maxEntities,
+        response,
+        flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
         # type: (str,str) -> str
-        """ Find a network between entities in the system.
+        """Find a network between entities in the system.
         Args:
             recordList: The records to search for the network of
             maxDegree: The maximum path length to search for between entities
@@ -951,34 +1400,78 @@ class G2Engine(object):
             response: A bytearray for returning the response document.
         """
 
-        response[::] = b''
+        response[::] = b""
         _recordList = self.prepareStringArgument(recordList)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_findNetworkByRecordID_V2.restype = c_int
-        self._lib_handle.G2_findNetworkByRecordID_V2.argtypes = [c_char_p, c_int, c_int, c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_findNetworkByRecordID_V2(_recordList, maxDegree, buildOutDegree, maxEntities, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_findNetworkByRecordID_V2.argtypes = [
+            c_char_p,
+            c_int,
+            c_int,
+            c_int,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_findNetworkByRecordID_V2(
+            _recordList,
+            maxDegree,
+            buildOutDegree,
+            maxEntities,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
         response += tls_var.buf.value
 
-    def whyRecordInEntity(self, dataSourceCode, recordID, response, flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def whyRecordInEntity(
+        self,
+        dataSourceCode,
+        recordID,
+        response,
+        flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
 
-        response[::] = b''
+        response[::] = b""
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
         _recordID = self.prepareStringArgument(recordID)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_whyRecordInEntity_V2.restype = c_int
-        self._lib_handle.G2_whyRecordInEntity_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_whyRecordInEntity_V2(_dataSourceCode, _recordID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_whyRecordInEntity_V2.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_whyRecordInEntity_V2(
+            _dataSourceCode,
+            _recordID,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -989,19 +1482,43 @@ class G2Engine(object):
     def whyEntityByRecordIDV2(self, dataSourceCode, recordID, flags, response):
         self.whyEntityByRecordID(dataSourceCode, recordID, response, flags)
 
-    def whyEntityByRecordID(self, dataSourceCode, recordID, response, flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def whyEntityByRecordID(
+        self,
+        dataSourceCode,
+        recordID,
+        response,
+        flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
 
-        response[::] = b''
+        response[::] = b""
         _dataSourceCode = self.prepareStringArgument(dataSourceCode)
         _recordID = self.prepareStringArgument(recordID)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_whyEntityByRecordID_V2.restype = c_int
-        self._lib_handle.G2_whyEntityByRecordID_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_whyEntityByRecordID_V2(_dataSourceCode, _recordID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_whyEntityByRecordID_V2.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_whyEntityByRecordID_V2(
+            _dataSourceCode,
+            _recordID,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1012,16 +1529,37 @@ class G2Engine(object):
     def whyEntityByEntityIDV2(self, entityID, flags, response):
         self.whyEntityByEntityID(entityID, response, flags)
 
-    def whyEntityByEntityID(self, entityID, response, flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def whyEntityByEntityID(
+        self,
+        entityID,
+        response,
+        flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
 
-        response[::] = b''
+        response[::] = b""
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_whyEntityByEntityID_V2.restype = c_int
-        self._lib_handle.G2_whyEntityByEntityID_V2.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_whyEntityByEntityID_V2(entityID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_whyEntityByEntityID_V2.argtypes = [
+            c_longlong,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_whyEntityByEntityID_V2(
+            entityID,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1032,16 +1570,37 @@ class G2Engine(object):
     def howEntityByEntityIDV2(self, entityID, flags, response):
         self.howEntityByEntityID(entityID, response, flags)
 
-    def howEntityByEntityID(self, entityID, response, flags=G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def howEntityByEntityID(
+        self,
+        entityID,
+        response,
+        flags=G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
 
-        response[::] = b''
+        response[::] = b""
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_howEntityByEntityID_V2.restype = c_int
-        self._lib_handle.G2_howEntityByEntityID_V2.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_howEntityByEntityID_V2(entityID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_howEntityByEntityID_V2.argtypes = [
+            c_longlong,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_howEntityByEntityID_V2(
+            entityID,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1052,18 +1611,39 @@ class G2Engine(object):
     def getVirtualEntityByRecordIDV2(self, recordList, flags, response):
         self.getVirtualEntityByRecordID(recordList, response, flags)
 
-    def getVirtualEntityByRecordID(self, recordList, response, flags=G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def getVirtualEntityByRecordID(
+        self,
+        recordList,
+        response,
+        flags=G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
 
-        response[::] = b''
+        response[::] = b""
         _recordList = self.prepareStringArgument(recordList)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_getVirtualEntityByRecordID_V2.restype = c_int
-        self._lib_handle.G2_getVirtualEntityByRecordID_V2.argtypes = [c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_getVirtualEntityByRecordID_V2(_recordList, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_getVirtualEntityByRecordID_V2.argtypes = [
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_getVirtualEntityByRecordID_V2(
+            _recordList,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1074,17 +1654,41 @@ class G2Engine(object):
     def whyEntitiesV2(self, entityID1, entityID2, flags, response):
         self.whyEntities(entityID1, entityID2, response, flags)
 
-    def whyEntities(self, entityID1, entityID2, response, flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def whyEntities(
+        self,
+        entityID1,
+        entityID2,
+        response,
+        flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
 
-        response[::] = b''
+        response[::] = b""
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_whyEntities_V2.restype = c_int
-        self._lib_handle.G2_whyEntities_V2.argtypes = [c_longlong, c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_whyEntities_V2(entityID1, entityID2, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_whyEntities_V2.argtypes = [
+            c_longlong,
+            c_longlong,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_whyEntities_V2(
+            entityID1,
+            entityID2,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1092,12 +1696,26 @@ class G2Engine(object):
         response += tls_var.buf.value
 
     @deprecated(1014)
-    def whyRecordsV2(self, dataSourceCode1, recordID1, dataSourceCode2, recordID2, flags, response):
-        self.whyRecords(dataSourceCode1, recordID1, dataSourceCode2, recordID2, response, flags)
+    def whyRecordsV2(
+        self, dataSourceCode1, recordID1, dataSourceCode2, recordID2, flags, response
+    ):
+        self.whyRecords(
+            dataSourceCode1, recordID1, dataSourceCode2, recordID2, response, flags
+        )
 
-    def whyRecords(self, dataSourceCode1, recordID1, dataSourceCode2, recordID2, response, flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def whyRecords(
+        self,
+        dataSourceCode1,
+        recordID1,
+        dataSourceCode2,
+        recordID2,
+        response,
+        flags=G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
 
-        response[::] = b''
+        response[::] = b""
         _dataSourceCode1 = self.prepareStringArgument(dataSourceCode1)
         _recordID1 = self.prepareStringArgument(recordID1)
         _dataSourceCode2 = self.prepareStringArgument(dataSourceCode2)
@@ -1105,11 +1723,31 @@ class G2Engine(object):
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_whyRecords_V2.restype = c_int
-        self._lib_handle.G2_whyRecords_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_whyRecords_V2(_dataSourceCode1, _recordID1, _dataSourceCode2, _recordID2, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_whyRecords_V2.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_whyRecords_V2(
+            _dataSourceCode1,
+            _recordID1,
+            _dataSourceCode2,
+            _recordID2,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1117,12 +1755,26 @@ class G2Engine(object):
         response += tls_var.buf.value
 
     @deprecated(1015)
-    def findPathExcludingByEntityIDV2(self, startEntityID, endEntityID, maxDegree, excludedEntities, flags, response):
-        self.findPathExcludingByEntityID(startEntityID, endEntityID, maxDegree, excludedEntities, response, flags)
+    def findPathExcludingByEntityIDV2(
+        self, startEntityID, endEntityID, maxDegree, excludedEntities, flags, response
+    ):
+        self.findPathExcludingByEntityID(
+            startEntityID, endEntityID, maxDegree, excludedEntities, response, flags
+        )
 
-    def findPathExcludingByEntityID(self, startEntityID, endEntityID, maxDegree, excludedEntities, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findPathExcludingByEntityID(
+        self,
+        startEntityID,
+        endEntityID,
+        maxDegree,
+        excludedEntities,
+        response,
+        flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
         # type: (int) -> str
-        """ Find a path between two entities in the system.
+        """Find a path between two entities in the system.
         Args:
             startEntityID: The entity ID you want to find the path from
             endEntityID: The entity ID you want to find the path to
@@ -1132,16 +1784,36 @@ class G2Engine(object):
             response: A bytearray for returning the response document.
         """
 
-        response[::] = b''
+        response[::] = b""
         _excludedEntities = self.prepareStringArgument(excludedEntities)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_findPathExcludingByEntityID_V2.restype = c_int
-        self._lib_handle.G2_findPathExcludingByEntityID_V2.argtypes = [c_longlong, c_longlong, c_int, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_findPathExcludingByEntityID_V2(startEntityID, endEntityID, maxDegree, _excludedEntities, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_findPathExcludingByEntityID_V2.argtypes = [
+            c_longlong,
+            c_longlong,
+            c_int,
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_findPathExcludingByEntityID_V2(
+            startEntityID,
+            endEntityID,
+            maxDegree,
+            _excludedEntities,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1149,12 +1821,40 @@ class G2Engine(object):
         response += tls_var.buf.value
 
     @deprecated(1016)
-    def findPathIncludingSourceByEntityIDV2(self, startEntityID, endEntityID, maxDegree, excludedEntities, requiredDsrcs, flags, response):
-        self.findPathIncludingSourceByEntityID(startEntityID, endEntityID, maxDegree, excludedEntities, requiredDsrcs, response, flags)
+    def findPathIncludingSourceByEntityIDV2(
+        self,
+        startEntityID,
+        endEntityID,
+        maxDegree,
+        excludedEntities,
+        requiredDsrcs,
+        flags,
+        response,
+    ):
+        self.findPathIncludingSourceByEntityID(
+            startEntityID,
+            endEntityID,
+            maxDegree,
+            excludedEntities,
+            requiredDsrcs,
+            response,
+            flags,
+        )
 
-    def findPathIncludingSourceByEntityID(self, startEntityID, endEntityID, maxDegree, excludedEntities, requiredDsrcs, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findPathIncludingSourceByEntityID(
+        self,
+        startEntityID,
+        endEntityID,
+        maxDegree,
+        excludedEntities,
+        requiredDsrcs,
+        response,
+        flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
         # type: (int) -> str
-        """ Find a path between two entities in the system.
+        """Find a path between two entities in the system.
         Args:
             startEntityID: The entity ID you want to find the path from
             endEntityID: The entity ID you want to find the path to
@@ -1165,17 +1865,39 @@ class G2Engine(object):
             response: A bytearray for returning the response document.
         """
 
-        response[::] = b''
+        response[::] = b""
         _excludedEntities = self.prepareStringArgument(excludedEntities)
         _requiredDsrcs = self.prepareStringArgument(requiredDsrcs)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_findPathIncludingSourceByEntityID_V2.restype = c_int
-        self._lib_handle.G2_findPathIncludingSourceByEntityID_V2.argtypes = [c_longlong, c_longlong, c_int, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_findPathIncludingSourceByEntityID_V2(startEntityID, endEntityID, maxDegree, _excludedEntities, _requiredDsrcs, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_findPathIncludingSourceByEntityID_V2.argtypes = [
+            c_longlong,
+            c_longlong,
+            c_int,
+            c_char_p,
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_findPathIncludingSourceByEntityID_V2(
+            startEntityID,
+            endEntityID,
+            maxDegree,
+            _excludedEntities,
+            _requiredDsrcs,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1183,12 +1905,43 @@ class G2Engine(object):
         response += tls_var.buf.value
 
     @deprecated(1017)
-    def findPathExcludingByRecordIDV2(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, flags, response):
-        self.findPathExcludingByRecordID(startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, response, flags)
+    def findPathExcludingByRecordIDV2(
+        self,
+        startDsrcCode,
+        startRecordId,
+        endDsrcCode,
+        endRecordId,
+        maxDegree,
+        excludedEntities,
+        flags,
+        response,
+    ):
+        self.findPathExcludingByRecordID(
+            startDsrcCode,
+            startRecordId,
+            endDsrcCode,
+            endRecordId,
+            maxDegree,
+            excludedEntities,
+            response,
+            flags,
+        )
 
-    def findPathExcludingByRecordID(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findPathExcludingByRecordID(
+        self,
+        startDsrcCode,
+        startRecordId,
+        endDsrcCode,
+        endRecordId,
+        maxDegree,
+        excludedEntities,
+        response,
+        flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
         # type: (str,str) -> str
-        """ Find a path between two records in the system.
+        """Find a path between two records in the system.
         Args:
             startDataSourceCode: The data source for the record you want to find the path from
             startRecordID: The ID for the record you want to find the path from
@@ -1200,7 +1953,7 @@ class G2Engine(object):
             response: A bytearray for returning the response document.
         """
 
-        response[::] = b''
+        response[::] = b""
         _startDsrcCode = self.prepareStringArgument(startDsrcCode)
         _startRecordId = self.prepareStringArgument(startRecordId)
         _endDsrcCode = self.prepareStringArgument(endDsrcCode)
@@ -1209,11 +1962,35 @@ class G2Engine(object):
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_findPathExcludingByRecordID_V2.restype = c_int
-        self._lib_handle.G2_findPathExcludingByRecordID_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_int, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_findPathExcludingByRecordID_V2(_startDsrcCode, _startRecordId, _endDsrcCode, _endRecordId, maxDegree, _excludedEntities, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_findPathExcludingByRecordID_V2.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_int,
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_findPathExcludingByRecordID_V2(
+            _startDsrcCode,
+            _startRecordId,
+            _endDsrcCode,
+            _endRecordId,
+            maxDegree,
+            _excludedEntities,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1221,12 +1998,46 @@ class G2Engine(object):
         response += tls_var.buf.value
 
     @deprecated(1018)
-    def findPathIncludingSourceByRecordIDV2(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, requiredDsrcs, flags, response):
-        self.findPathIncludingSourceByRecordID(startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, requiredDsrcs, response, flags)
+    def findPathIncludingSourceByRecordIDV2(
+        self,
+        startDsrcCode,
+        startRecordId,
+        endDsrcCode,
+        endRecordId,
+        maxDegree,
+        excludedEntities,
+        requiredDsrcs,
+        flags,
+        response,
+    ):
+        self.findPathIncludingSourceByRecordID(
+            startDsrcCode,
+            startRecordId,
+            endDsrcCode,
+            endRecordId,
+            maxDegree,
+            excludedEntities,
+            requiredDsrcs,
+            response,
+            flags,
+        )
 
-    def findPathIncludingSourceByRecordID(self, startDsrcCode, startRecordId, endDsrcCode, endRecordId, maxDegree, excludedEntities, requiredDsrcs, response, flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS, *args, **kwargs):
+    def findPathIncludingSourceByRecordID(
+        self,
+        startDsrcCode,
+        startRecordId,
+        endDsrcCode,
+        endRecordId,
+        maxDegree,
+        excludedEntities,
+        requiredDsrcs,
+        response,
+        flags=G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
         # type: (str,str) -> str
-        """ Find a path between two records in the system.
+        """Find a path between two records in the system.
         Args:
             startDataSourceCode: The data source for the record you want to find the path from
             startRecordID: The ID for the record you want to find the path from
@@ -1239,7 +2050,7 @@ class G2Engine(object):
             response: A bytearray for returning the response document.
         """
 
-        response[::] = b''
+        response[::] = b""
         _startDsrcCode = self.prepareStringArgument(startDsrcCode)
         _startRecordId = self.prepareStringArgument(startRecordId)
         _endDsrcCode = self.prepareStringArgument(endDsrcCode)
@@ -1249,11 +2060,37 @@ class G2Engine(object):
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_findPathIncludingSourceByRecordID_V2.restype = c_int
-        self._lib_handle.G2_findPathIncludingSourceByRecordID_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_int, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_findPathIncludingSourceByRecordID_V2(_startDsrcCode, _startRecordId, _endDsrcCode, _endRecordId, maxDegree, _excludedEntities, _requiredDsrcs, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_findPathIncludingSourceByRecordID_V2.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_char_p,
+            c_int,
+            c_char_p,
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_findPathIncludingSourceByRecordID_V2(
+            _startDsrcCode,
+            _startRecordId,
+            _endDsrcCode,
+            _endRecordId,
+            maxDegree,
+            _excludedEntities,
+            _requiredDsrcs,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1264,9 +2101,16 @@ class G2Engine(object):
     def getEntityByEntityIDV2(self, entityID, flags, response):
         self.getEntityByEntityID(entityID, response, flags)
 
-    def getEntityByEntityID(self, entityID, response, flags=G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def getEntityByEntityID(
+        self,
+        entityID,
+        response,
+        flags=G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
         # type: (int,bytearray) -> int
-        """ Find the entity with the given ID
+        """Find the entity with the given ID
         Args:
             entityID: The entity ID you want returned.  Typically referred to as
                     ENTITY_ID in JSON results.
@@ -1274,15 +2118,29 @@ class G2Engine(object):
             response: A bytearray for returning the response document; if an error occurred, an error response is stored here.
         """
 
-        response[::] = b''
+        response[::] = b""
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_getEntityByEntityID_V2.restype = c_int
-        self._lib_handle.G2_getEntityByEntityID_V2.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_getEntityByEntityID_V2(entityID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_getEntityByEntityID_V2.argtypes = [
+            c_longlong,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_getEntityByEntityID_V2(
+            entityID,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1294,9 +2152,17 @@ class G2Engine(object):
     def getEntityByRecordIDV2(self, dsrcCode, recordId, flags, response):
         self.getEntityByRecordID(dsrcCode, recordId, response, flags)
 
-    def getEntityByRecordID(self, dsrcCode, recordId, response, flags=G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS, *args, **kwargs):
+    def getEntityByRecordID(
+        self,
+        dsrcCode,
+        recordId,
+        response,
+        flags=G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
         # type: (str,str,bytearray) -> int
-        """ Get the entity containing the specified record
+        """Get the entity containing the specified record
         Args:
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
@@ -1304,41 +2170,73 @@ class G2Engine(object):
             response: A bytearray for returning the response document; if an error occurred, an error response is stored here.
         """
 
-        response[::] = b''
+        response[::] = b""
         _dsrcCode = self.prepareStringArgument(dsrcCode)
         _recordId = self.prepareStringArgument(recordId)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_getEntityByRecordID_V2.restype = c_int
-        self._lib_handle.G2_getEntityByRecordID_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_getEntityByRecordID_V2(_dsrcCode, _recordId, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_getEntityByRecordID_V2.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_getEntityByRecordID_V2(
+            _dsrcCode,
+            _recordId,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
         response += tls_var.buf.value
 
-    def findInterestingEntitiesByEntityID(self, entityID, response, flags=0, *args, **kwargs):
+    def findInterestingEntitiesByEntityID(
+        self, entityID, response, flags=0, *args, **kwargs
+    ):
         # type: (int,bytearray) -> int
-        """ Find interesting entities close to the entity with the given ID
+        """Find interesting entities close to the entity with the given ID
         Args:
             entityID: The entity ID you want to search around.
             flags: control flags.
             response: A bytearray for returning the response document; if an error occurred, an error response is stored here.
         """
 
-        response[::] = b''
+        response[::] = b""
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_findInterestingEntitiesByEntityID.restype = c_int
-        self._lib_handle.G2_findInterestingEntitiesByEntityID.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_findInterestingEntitiesByEntityID(entityID, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_findInterestingEntitiesByEntityID.argtypes = [
+            c_longlong,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_findInterestingEntitiesByEntityID(
+            entityID,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1346,9 +2244,11 @@ class G2Engine(object):
         # Add the bytes to the response bytearray from calling function
         response += tls_var.buf.value
 
-    def findInterestingEntitiesByRecordID(self, dsrcCode, recordId, response, flags=0, *args, **kwargs):
+    def findInterestingEntitiesByRecordID(
+        self, dsrcCode, recordId, response, flags=0, *args, **kwargs
+    ):
         # type: (str,str,bytearray) -> int
-        """ Find interesting entities close to the entity with the specified record
+        """Find interesting entities close to the entity with the specified record
         Args:
             dataSourceCode: The data source for the observation to search around.
             recordID: The ID for the record to search around.
@@ -1356,17 +2256,33 @@ class G2Engine(object):
             response: A bytearray for returning the response document; if an error occurred, an error response is stored here.
         """
 
-        response[::] = b''
+        response[::] = b""
         _dsrcCode = self.prepareStringArgument(dsrcCode)
         _recordId = self.prepareStringArgument(recordId)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_findInterestingEntitiesByRecordID.restype = c_int
-        self._lib_handle.G2_findInterestingEntitiesByRecordID.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_findInterestingEntitiesByRecordID(_dsrcCode, _recordId, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_findInterestingEntitiesByRecordID.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_findInterestingEntitiesByRecordID(
+            _dsrcCode,
+            _recordId,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1375,20 +2291,28 @@ class G2Engine(object):
 
     def getRedoRecord(self, response, *args, **kwargs):
         # type: (bytearray) -> int
-        """ Get the next Redo record
+        """Get the next Redo record
         Args:
             response: A bytearray for returning the response document; if an error occurred, an error response is stored here.
         """
 
-        response[::] = b''
+        response[::] = b""
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_getRedoRecord.restype = c_int
-        self._lib_handle.G2_getRedoRecord.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_getRedoRecord(pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_getRedoRecord.argtypes = [
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_getRedoRecord(
+            pointer(responseBuf), pointer(responseSize), self._resize_func
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1397,20 +2321,28 @@ class G2Engine(object):
 
     def processRedoRecord(self, response, flags=0, *args, **kwargs):
         # type: (bytearray) -> int
-        """ Process the next Redo record
+        """Process the next Redo record
         Args:
             response: A bytearray for returning the response document; if an error occurred, an error response is stored here.
         """
 
-        response[::] = b''
+        response[::] = b""
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_processRedoRecord.restype = c_int
-        self._lib_handle.G2_processRedoRecord.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_processRedoRecord(pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_processRedoRecord.argtypes = [
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_processRedoRecord(
+            pointer(responseBuf), pointer(responseSize), self._resize_func
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1419,36 +2351,35 @@ class G2Engine(object):
 
     def processRedoRecordWithInfo(self, response, info, flags=0, *args, **kwargs):
         # type: (bytearray) -> int
-        """ Process the next Redo record
+        """Process the next Redo record
         Args:
             response: A bytearray for returning the response document; if an error occurred, an error response is stored here.
             response: A bytearray for returning the info about changed resolved entities
         """
 
         # clear the output params
-        response[::] = b''
-        info[::] = b''
+        response[::] = b""
+        info[::] = b""
 
         # get a redo record
         getRecordResponse = bytearray()
-        getRecordResponse[::] = b''
+        getRecordResponse[::] = b""
         self.getRedoRecord(getRecordResponse, args, kwargs)
         response += getRecordResponse
 
-        # get the record to be processesd
+        # get the record to be processed
         inputUMF = getRecordResponse
 
         # process the redo record
         if len(inputUMF) > 0:
             processWithInfoResponse = bytearray()
-            processWithInfoResponse[::] = b''
+            processWithInfoResponse[::] = b""
             self.processWithInfo(inputUMF, processWithInfoResponse, flags, args, kwargs)
             info += processWithInfoResponse
 
-
     def countRedoRecords(self, *args, **kwargs):
         # type: () -> int
-        """ Get the redo records left
+        """Get the redo records left
         Args:
 
         Return:
@@ -1458,7 +2389,9 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_countRedoRecords()
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1469,9 +2402,17 @@ class G2Engine(object):
     def getRecordV2(self, dsrcCode, recordId, flags, response):
         self.getRecord(dsrcCode, recordId, response, flags)
 
-    def getRecord(self, dsrcCode, recordId, response, flags=G2EngineFlags.G2_RECORD_DEFAULT_FLAGS, *args, **kwargs):
+    def getRecord(
+        self,
+        dsrcCode,
+        recordId,
+        response,
+        flags=G2EngineFlags.G2_RECORD_DEFAULT_FLAGS,
+        *args,
+        **kwargs
+    ):
         # type: (str,str,bytearray) -> int
-        """ Get the specified record
+        """Get the specified record
         Args:
             dataSourceCode: The data source for the observation.
             recordID: The ID for the record
@@ -1479,17 +2420,33 @@ class G2Engine(object):
             response: A bytearray for returning the response document; if an error occurred, an error response is stored here.
         """
 
-        response[::] = b''
+        response[::] = b""
         _dsrcCode = self.prepareStringArgument(dsrcCode)
         _recordId = self.prepareStringArgument(recordId)
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
         self._lib_handle.G2_getRecord_V2.restype = c_int
-        self._lib_handle.G2_getRecord_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_getRecord_V2(_dsrcCode, _recordId, flags, pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_getRecord_V2.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_longlong,
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_getRecord_V2(
+            _dsrcCode,
+            _recordId,
+            flags,
+            pointer(responseBuf),
+            pointer(responseSize),
+            self._resize_func,
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1498,7 +2455,7 @@ class G2Engine(object):
 
     def stats(self, response, *args, **kwargs):
         # type: () -> object
-        """ Retrieve the workload statistics for the current process.
+        """Retrieve the workload statistics for the current process.
         Resets them after retrieved.
 
         Args:
@@ -1507,11 +2464,19 @@ class G2Engine(object):
 
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_stats.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_stats(pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_stats.argtypes = [
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_stats(
+            pointer(responseBuf), pointer(responseSize), self._resize_func
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1520,20 +2485,28 @@ class G2Engine(object):
 
     def exportConfig(self, response, configID, *args, **kwargs):
         # type: (bytearray) -> int
-        """ Retrieve the G2 engine configuration
+        """Retrieve the G2 engine configuration
 
         Args:
             response: A bytearray for returning the response document; if an error occurred, an error response is stored here.
         """
 
-        response[::] = b''
+        response[::] = b""
         responseBuf = c_char_p(addressof(tls_var.buf))
         responseSize = c_size_t(tls_var.bufSize)
-        self._lib_handle.G2_exportConfig.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        ret_code = self._lib_handle.G2_exportConfig(pointer(responseBuf), pointer(responseSize), self._resize_func)
+        self._lib_handle.G2_exportConfig.argtypes = [
+            POINTER(c_char_p),
+            POINTER(c_size_t),
+            self._resize_func_def,
+        ]
+        ret_code = self._lib_handle.G2_exportConfig(
+            pointer(responseBuf), pointer(responseSize), self._resize_func
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
@@ -1541,64 +2514,74 @@ class G2Engine(object):
         response += tls_var.buf.value
 
         if type(configID) == bytearray:
-            configID[::] = b''
+            configID[::] = b""
             cID = c_longlong(0)
             self._lib_handle.G2_getActiveConfigID.argtypes = [POINTER(c_longlong)]
             ret_code2 = self._lib_handle.G2_getActiveConfigID(cID)
 
             if ret_code2 == -1:
-                raise G2NotInitializedException('G2Engine has not been successfully initialized')
+                raise G2NotInitializedException(
+                    "G2Engine has not been successfully initialized"
+                )
             elif ret_code2 < 0:
                 self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
                 raise TranslateG2ModuleException(tls_var.buf.value)
 
-            configID += (str(cID.value).encode())
+            configID += str(cID.value).encode()
 
     def getActiveConfigID(self, configID, *args, **kwargs):
         # type: (bytearray) -> object
-        """ Retrieve the active config ID for the G2 engine
+        """Retrieve the active config ID for the G2 engine
 
         Args:
             configID: A bytearray for returning the identifier value for the config
         """
 
-        configID[::] = b''
+        configID[::] = b""
         cID = c_longlong(0)
         self._lib_handle.G2_getActiveConfigID.argtypes = [POINTER(c_longlong)]
         ret_code = self._lib_handle.G2_getActiveConfigID(cID)
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-        configID += (str(cID.value).encode())
+        configID += str(cID.value).encode()
 
     def getRepositoryLastModifiedTime(self, lastModifiedTime, *args, **kwargs):
         # type: (bytearray) -> object
-        """ Retrieve the last modified time stamp of the entity store repository
+        """Retrieve the last modified time stamp of the entity store repository
 
         Args:
             lastModifiedTime: A bytearray for returning the last modified time of the data repository
         """
 
-        lastModifiedTime[::] = b''
+        lastModifiedTime[::] = b""
         lastModifiedTimeStamp = c_longlong(0)
-        self._lib_handle.G2_getRepositoryLastModifiedTime.argtypes = [POINTER(c_longlong)]
-        ret_code = self._lib_handle.G2_getRepositoryLastModifiedTime(lastModifiedTimeStamp)
+        self._lib_handle.G2_getRepositoryLastModifiedTime.argtypes = [
+            POINTER(c_longlong)
+        ]
+        ret_code = self._lib_handle.G2_getRepositoryLastModifiedTime(
+            lastModifiedTimeStamp
+        )
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
-        lastModifiedTime += (str(lastModifiedTimeStamp.value).encode())
+        lastModifiedTime += str(lastModifiedTimeStamp.value).encode()
 
     def purgeRepository(self, reset_resolver_=True, *args, **kwargs):
         # type: (bool) -> None
-        """ Purges the G2 repository
+        """Purges the G2 repository
 
         Args:
             reset_resolver: Re-initializes the engine.  Should be left True.
@@ -1610,13 +2593,15 @@ class G2Engine(object):
         ret_code = self._lib_handle.G2_purgeRepository()
 
         if ret_code == -1:
-            raise G2NotInitializedException('G2Engine has not been successfully initialized')
+            raise G2NotInitializedException(
+                "G2Engine has not been successfully initialized"
+            )
         elif ret_code < 0:
             self._lib_handle.G2_getLastException(tls_var.buf, sizeof(tls_var.buf))
             raise TranslateG2ModuleException(tls_var.buf.value)
 
     def destroy(self, *args, **kwargs):
-        """ Uninitializes the engine
+        """Uninitializes the engine
         This should be done once per process after init(...) is called.
         After it is called the engine will no longer function.
 
