@@ -1,3 +1,6 @@
 {
-  "threshold": 15
+  "threshold": 15,
+  "ignore": [
+    "**/src/senzing/**"
+  ]
 }
